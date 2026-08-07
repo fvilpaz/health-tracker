@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <title>Health Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- HEADER -->
+    <header class="app-header">
+      <div>
+        <h1>Health Tracker</h1>
+        <span>Tu progreso, tu ritmo</span>
+      </div>
+      <button class="theme-toggle" id="themeBtn" aria-label="Cambiar tema">🌙</button>
+    </header>
+
+    <!-- ===== DASHBOARD ===== -->
+    <section id="dashboard" class="section active">
+      <div class="stats-grid">
+        <div class="stat-card green">
+          <div class="stat-label">Peso actual</div>
+          <div class="stat-value" id="dashWeight">--</div>
+          <div class="stat-unit">kg</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Perdido</div>
+          <div class="stat-value" id="dashLost">--</div>
+          <div class="stat-unit">kg desde el inicio</div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-label">Entrenos esta semana</div>
+          <div class="stat-value" id="dashWeek">0</div>
+          <div class="stat-unit">objetivo: 3</div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-label">IMC</div>
+          <div class="stat-value" id="dashIMC">--</div>
+          <div class="stat-unit">altura: 1.76 m</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Cintura</div>
+          <div class="stat-value" id="dashWaist">--</div>
+          <div class="stat-unit">cm · ombligo</div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Cintura perdido</div>
+          <div class="stat-value" id="dashWaistLost">--</div>
+          <div class="stat-unit">cm desde el inicio</div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-label">Ratio cintura/altura</div>
+          <div class="stat-value" id="dashWHtR">--</div>
+          <div class="stat-unit">objetivo: &lt; 0.5</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Plan de 12 semanas</div>
+        <div class="progress-bar-wrap">
+          <div class="progress-label">
+            <span id="weeksProgress">Semana 0 / 12</span>
+            <span id="weeksPct">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="weeksFill" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Racha</div>
+        <div class="streak-badge" id="dashStreak">🔥 0 días de racha</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Registrar medidas</div>
+        <div class="weight-input-row">
+          <input type="number" id="weightInput" placeholder="Peso: 96.5" step="0.1" min="30" max="300">
+          <button class="btn btn-primary" id="saveWeightBtn">Peso</button>
+        </div>
+        <div class="weight-input-row">
+          <input type="number" id="waistInput" placeholder="Cintura: 98" step="0.1" min="40" max="200">
+          <button class="btn btn-green" id="saveWaistBtn">Cintura</button>
+        </div>
+        <div style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">Cintura: mide a la altura del ombligo, en ayunas, sin apretar</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Logros</div>
+        <div class="logros-grid" id="logrosGrid"></div>
+      </div>
+    </section>
+
+    <!-- ===== ENTRENAMIENTO ===== -->
+    <section id="entrenamiento" class="section">
+      <div class="phase-tabs">
+        <button class="phase-tab active" data-phase="warmup">🔥 Calent.</button>
+        <button class="phase-tab" data-phase="strength">💪 Fuerza</button>
+        <button class="phase-tab" data-phase="cardio">❤️ Cardio</button>
+        <button class="phase-tab" data-phase="cooldown">🧘 Calma</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title" id="roundInfo"></div>
+        <div class="exercise-list" id="exerciseList"></div>
+      </div>
+
+      <div id="workoutSetup">
+        <button class="btn btn-green btn-full" id="startWorkoutBtn">▶ Iniciar entrenamiento</button>
+      </div>
+
+      <div id="timerView" style="display: none;">
+        <div class="card">
+          <div class="timer-display">
+            <div class="timer-phase-label" id="timerPhaseLabel"></div>
+            <div class="timer-exercise-name" id="timerExerciseName"></div>
+            <div class="timer-circle-wrap">
+              <svg width="180" height="180" viewBox="0 0 180 180">
+                <circle class="timer-circle-bg" cx="90" cy="90" r="80"></circle>
+                <circle class="timer-circle-fg" id="timerCircleFg" cx="90" cy="90" r="80"
+                  stroke-dasharray="502.65" stroke-dashoffset="0"></circle>
+              </svg>
+              <div class="timer-number" id="timerNumber">0</div>
+            </div>
+            <div class="timer-controls">
+              <button class="timer-btn stop" id="stopBtn" aria-label="Detener">⏹</button>
+              <button class="timer-btn play" id="pauseBtn" aria-label="Pausar">⏸</button>
+            </div>
+            <div class="timer-status" id="timerStatus"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== NUTRICIÓN ===== -->
+    <section id="nutricion" class="section">
+      <div class="card">
+        <div class="card-title">Esquema del plato</div>
+        <div class="disclaimer">
+          Plato equilibrado para diabetes tipo 2 y hígado graso. Prioriza alimentos de bajo índice glucémico y grasas saludables.
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
+          <div class="food-tag good">½ verduras y hortalizas</div>
+          <div class="food-tag good">¼ proteína magra</div>
+          <div class="food-tag good">¼ carbohidrato integral</div>
+          <div class="food-tag good">Grasa saludable (AOVE)</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Ideas de comidas</div>
+        <div class="meal-card">
+          <div class="meal-title">Desayuno</div>
+          <ul class="meal-items">
+            <li>Tortilla de 2 huevos con espinacas + café sin azúcar</li>
+            <li>Yogur griego natural con nueces y canela</li>
+            <li>Tostada integral con aguacate y tomate</li>
+          </ul>
+        </div>
+        <div class="meal-card">
+          <div class="meal-title">Comida</div>
+          <ul class="meal-items">
+            <li>Pollo a la plancha + ensalada mixta + quinoa</li>
+            <li>Salmón al horno + brócoli + batata</li>
+            <li>Lentejas con verduras (sin chorizo)</li>
+          </ul>
+        </div>
+        <div class="meal-card">
+          <div class="meal-title">Cena</div>
+          <ul class="meal-items">
+            <li>Merluza en papillote + espárragos</li>
+            <li>Crema de calabacín + tortilla francesa</li>
+            <li>Ensalada de atún + huevo duro + aceitunas</li>
+          </ul>
+        </div>
+        <div class="meal-card">
+          <div class="meal-title">Merienda</div>
+          <ul class="meal-items">
+            <li>Puñado de almendras (15-20 unidades)</li>
+            <li>Manzana verde con canela</li>
+            <li>Kéfir natural sin azúcar</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Alimentos OK</div>
+        <div class="food-grid">
+          <div class="food-tag good">Verduras verdes</div>
+          <div class="food-tag good">Pescado azul</div>
+          <div class="food-tag good">Huevos</div>
+          <div class="food-tag good">Legumbres</div>
+          <div class="food-tag good">Frutos secos</div>
+          <div class="food-tag good">Aguacate</div>
+          <div class="food-tag good">Avena integral</div>
+          <div class="food-tag good">Aceite de oliva</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Limitar / Evitar</div>
+        <div class="food-grid">
+          <div class="food-tag limit">Azúcar refinada</div>
+          <div class="food-tag limit">Harinas blancas</div>
+          <div class="food-tag limit">Refrescos / zumos</div>
+          <div class="food-tag limit">Alcohol</div>
+          <div class="food-tag limit">Ultraprocesados</div>
+          <div class="food-tag limit">Fritos rebozados</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== MEDICACIÓN ===== -->
+    <section id="medicacion" class="section">
+      <div class="card">
+        <div class="med-card">
+          <div class="med-name">Ebymect</div>
+          <div class="med-components">Dapagliflozina 5mg + Metformina 850mg</div>
+          <ul class="med-tips">
+            <li>Tomar con las comidas para reducir molestias gástricas</li>
+            <li>Beber abundante agua (dapagliflozina elimina glucosa por orina)</li>
+            <li>Controlar signos de infección urinaria (más frecuente con este fármaco)</li>
+            <li>No saltar dosis sin consultar al médico</li>
+            <li>La metformina mejora la sensibilidad a la insulina</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Hígado graso (NAFLD)</div>
+        <div class="med-tips" style="list-style:none; display:flex; flex-direction:column; gap:5px;">
+          <li style="font-size:0.83rem;">La pérdida de peso es el tratamiento principal</li>
+          <li style="font-size:0.83rem;">Reducir carbohidratos simples y fructosa</li>
+          <li style="font-size:0.83rem;">El ejercicio mejora la sensibilidad hepática</li>
+          <li style="font-size:0.83rem;">Evitar alcohol completamente</li>
+          <li style="font-size:0.83rem;">Omega-3 y vitamina E tienen evidencia positiva</li>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Síndrome de Gilbert</div>
+        <div class="med-tips" style="list-style:none; display:flex; flex-direction:column; gap:5px;">
+          <li style="font-size:0.83rem;">Benigno — no requiere tratamiento</li>
+          <li style="font-size:0.83rem;">La bilirrubina sube con ayuno, estrés o ejercicio intenso</li>
+          <li style="font-size:0.83rem;">No confundir ictericia leve con problema hepático grave</li>
+          <li style="font-size:0.83rem;">Mantener hidratación y comidas regulares</li>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">⚠️ Señales de alerta</div>
+        <div class="alert-card">
+          <div class="alert-title">Infección urinaria (dapagliflozina)</div>
+          Ardor al orinar, fiebre, dolor lumbar → consultar médico
+        </div>
+        <div class="alert-card">
+          <div class="alert-title">Hipoglucemia</div>
+          Temblores, sudoración fría, mareo → comer algo con azúcar rápido
+        </div>
+        <div class="alert-card">
+          <div class="alert-title">Deshidratación</div>
+          Boca seca, orina oscura, dolor de cabeza → beber agua + electrolitos
+        </div>
+        <div class="alert-card">
+          <div class="alert-title">Ictericia pronunciada (Gilbert)</div>
+          Ojos muy amarillos + malestar general → analítica de control
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PROGRESO ===== -->
+    <section id="progreso" class="section">
+      <div class="card">
+        <div class="card-title">Evolución de peso</div>
+        <div class="chart-wrap">
+          <canvas id="weightChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Historial de peso</div>
+        <div class="weight-log" id="weightLog"></div>
+      </div>
+    </section>
+
+    <!-- ===== CALENDARIO ===== -->
+    <section id="calendario" class="section">
+      <div class="card">
+        <div class="card-title">Semana actual</div>
+        <div class="week-grid" id="weekGrid"></div>
+      </div>
+    </section>
+
+    <!-- ===== SUPLEMENTOS ===== -->
+    <section id="suplementos" class="section">
+      <div class="disclaimer">
+        Esta sección es orientativa. Consulta siempre con tu médico antes de añadir suplementos, especialmente con diabetes tipo 2 y medicación activa.
+      </div>
+
+      <div class="card">
+        <div class="card-title">Suplementos recomendados</div>
+
+        <div class="suplement-card safe">
+          <div class="sup-header">
+            <span class="sup-badge">SEGURO</span>
+            <div>
+              <div class="sup-name">Creatina monohidrato</div>
+              <div class="sup-dose">3-5 g/día</div>
+            </div>
+          </div>
+          <div class="sup-desc">Beneficia hígado graso (NAFLD). Compatible con metformina si se bebe suficiente agua. Mejora rendimiento en ejercicio de fuerza.</div>
+        </div>
+
+        <div class="suplement-card safe">
+          <div class="sup-header">
+            <span class="sup-badge">SEGURO</span>
+            <div>
+              <div class="sup-name">Omega-3 EPA+DHA</div>
+              <div class="sup-dose">1-2 g/día</div>
+            </div>
+          </div>
+          <div class="sup-desc">Antiinflamatorio. Mejora marcadores de hígado graso. Beneficio cardiovascular añadido.</div>
+        </div>
+
+        <div class="suplement-card safe">
+          <div class="sup-header">
+            <span class="sup-badge">SEGURO</span>
+            <div>
+              <div class="sup-name">Vitamina D3</div>
+              <div class="sup-dose">1000-2000 UI/día</div>
+            </div>
+          </div>
+          <div class="sup-desc">Déficit común en síndrome metabólico. Mejora sensibilidad a insulina. Tomar con comida grasa.</div>
+        </div>
+
+        <div class="suplement-card safe">
+          <div class="sup-header">
+            <span class="sup-badge">SEGURO</span>
+            <div>
+              <div class="sup-name">Magnesio (glicinato/malato)</div>
+              <div class="sup-dose">200-400 mg / noche</div>
+            </div>
+          </div>
+          <div class="sup-desc">Mejora insulinorresistencia. Ayuda al descanso. El glicinato es la forma mejor tolerada.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Con precaución</div>
+
+        <div class="suplement-card caution">
+          <div class="sup-header">
+            <span class="sup-badge">PRECAUCIÓN</span>
+            <div>
+              <div class="sup-name">Whey Protein</div>
+              <div class="sup-dose">Moderado, no exceder 1 scoop/día</div>
+            </div>
+          </div>
+          <div class="sup-desc">OK en moderación. No sobrecargar riñón (metformina + diabetes). Priorizar proteína real de alimentos.</div>
+          <div class="sup-warning">Pedir analítica renal periódica</div>
+        </div>
+
+        <div class="suplement-card caution">
+          <div class="sup-header">
+            <span class="sup-badge">PRECAUCIÓN</span>
+            <div>
+              <div class="sup-name">Vitamina B12</div>
+              <div class="sup-dose">Pedir analítica primero</div>
+            </div>
+          </div>
+          <div class="sup-desc">La metformina puede reducir la absorción de B12. No suplementar sin confirmar déficit en analítica.</div>
+          <div class="sup-warning">No suplementar sin analítica previa</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Evitar</div>
+
+        <div class="suplement-card avoid">
+          <div class="sup-header">
+            <span class="sup-badge">EVITAR</span>
+            <div>
+              <div class="sup-name">Pre-workouts con cafeína alta</div>
+            </div>
+          </div>
+          <div class="sup-desc">Riesgo de deshidratación con dapagliflozina. Pueden causar taquicardia e hiperglucemia reactiva.</div>
+        </div>
+
+        <div class="suplement-card avoid">
+          <div class="sup-header">
+            <span class="sup-badge">EVITAR</span>
+            <div>
+              <div class="sup-name">Termogénicos / Quemadores</div>
+            </div>
+          </div>
+          <div class="sup-desc">Incompatibles con diabetes y Ebymect. Estimulantes que pueden alterar glucosa y presión arterial.</div>
+        </div>
+
+        <div class="suplement-card avoid">
+          <div class="sup-header">
+            <span class="sup-badge">EVITAR</span>
+            <div>
+              <div class="sup-name">Suplementos con azúcar / maltodextrina</div>
+            </div>
+          </div>
+          <div class="sup-desc">Muchos suplementos deportivos contienen azúcares ocultos. Revisar siempre la etiqueta.</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-section="dashboard">
+      <span class="icon">📊</span>
+      Dashboard
+    </button>
+    <button class="nav-item" data-section="entrenamiento">
+      <span class="icon">💪</span>
+      Entreno
+    </button>
+    <button class="nav-item" data-section="nutricion">
+      <span class="icon">🥗</span>
+      Nutrición
+    </button>
+    <button class="nav-item" data-section="medicacion">
+      <span class="icon">💊</span>
+      Meds
+    </button>
+    <button class="nav-item" data-section="progreso">
+      <span class="icon">📈</span>
+      Progreso
+    </button>
+    <button class="nav-item" data-section="calendario">
+      <span class="icon">📅</span>
+      Calendar
+    </button>
+    <button class="nav-item" data-section="suplementos">
+      <span class="icon">💎</span>
+      Suplem.
+    </button>
+  </nav>
+
+  <!-- TOAST -->
+  <div id="toast" style="position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--surface);color:var(--text);padding:10px 20px;border-radius:99px;font-size:0.85rem;font-weight:600;box-shadow:var(--shadow-lg);opacity:0;transition:all 0.3s ease;z-index:200;border:1px solid var(--border);pointer-events:none;"></div>
+
+  <!-- SCRIPTS -->
+  <script src="js/storage.js"></script>
+  <script src="js/timer.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/workout.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
