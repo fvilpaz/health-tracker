@@ -57,7 +57,7 @@ button { cursor: pointer; font-family: inherit; }
 a { color: inherit; text-decoration: none; }
 
 /* ===== LAYOUT ===== */
-.app-container { max-width: 480px; margin: 0 auto; padding-bottom: 140px; }
+.app-container { max-width: 480px; margin: 0 auto; padding-bottom: 130px; }
 
 /* ===== HEADER ===== */
 .app-header {
@@ -87,12 +87,13 @@ a { color: inherit; text-decoration: none; }
 /* ===== NAV ===== */
 .bottom-nav {
   position: fixed;
-  bottom: 0; left: 0; right: 0;
+  bottom: 32px; left: 0; right: 0;
   background: var(--surface);
   border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
   display: flex;
   justify-content: space-around;
-  padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+  padding: 8px 0;
   z-index: 100;
 }
 .nav-item {
@@ -585,20 +586,28 @@ a { color: inherit; text-decoration: none; }
 
 /* ===== FOOTER ===== */
 .app-footer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
   text-align: center;
-  padding: 24px 20px 32px;
-  font-size: 0.72rem;
+  padding: 6px 20px max(6px, env(safe-area-inset-bottom));
+  font-size: 0.65rem;
   color: var(--text-muted);
+  background: var(--surface2);
   border-top: 1px solid var(--border);
-  margin-top: 20px;
+  z-index: 99;
 }
-.app-footer strong { color: var(--text); }
-.footer-links { display: flex; justify-content: center; gap: 16px; margin-top: 6px; }
-.footer-links a { color: var(--blue); font-weight: 600; font-size: 0.7rem; }
+.app-footer strong { color: var(--text); font-weight: 700; }
+.footer-links { display: flex; justify-content: center; gap: 16px; margin-top: 2px; }
+.footer-links a { color: var(--blue); font-weight: 600; font-size: 0.65rem; }
 .footer-links a:hover { text-decoration: underline; }
 
 /* ===== RESPONSIVE ===== */
 @media (min-width: 480px) {
   .app-container { border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
-  .bottom-nav { max-width: 480px; left: 50%; transform: translateX(-50%); border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
+  .bottom-nav { max-width: 480px; left: 50%; transform: translateX(-50%); border-left: 1px solid var(--border); border-right: 1px solid var(--border); bottom: 32px; }
+  .app-footer { max-width: 480px; }
 }
