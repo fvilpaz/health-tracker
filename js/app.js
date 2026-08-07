@@ -19,10 +19,10 @@ function initApp() {
   renderCalendar();
   checkLogros();
 
-  const resetBtn = document.getElementById('resetPlanBtn');
-  if (resetBtn) {
-    resetBtn.addEventListener('click', () => {
-      if (!confirm('¿Reiniciar el plan? Se borrarán todos los datos (peso, cintura, entrenos, logros).')) return;
+  const newPlanBtn = document.getElementById('newPlanBtn');
+  if (newPlanBtn) {
+    newPlanBtn.addEventListener('click', () => {
+      if (!confirm('¿Finalizar este plan y empezar uno nuevo?\n\nSe borrarán todos los datos (peso, cintura, entrenos, logros).')) return;
       const keys = ['settings', 'weights', 'waists', 'startDate', 'trainings', 'streak', 'logros', 'plan'];
       keys.forEach(k => Storage.remove(k));
       location.reload();
