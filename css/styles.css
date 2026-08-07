@@ -57,7 +57,7 @@ button { cursor: pointer; font-family: inherit; }
 a { color: inherit; text-decoration: none; }
 
 /* ===== LAYOUT ===== */
-.app-container { max-width: 480px; margin: 0 auto; padding-bottom: 90px; }
+.app-container { max-width: 480px; margin: 0 auto; padding-bottom: 140px; }
 
 /* ===== HEADER ===== */
 .app-header {
@@ -586,7 +586,7 @@ a { color: inherit; text-decoration: none; }
 /* ===== FOOTER ===== */
 .app-footer {
   text-align: center;
-  padding: 24px 20px 16px;
+  padding: 24px 20px 32px;
   font-size: 0.72rem;
   color: var(--text-muted);
   border-top: 1px solid var(--border);
