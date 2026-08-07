@@ -6,17 +6,19 @@
 
 ## 🔲 P0 — Crítico / Inmediato
 
-- [ ] **GitHub Pages funcionando** — El workflow está creado pero hay que verificar que despliegue correctamente
-- [ ] **Verificar que todo funciona en local** — Probar todas las secciones, inputs, temporizador, navegación
+- [ ] **Verificar todo en local** — Probar todas las secciones, setup, reset, temporizador
+- [ ] **Verificar GitHub Pages** — https://fvilpaz.github.io/health-tracker/ despliega correctamente
 
 ---
 
 ## 🔲 P1 — Alto impacto / Bajo esfuerzo
 
+- [ ] **Mini hábitos diarios** — Checkboxes diarios: 💧 2L agua · 🚶 6k pasos · 🥗 verduras · 💪 entreno · 😴 7h sueño
 - [ ] **Gráfica de cintura en Progreso** — Igual que la de peso, con Chart.js y línea objetivo
-- [ ] **Exportar datos** — Botón para descargar JSON/CSV con todo el historial (peso, cintura, entrenos, plan)
+- [ ] **Exportar datos** — Botón para descargar JSON con todo el historial (peso, cintura, entrenos, plan, hábitos)
 - [ ] **Importar datos** — Poder restaurar desde backup JSON
-- [ ] **Recordatorio semanal** — Notificación del navegador cada lunes para registrar medidas
+- [ ] **Objetivos escalonados** — Metas intermedias (95→90→85→80 kg) con logros por cada una
+- [ ] **Sonido al cambiar ejercicio** — Beep suave cuando termina un ejercicio (Web Audio API, sin archivos externos)
 - [ ] **Mejorar el tracker semanal** — Scroll horizontal en móvil, mejor legibilidad
 
 ---
@@ -27,8 +29,10 @@
 - [ ] **Historial de cintura en Progreso** — Tabla con entradas de cintura igual que peso
 - [ ] **Fotos de progreso** — Opcional: guardar foto semanal (localStorage con base64, comprimida)
 - [ ] **Notas por semana** — Campo de texto libre en el tracker para anotar cómo te sientes
+- [ ] **Recordatorio medicación** — Notificación del navegador para tomar Ebymect
 - [ ] **Mejorar logros** — Más logros intermedios (3kg, 7kg, 10cm cintura, etc.)
 - [ ] **Estadísticas** — Media semanal, mejor racha, tendencia (línea de regresión)
+- [ ] **Sección "Mi salud"** — Info personalizada: medicación, hidratación, señales de alerta, consejos pre-entreno
 
 ---
 
@@ -39,7 +43,7 @@
 - [ ] **Gráfica de composición** — Peso + cintura + IMC superpuestos
 - [ ] **Integración con wearables** — Leer pasos de Google Fit / Apple Health
 - [ ] **Plan de nutrición dinámico** — Generar menú semanal basado en preferencias
-- [ ] **Timer mejorado** — Sonido al final, vibración, modo pantalla completa
+- [ ] **Timer mejorado** — Vibración, modo pantalla completa, countdown audible
 
 ---
 
@@ -49,19 +53,21 @@
 - [x] CSS completo con dark mode por defecto
 - [x] JavaScript: storage, timer, charts, workout, app
 - [x] Bottom nav con 7 iconos
-- [x] Dashboard con stats (peso, perdido, entrenos, IMC, racha, logros)
+- [x] Dashboard con stats (peso, perdido, entrenos, IMC, cintura, WHtR, racha, logros)
 - [x] Entrenamiento con 4 fases + temporizador SVG
 - [x] Nutrición con esquema del plato e ideas
 - [x] Medicación con señales de alerta
-- [x] Progreso con gráfica Chart.js + historial
+- [x] Progreso con gráfica Chart.js + historial editable
 - [x] Calendario semanal con checkboxes
 - [x] Suplementos (seguros, precaución, evitar)
-- [x] Búsqueda de vídeos en YouTube por ejercicio
+- [x] Búsqueda de vídeos en YouTube por ejercicio (botón ▶)
 - [x] Registro de cintura + ratio WHtR
-- [x] Tracker semanal de 12 semanas con objetivos
+- [x] Tracker semanal de 12 semanas con objetivos dinámicos
+- [x] Setup inicial configurable (fecha, duración, peso, cintura)
+- [x] Botón de reiniciar plan (borra todo y vuelve al setup)
 - [x] Git init + repo público en GitHub
-- [x] Workflow de GitHub Pages
+- [x] Workflow de GitHub Pages (deploy automático)
 
 ---
 
-_Generado: 2026-08-08_
+_Generado: 2026-08-08 · Actualizado: 2026-08-08_
