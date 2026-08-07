@@ -1,0 +1,125 @@
+{
+  "warmup": {
+    "title": "🔥 Calentamiento",
+    "duration": 4,
+    "exercises": [
+      {
+        "name": "Marcha en el sitio",
+        "seconds": 40,
+        "rest": 20
+      },
+      {
+        "name": "Círculos de hombros",
+        "seconds": 40,
+        "rest": 20
+      },
+      {
+        "name": "Rotaciones de tronco",
+        "seconds": 40,
+        "rest": 20
+      },
+      {
+        "name": "Sentadilla parcial",
+        "seconds": 40,
+        "rest": 20
+      },
+      {
+        "name": "Balanceo de piernas",
+        "seconds": 40,
+        "rest": 20
+      },
+      {
+        "name": "Elevación de rodillas",
+        "seconds": 40,
+        "rest": 20
+      }
+    ]
+  },
+  "strength": {
+    "title": "💪 Fuerza",
+    "duration": 10,
+    "rounds": 2,
+    "rest_between_rounds": 60,
+    "exercises": [
+      {
+        "name": "Sentadillas",
+        "seconds": 40,
+        "rest": 20,
+        "tip": "Hasta donde estés cómodo, sin dolor en rodillas"
+      },
+      {
+        "name": "Flexiones en pared",
+        "seconds": 40,
+        "rest": 20,
+        "tip": "Manos a la altura del pecho sobre la pared"
+      },
+      {
+        "name": "Puente de glúteos",
+        "seconds": 40,
+        "rest": 20,
+        "tip": "Tumbado boca arriba, eleva caderas despacio"
+      },
+      {
+        "name": "Bird Dog",
+        "seconds": 40,
+        "rest": 20,
+        "tip": "A cuatro patas, extiende brazo y pierna contrarios"
+      },
+      {
+        "name": "Plancha con rodillas",
+        "seconds": 40,
+        "rest": 20,
+        "tip": "O cuadrupedia si la plancha es difícil"
+      }
+    ]
+  },
+  "cardio": {
+    "title": "❤️ Cardio",
+    "duration": 4,
+    "rounds": 2,
+    "exercises": [
+      {
+        "name": "Marcha rápida con rodillas altas",
+        "seconds": 30
+      },
+      {
+        "name": "Paso lateral",
+        "seconds": 30
+      },
+      {
+        "name": "Golpes de boxeo al aire",
+        "seconds": 30
+      },
+      {
+        "name": "Caminar rápido en el sitio",
+        "seconds": 30
+      }
+    ]
+  },
+  "cooldown": {
+    "title": "🧘 Vuelta a la calma",
+    "duration": 2,
+    "exercises": [
+      {
+        "name": "Estiramiento de gemelos",
+        "seconds": 25
+      },
+      {
+        "name": "Estiramiento de cuádriceps",
+        "seconds": 25
+      },
+      {
+        "name": "Isquiotibiales",
+        "seconds": 25
+      },
+      {
+        "name": "Pecho y hombros",
+        "seconds": 25
+      },
+      {
+        "name": "Respiración profunda (4s inhala / 6s exhala)",
+        "seconds": 30
+      }
+    ]
+  }
+}
