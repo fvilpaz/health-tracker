@@ -11,7 +11,8 @@ App web personal de salud para Fernando (Nando):
 - Medicación: Ebymect (dapagliflozina 5mg + metformina 850mg)
 - Objetivo: bajar de ~97 kg a 90 kg
 - Rutina de ejercicio: 20 minutos, 3-4 días/semana
-- Repo: público en GitHub como `health-tracker` bajo usuario `fvilpaz`
+- Repo: público en GitHub → https://github.com/fvilpaz/health-tracker
+- GitHub Pages: en progreso (workflow deploy configurado)
 
 ---
 
@@ -19,20 +20,24 @@ App web personal de salud para Fernando (Nando):
 
 ```
 health-tracker/
+├── index.html              ✅ COMPLETO — 7 secciones, plan tracker semanal
 ├── css/styles.css          ✅ COMPLETO — diseño completo, dark mode, responsive
 ├── js/storage.js           ✅ COMPLETO — wrapper localStorage
 ├── js/timer.js             ✅ COMPLETO — temporizador con callbacks
 ├── js/charts.js            ✅ COMPLETO — Chart.js para gráfica de peso
 ├── js/workout.js           ✅ COMPLETO — lógica fases de entrenamiento
-├── js/app.js               ✅ COMPLETO — lógica principal, nav, dashboard, logros
-└── data/workouts.json      ✅ COMPLETO — datos de ejercicios (warmup/strength/cardio/cooldown)
+├── js/app.js               ✅ COMPLETO — lógica principal, nav, dashboard, logros, plan
+├── data/workouts.json      ✅ COMPLETO — datos de ejercicios (warmup/strength/cardio/cooldown)
+├── PLAN.md                 ✅ COMPLETO — plan de mejoras priorizado
+├── SESION.md               ✅ COMPLETO — contexto de sesión
+└── .github/workflows/
+    └── pages.yml           ✅ COMPLETO — deploy a GitHub Pages
 ```
 
-## Lo que FALTA crear
+## Lo que FALTA
 
-- `git init` + primer commit
-- Crear repo público en GitHub (`gh repo create health-tracker --public`)
-- Push
+- Verificar que GitHub Pages despliega correctamente
+- Verificar todo en local
 
 ---
 
@@ -71,10 +76,10 @@ Bottom nav fija con 7 iconos.
 
 ## Para cuando retomemos
 
-1. Verificar que todo funciona en local → http://localhost:8765
-2. `git init` + primer commit
-3. Crear repo público en GitHub (`gh repo create health-tracker --public`)
-4. Push
+1. Verificar GitHub Pages: https://fvilpaz.github.io/health-tracker/
+2. Verificar todo en local: http://localhost:8765
+3. Revisar PLAN.md para siguientes mejoras
+4. P0: Gráfica de cintura + exportar/importar datos + PWA
 
 ---
 
