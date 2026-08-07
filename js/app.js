@@ -18,6 +18,16 @@ function initApp() {
   renderWeightLog();
   renderCalendar();
   checkLogros();
+
+  const resetBtn = document.getElementById('resetPlanBtn');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      if (!confirm('¿Reiniciar el plan? Se borrarán todos los datos (peso, cintura, entrenos, logros).')) return;
+      const keys = ['settings', 'weights', 'waists', 'startDate', 'trainings', 'streak', 'logros', 'plan'];
+      keys.forEach(k => Storage.remove(k));
+      location.reload();
+    });
+  }
 }
 
 function showSetup() {
@@ -27,6 +37,7 @@ function showSetup() {
   overlay.id = 'setupOverlay';
   overlay.innerHTML = `
     <div class="setup-card">
+      <button class="setup-close" id="setupCloseBtn" aria-label="Cerrar">✕</button>
       <div class="setup-icon">🏃‍♂️</div>
       <h2 class="setup-title">Health Tracker</h2>
       <p class="setup-subtitle">Configura tu plan</p>
@@ -52,11 +63,13 @@ function showSetup() {
       </div>
 
       <button class="btn btn-green btn-full" id="setupStartBtn">🚀 Empezar</button>
-      <button class="btn btn-full" id="setupCancelBtn" style="margin-top:8px; background:var(--surface2); color:var(--text-muted); border:1px solid var(--border);">Cancelar</button>
+      <button class="btn btn-full setup-cancel" id="setupCancelBtn">Cancelar, ya lo configuro luego</button>
       <p class="setup-note">Todo se guarda en tu navegador. Nada se envía a ningún servidor.</p>
     </div>
   `;
   document.body.appendChild(overlay);
+
+  const closeSetup = () => { overlay.remove(); initApp(); };
 
   document.getElementById('setupStartBtn').addEventListener('click', () => {
     const date = document.getElementById('setupDate').value;
@@ -79,17 +92,8 @@ function showSetup() {
     initApp();
   });
 
-  document.getElementById('resetPlanBtn').addEventListener('click', () => {
-    if (!confirm('¿Reiniciar el plan? Se borrarán todos los datos (peso, cintura, entrenos, logros).')) return;
-    const keys = ['settings', 'weights', 'waists', 'startDate', 'trainings', 'streak', 'logros', 'plan'];
-    keys.forEach(k => Storage.remove(k));
-    location.reload();
-  });
-
-  document.getElementById('setupCancelBtn').addEventListener('click', () => {
-    overlay.remove();
-    initApp();
-  });
+  document.getElementById('setupCancelBtn').addEventListener('click', closeSetup);
+  document.getElementById('setupCloseBtn').addEventListener('click', closeSetup);
 }
 
 /* ===== THEME ===== */
