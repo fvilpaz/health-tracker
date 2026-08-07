@@ -36,8 +36,8 @@ health-tracker/
 
 ## Lo que FALTA
 
-- Verificar que GitHub Pages despliega correctamente
-- Verificar todo en local
+- Todo deployado y funcionando ✅
+- Ver PLAN.md para siguientes mejoras
 
 ---
 
