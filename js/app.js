@@ -1,24 +1,95 @@
 /* ===== INIT ===== */
 document.addEventListener('DOMContentLoaded', async () => {
   initTheme();
-  seedInitialWeight();
-  initNav();
   await loadWorkoutData();
   renderWorkoutPhase('warmup');
+
+  if (!Storage.get('settings')) {
+    showSetup();
+  } else {
+    initApp();
+  }
+});
+
+function initApp() {
+  initNav();
   updateDashboard();
   renderPlanTable();
   renderWeightLog();
   renderCalendar();
   checkLogros();
-});
+}
 
-function seedInitialWeight() {
-  if (Storage.get('weights', []).length === 0) {
-    const today = new Date().toLocaleDateString('es-ES');
-    Storage.set('weights', [{ date: today, weight: 97.0 }]);
-    Storage.set('waists', [{ date: today, waist: 105.0 }]);
-    Storage.set('startDate', new Date().toISOString());
-  }
+function showSetup() {
+  const today = new Date();
+  const dateStr = today.toISOString().split('T')[0];
+  const overlay = document.createElement('div');
+  overlay.id = 'setupOverlay';
+  overlay.innerHTML = `
+    <div class="setup-card">
+      <div class="setup-icon">🏃‍♂️</div>
+      <h2 class="setup-title">Health Tracker</h2>
+      <p class="setup-subtitle">Configura tu plan</p>
+
+      <div class="setup-field">
+        <label>¿Cuándo empiezas?</label>
+        <input type="date" id="setupDate" value="${dateStr}">
+      </div>
+
+      <div class="setup-field">
+        <label>Duración del plan (semanas)</label>
+        <input type="number" id="setupWeeks" value="12" min="4" max="24" step="1">
+      </div>
+
+      <div class="setup-field">
+        <label>Peso actual (kg)</label>
+        <input type="number" id="setupWeight" value="97" step="0.1" min="30" max="300">
+      </div>
+
+      <div class="setup-field">
+        <label>Cintura actual (cm) — a la altura del ombligo</label>
+        <input type="number" id="setupWaist" value="105" step="0.1" min="40" max="200">
+      </div>
+
+      <button class="btn btn-green btn-full" id="setupStartBtn">🚀 Empezar</button>
+      <button class="btn btn-full" id="setupCancelBtn" style="margin-top:8px; background:var(--surface2); color:var(--text-muted); border:1px solid var(--border);">Cancelar</button>
+      <p class="setup-note">Todo se guarda en tu navegador. Nada se envía a ningún servidor.</p>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  document.getElementById('setupStartBtn').addEventListener('click', () => {
+    const date = document.getElementById('setupDate').value;
+    const weeks = parseInt(document.getElementById('setupWeeks').value) || 12;
+    const weight = parseFloat(document.getElementById('setupWeight').value);
+    const waist = parseFloat(document.getElementById('setupWaist').value);
+
+    if (!date || isNaN(weight) || isNaN(waist)) return;
+
+    const dateObj = new Date(date + 'T00:00:00');
+    const dateLabel = dateObj.toLocaleDateString('es-ES');
+    const goalWeight = Math.max(50, weight - 7);
+
+    Storage.set('settings', { startDate: date, totalWeeks: weeks, goalWeight });
+    Storage.set('weights', [{ date: dateLabel, weight }]);
+    Storage.set('waists', [{ date: dateLabel, waist }]);
+    Storage.set('startDate', dateObj.toISOString());
+
+    overlay.remove();
+    initApp();
+  });
+
+  document.getElementById('resetPlanBtn').addEventListener('click', () => {
+    if (!confirm('¿Reiniciar el plan? Se borrarán todos los datos (peso, cintura, entrenos, logros).')) return;
+    const keys = ['settings', 'weights', 'waists', 'startDate', 'trainings', 'streak', 'logros', 'plan'];
+    keys.forEach(k => Storage.remove(k));
+    location.reload();
+  });
+
+  document.getElementById('setupCancelBtn').addEventListener('click', () => {
+    overlay.remove();
+    initApp();
+  });
 }
 
 /* ===== THEME ===== */
@@ -63,14 +134,16 @@ function initNav() {
 
 /* ===== DASHBOARD ===== */
 function updateDashboard() {
+  const settings = Storage.get('settings', {});
   const weights = Storage.get('weights', []);
   const trainings = Storage.get('trainings', []);
   const streak = Storage.get('streak', 0);
   const startDate = Storage.get('startDate', null);
 
   const currentWeight = weights.length ? weights[weights.length - 1].weight : null;
-  const goal = 90;
+  const goal = settings.goalWeight || 90;
   const startWeight = weights.length ? weights[0].weight : null;
+  const totalWeeks = settings.totalWeeks || 12;
 
   // Peso actual
   const weightEl = document.getElementById('dashWeight');
@@ -98,17 +171,17 @@ function updateDashboard() {
   const streakEl = document.getElementById('dashStreak');
   if (streakEl) streakEl.textContent = `🔥 ${streak} días de racha`;
 
-  // Progreso 12 semanas
+  // Progreso del plan
   if (startDate && currentWeight && startWeight) {
     const weeksEl = document.getElementById('weeksProgress');
     const fillEl = document.getElementById('weeksFill');
     const start = new Date(startDate);
     const now = new Date();
-    const weeks = Math.min(12, Math.floor((now - start) / (7 * 24 * 3600 * 1000)));
-    if (weeksEl) weeksEl.textContent = `Semana ${weeks} / 12`;
-    if (fillEl) fillEl.style.width = `${(weeks / 12) * 100}%`;
+    const weeks = Math.min(totalWeeks, Math.max(0, Math.floor((now - start) / (7 * 24 * 3600 * 1000))));
+    if (weeksEl) weeksEl.textContent = `Semana ${weeks} / ${totalWeeks}`;
+    if (fillEl) fillEl.style.width = `${(weeks / totalWeeks) * 100}%`;
     const pctEl = document.getElementById('weeksPct');
-    if (pctEl) pctEl.textContent = `${Math.round((weeks / 12) * 100)}%`;
+    if (pctEl) pctEl.textContent = `${Math.round((weeks / totalWeeks) * 100)}%`;
   }
 
   // IMC
@@ -144,14 +217,18 @@ function renderPlanTable() {
   const container = document.getElementById('planTable');
   if (!container) return;
 
+  const settings = Storage.get('settings', {});
+  const weights = Storage.get('weights', []);
+  const waists = Storage.get('waists', []);
+
+  const startWeight = weights.length ? weights[0].weight : 97;
+  const goalWeight = settings.goalWeight || 90;
+  const startWaist = waists.length ? waists[0].waist : 105;
+  const goalWaist = Math.max(60, startWaist - 9);
+  const totalWeeks = settings.totalWeeks || 12;
+
   const startDate = Storage.get('startDate', null);
   if (!startDate) { container.innerHTML = '<div class="empty-state">Registra tu peso para activar el plan</div>'; return; }
-
-  const startWeight = 97;
-  const goalWeight = 90;
-  const startWaist = 105;
-  const goalWaist = 96;
-  const totalWeeks = 12;
 
   const start = new Date(startDate);
   start.setHours(0,0,0,0);
