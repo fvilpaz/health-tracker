@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadWorkoutData();
   renderWorkoutPhase('warmup');
   updateDashboard();
+  renderPlanTable();
   renderWeightLog();
   renderCalendar();
   checkLogros();
@@ -136,6 +137,151 @@ function updateDashboard() {
     whtrEl.textContent = whtr;
     whtrEl.style.color = whtr < 0.5 ? 'var(--green)' : (whtr < 0.6 ? 'var(--orange)' : 'var(--red)');
   }
+}
+
+/* ===== PLAN TABLE ===== */
+function renderPlanTable() {
+  const container = document.getElementById('planTable');
+  if (!container) return;
+
+  const startDate = Storage.get('startDate', null);
+  if (!startDate) { container.innerHTML = '<div class="empty-state">Registra tu peso para activar el plan</div>'; return; }
+
+  const startWeight = 97;
+  const goalWeight = 90;
+  const startWaist = 105;
+  const goalWaist = 96;
+  const totalWeeks = 12;
+
+  const start = new Date(startDate);
+  start.setHours(0,0,0,0);
+  // Adjust to Monday
+  start.setDate(start.getDate() - start.getDay() + 1);
+
+  const now = new Date();
+  const currentWeekNum = Math.min(totalWeeks, Math.max(1, Math.floor((now - start) / (7 * 24 * 3600 * 1000)) + 1));
+
+  const planData = Storage.get('plan', {});
+
+  let html = '<table class="plan-table"><thead><tr>';
+  html += '<th class="week-num">#</th><th>Fecha</th><th>Peso obj.</th><th>Cint. obj.</th>';
+  html += '<th>Peso</th><th>Cint.</th><th>Entrenos</th><th></th>';
+  html += '</tr></thead><tbody>';
+
+  for (let w = 1; w <= totalWeeks; w++) {
+    const weekDate = new Date(start);
+    weekDate.setDate(start.getDate() + (w - 1) * 7);
+    const dateLabel = weekDate.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+
+    const targetWeight = (startWeight - ((startWeight - goalWeight) / totalWeeks) * w).toFixed(1);
+    const targetWaist = (startWaist - ((startWaist - goalWaist) / totalWeeks) * w).toFixed(1);
+
+    const wd = planData[w] || {};
+    const actualWeight = wd.weight || '';
+    const actualWaist = wd.waist || '';
+    const checks = wd.checks || [false, false, false];
+    const isCurrent = w === currentWeekNum;
+    const isPast = w < currentWeekNum;
+
+    const rowClass = isCurrent ? 'current-week' : (isPast ? 'completed-week' : '');
+
+    html += `<tr class="${rowClass}" data-week="${w}">`;
+    html += `<td class="week-num">${w}</td>`;
+    html += `<td class="week-date">${dateLabel}</td>`;
+    html += `<td class="target">${targetWeight}</td>`;
+    html += `<td class="target">${targetWaist}</td>`;
+    html += `<td><input type="number" step="0.1" min="30" max="300" value="${actualWeight}" data-w="${w}" data-field="weight"></td>`;
+    html += `<td><input type="number" step="0.1" min="40" max="200" value="${actualWaist}" data-w="${w}" data-field="waist"></td>`;
+    html += `<td><div class="plan-checks">`;
+    ['L', 'M', 'V'].forEach((label, i) => {
+      html += `<button class="plan-check ${checks[i] ? 'checked' : ''}" data-w="${w}" data-idx="${i}" title="${label}">${checks[i] ? '✓' : label}</button>`;
+    });
+    html += `</div></td>`;
+    html += `<td><button class="plan-save" data-w="${w}">💾</button></td>`;
+    html += `</tr>`;
+  }
+
+  html += '</tbody></table>';
+  container.innerHTML = html;
+
+  // Event listeners
+  container.querySelectorAll('.plan-save').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const wk = btn.dataset.w;
+      const row = container.querySelector(`tr[data-week="${wk}"]`);
+      const weightInput = row.querySelector('input[data-field="weight"]');
+      const waistInput = row.querySelector('input[data-field="waist"]');
+      const checks = [];
+      row.querySelectorAll('.plan-check').forEach(c => checks.push(c.classList.contains('checked')));
+
+      const plan = Storage.get('plan', {});
+      plan[wk] = {
+        weight: weightInput.value ? parseFloat(weightInput.value) : null,
+        waist: waistInput.value ? parseFloat(waistInput.value) : null,
+        checks
+      };
+      Storage.set('plan', plan);
+
+      // Sync with weights/waists arrays
+      if (weightInput.value) {
+        const weights = Storage.get('weights', []);
+        const today = new Date().toLocaleDateString('es-ES');
+        const existing = weights.findIndex(e => e.date === today);
+        if (existing >= 0) weights[existing].weight = parseFloat(weightInput.value);
+        else weights.push({ date: today, weight: parseFloat(weightInput.value) });
+        Storage.set('weights', weights);
+      }
+      if (waistInput.value) {
+        const waists = Storage.get('waists', []);
+        const today = new Date().toLocaleDateString('es-ES');
+        const existing = waists.findIndex(e => e.date === today);
+        if (existing >= 0) waists[existing].waist = parseFloat(waistInput.value);
+        else waists.push({ date: today, waist: parseFloat(waistInput.value) });
+        Storage.set('waists', waists);
+      }
+
+      updateDashboard();
+      checkLogros();
+      showToast(`Semana ${wk} guardada ✓`);
+    });
+  });
+
+  container.querySelectorAll('.plan-check').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const wk = btn.dataset.w;
+      const idx = parseInt(btn.dataset.idx);
+      const row = container.querySelector(`tr[data-week="${wk}"]`);
+      const checks = [];
+      row.querySelectorAll('.plan-check').forEach(c => {
+        if (parseInt(c.dataset.idx) === idx) {
+          c.classList.toggle('checked');
+          c.textContent = c.classList.contains('checked') ? '✓' : ['L', 'M', 'V'][parseInt(c.dataset.idx)];
+        }
+        checks.push(c.classList.contains('checked'));
+      });
+
+      const plan = Storage.get('plan', {});
+      if (!plan[wk]) plan[wk] = { weight: null, waist: null, checks: [false, false, false] };
+      plan[wk].checks = checks;
+      Storage.set('plan', plan);
+
+      // Sync trainings
+      const trainings = Storage.get('trainings', []);
+      const weekStart = new Date(Storage.get('startDate'));
+      weekStart.setDate(weekStart.getDate() + (parseInt(wk) - 1) * 7);
+      const dayLabels = [0, 2, 4].map(d => {
+        const dd = new Date(weekStart);
+        dd.setDate(weekStart.getDate() + d);
+        return dd.toLocaleDateString('es-ES');
+      });
+      if (checks[idx]) {
+        const label = dayLabels[idx];
+        if (!trainings.includes(label)) trainings.push(label);
+      }
+      Storage.set('trainings', trainings);
+      updateDashboard();
+    });
+  });
 }
 
 function getWeekStart() {
