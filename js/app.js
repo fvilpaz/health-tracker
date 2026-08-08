@@ -254,10 +254,7 @@ function renderPlanTable() {
 
   const planData = Storage.get('plan', {});
 
-  let html = '<table class="plan-table"><thead><tr>';
-  html += '<th class="week-num">#</th><th>Fecha</th><th>Peso obj.</th><th>Cint. obj.</th>';
-  html += '<th>Peso</th><th>Cint.</th><th>Entrenos</th><th></th>';
-  html += '</tr></thead><tbody>';
+  let html = '<div class="plan-cards">';
 
   for (let w = 1; w <= totalWeeks; w++) {
     const weekDate = new Date(start);
@@ -274,25 +271,39 @@ function renderPlanTable() {
     const isCurrent = w === currentWeekNum;
     const isPast = w < currentWeekNum;
 
-    const rowClass = isCurrent ? 'current-week' : (isPast ? 'completed-week' : '');
+    const cardClass = isCurrent ? 'plan-card current' : (isPast ? 'plan-card past' : 'plan-card');
 
-    html += `<tr class="${rowClass}" data-week="${w}">`;
-    html += `<td class="week-num">${w}</td>`;
-    html += `<td class="week-date">${dateLabel}</td>`;
-    html += `<td class="target">${targetWeight}</td>`;
-    html += `<td class="target">${targetWaist}</td>`;
-    html += `<td><input type="number" step="0.1" min="30" max="300" value="${actualWeight}" data-w="${w}" data-field="weight"></td>`;
-    html += `<td><input type="number" step="0.1" min="40" max="200" value="${actualWaist}" data-w="${w}" data-field="waist"></td>`;
-    html += `<td><div class="plan-checks">`;
+    html += `<div class="${cardClass}" data-week="${w}">`;
+
+    // Semana + fecha
+    html += `<span class="plan-week-label">Sem ${w}<span class="plan-date">${dateLabel}</span></span>`;
+
+    // Inputs peso y cintura
+    html += `<div class="plan-inputs">`;
+    html += `<div class="plan-input-group">`;
+    html += `<span class="plan-target"><span>${targetWeight}</span> kg</span>`;
+    html += `<input type="number" step="0.1" min="30" max="300" value="${actualWeight}" placeholder="—" data-w="${w}" data-field="weight">`;
+    html += `</div>`;
+    html += `<div class="plan-input-group">`;
+    html += `<span class="plan-target"><span>${targetWaist}</span> cm</span>`;
+    html += `<input type="number" step="0.1" min="40" max="200" value="${actualWaist}" placeholder="—" data-w="${w}" data-field="waist">`;
+    html += `</div>`;
+    html += `</div>`;
+
+    // L M V + guardar
+    html += `<div class="plan-row-bottom">`;
+    html += `<div class="plan-checks">`;
     ['L', 'M', 'V'].forEach((label, i) => {
-      html += `<button class="plan-check ${checks[i] ? 'checked' : ''}" data-w="${w}" data-idx="${i}" title="${label}">${checks[i] ? '✓' : label}</button>`;
+      html += `<button class="plan-check ${checks[i] ? 'checked' : ''}" data-w="${w}" data-idx="${i}">${checks[i] ? '✓' : label}</button>`;
     });
-    html += `</div></td>`;
-    html += `<td><button class="plan-save" data-w="${w}">💾</button></td>`;
-    html += `</tr>`;
+    html += `</div>`;
+    html += `<button class="plan-save" data-w="${w}">💾</button>`;
+    html += `</div>`;
+
+    html += `</div>`;
   }
 
-  html += '</tbody></table>';
+  html += '</div>';
   container.innerHTML = html;
 
   // Event listeners
@@ -341,7 +352,7 @@ function renderPlanTable() {
     btn.addEventListener('click', () => {
       const wk = btn.dataset.w;
       const idx = parseInt(btn.dataset.idx);
-      const row = container.querySelector(`tr[data-week="${wk}"]`);
+      const row = container.querySelector(`div[data-week="${wk}"]`);
       const checks = [];
       row.querySelectorAll('.plan-check').forEach(c => {
         if (parseInt(c.dataset.idx) === idx) {

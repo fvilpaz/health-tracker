@@ -88,7 +88,7 @@
           <div class="stat-value" id="dashWHtR">--</div>
           <div class="stat-unit" id="dashWHtRStatus">objetivo: &lt; 0.5</div>
         </div>
-        <div class="stat-card purple" style="grid-column: span 2;">
+        <div class="stat-card purple" style="grid-column: span 3;">
           <div class="stat-label">IMC</div>
           <div class="stat-value" id="dashIMC">--</div>
           <div class="stat-unit">altura: 1.76 m</div>
@@ -109,7 +109,13 @@
       </div>
 
       <div class="card" style="padding:14px; overflow-x:auto;">
-        <div class="card-title" style="margin-bottom:10px;">Tracker semanal</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div class="card-title" style="margin-bottom:0;">Tracker semanal</div>
+          <div style="display:flex; gap:12px; font-size:0.65rem; font-weight:600; color:var(--text-muted);">
+            <span>⚖️ PESO</span>
+            <span>📏 CINTURA</span>
+          </div>
+        </div>
         <div id="planTable"></div>
         <div style="text-align:center; margin-top:16px;">
           <button class="btn" id="newPlanBtn" style="font-size:0.75rem; padding:8px 16px; background:var(--surface2); color:var(--text-muted); border:1px solid var(--border); border-radius:99px;">📋 Finalizar plan y empezar uno nuevo</button>
@@ -119,19 +125,6 @@
       <div class="card">
         <div class="card-title">Racha</div>
         <div class="streak-badge" id="dashStreak">🔥 0 días de racha</div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">Registrar medidas</div>
-        <div class="weight-input-row">
-          <input type="number" id="weightInput" placeholder="Peso: 96.5" step="0.1" min="30" max="300">
-          <button class="btn btn-primary" id="saveWeightBtn">Peso</button>
-        </div>
-        <div class="weight-input-row">
-          <input type="number" id="waistInput" placeholder="Cintura: 98" step="0.1" min="40" max="200">
-          <button class="btn btn-green" id="saveWaistBtn">Cintura</button>
-        </div>
-        <div style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">Cintura: mide a la altura del ombligo, en ayunas, sin apretar</div>
       </div>
 
       <div class="card">
@@ -319,6 +312,19 @@
 
     <!-- ===== PROGRESO ===== -->
     <section id="progreso" class="section">
+      <div class="card">
+        <div class="card-title">Registrar medidas</div>
+        <div class="weight-input-row">
+          <input type="number" id="weightInput" placeholder="Peso: 96.5" step="0.1" min="30" max="300">
+          <button class="btn btn-primary" id="saveWeightBtn">Peso</button>
+        </div>
+        <div class="weight-input-row">
+          <input type="number" id="waistInput" placeholder="Cintura: 98" step="0.1" min="40" max="200">
+          <button class="btn btn-green" id="saveWaistBtn">Cintura</button>
+        </div>
+        <div style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">Mide en ayunas, a la altura del ombligo, sin apretar</div>
+      </div>
+
       <div class="card">
         <div class="card-title">Evolución de peso</div>
         <div class="chart-wrap">
