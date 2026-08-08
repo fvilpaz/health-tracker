@@ -209,10 +209,20 @@ function updateDashboard() {
 
   // Ratio cintura/altura (WHtR)
   const whtrEl = document.getElementById('dashWHtR');
+  const whtrStatusEl = document.getElementById('dashWHtRStatus');
   if (whtrEl && currentWaist) {
     const whtr = (currentWaist / 176).toFixed(2);
     whtrEl.textContent = whtr;
-    whtrEl.style.color = whtr < 0.5 ? 'var(--green)' : (whtr < 0.6 ? 'var(--orange)' : 'var(--red)');
+    if (whtr < 0.5) {
+      whtrEl.style.color = 'var(--green)';
+      if (whtrStatusEl) whtrStatusEl.textContent = '✅ Riesgo bajo';
+    } else if (whtr < 0.6) {
+      whtrEl.style.color = 'var(--orange)';
+      if (whtrStatusEl) whtrStatusEl.textContent = '⚠️ Riesgo moderado';
+    } else {
+      whtrEl.style.color = 'var(--red)';
+      if (whtrStatusEl) whtrStatusEl.textContent = '❌ Riesgo alto';
+    }
   }
 }
 
