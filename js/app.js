@@ -275,29 +275,29 @@ function renderPlanTable() {
 
     html += `<div class="${cardClass}" data-week="${w}">`;
 
-    // Fila 1: semana/fecha + inputs
-    html += `<div class="plan-row-top">`;
-    html += `<span class="plan-week-label">Sem ${w}<span class="plan-date">${dateLabel}</span></span>`;
+    // Título: Semana N · fecha
+    html += `<div class="plan-week-header">`;
+    html += `<span class="plan-week-label">Semana ${w}</span>`;
+    html += `<span class="plan-date">${dateLabel}</span>`;
+    html += `</div>`;
+
+    // Fila: LMV izquierda | inputs derecha
+    html += `<div class="plan-row-bottom">`;
+    html += `<div class="plan-checks">`;
+    [1, 2, 3].forEach((num, i) => {
+      html += `<button class="plan-check ${checks[i] ? 'checked' : ''}" data-w="${w}" data-idx="${i}">${checks[i] ? '✓' : num}</button>`;
+    });
+    html += `</div>`;
     html += `<div class="plan-inputs">`;
     html += `<div class="plan-input-group">`;
     html += `<span class="plan-target"><span>${targetWeight}</span> kg</span>`;
-    html += `<input type="number" step="0.1" min="30" max="300" value="${actualWeight}" placeholder="—" data-w="${w}" data-field="weight">`;
+    html += `<input type="number" step="0.1" min="30" max="300" value="${actualWeight}" placeholder="" data-w="${w}" data-field="weight">`;
     html += `</div>`;
     html += `<div class="plan-input-group">`;
     html += `<span class="plan-target"><span>${targetWaist}</span> cm</span>`;
-    html += `<input type="number" step="0.1" min="40" max="200" value="${actualWaist}" placeholder="—" data-w="${w}" data-field="waist">`;
+    html += `<input type="number" step="0.1" min="40" max="200" value="${actualWaist}" placeholder="" data-w="${w}" data-field="waist">`;
     html += `</div>`;
     html += `</div>`;
-    html += `</div>`;
-
-    // Fila 2: L M V + guardar
-    html += `<div class="plan-row-bottom">`;
-    html += `<div class="plan-checks">`;
-    ['L', 'M', 'V'].forEach((label, i) => {
-      html += `<button class="plan-check ${checks[i] ? 'checked' : ''}" data-w="${w}" data-idx="${i}">${checks[i] ? '✓' : label}</button>`;
-    });
-    html += `</div>`;
-    html += `<button class="plan-save" data-w="${w}">💾</button>`;
     html += `</div>`;
 
     html += `</div>`;
@@ -357,7 +357,7 @@ function renderPlanTable() {
       row.querySelectorAll('.plan-check').forEach(c => {
         if (parseInt(c.dataset.idx) === idx) {
           c.classList.toggle('checked');
-          c.textContent = c.classList.contains('checked') ? '✓' : ['L', 'M', 'V'][parseInt(c.dataset.idx)];
+          c.textContent = c.classList.contains('checked') ? '✓' : parseInt(c.dataset.idx) + 1;
         }
         checks.push(c.classList.contains('checked'));
       });
