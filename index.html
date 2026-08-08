@@ -14,13 +14,45 @@
 <body>
   <div class="app-container">
 
-    <!-- HEADER -->
+    <!-- HEADER + NAV -->
     <header class="app-header">
-      <div>
-        <h1>Health Tracker</h1>
-        <span>Tu progreso, tu ritmo</span>
+      <div class="header-title-row">
+        <div>
+          <h1>Health Tracker</h1>
+          <span>Tu progreso, tu ritmo</span>
+        </div>
+        <button class="theme-toggle" id="themeBtn" aria-label="Cambiar tema">🌙</button>
       </div>
-      <button class="theme-toggle" id="themeBtn" aria-label="Cambiar tema">🌙</button>
+      <nav class="top-nav">
+        <button class="nav-item active" data-section="dashboard">
+          <span class="icon">📊</span>
+          Dashboard
+        </button>
+        <button class="nav-item" data-section="entrenamiento">
+          <span class="icon">💪</span>
+          Entreno
+        </button>
+        <button class="nav-item" data-section="nutricion">
+          <span class="icon">🥗</span>
+          Nutrición
+        </button>
+        <button class="nav-item" data-section="medicacion">
+          <span class="icon">💊</span>
+          Meds
+        </button>
+        <button class="nav-item" data-section="progreso">
+          <span class="icon">📈</span>
+          Progreso
+        </button>
+        <button class="nav-item" data-section="calendario">
+          <span class="icon">📅</span>
+          Calendar
+        </button>
+        <button class="nav-item" data-section="suplementos">
+          <span class="icon">💎</span>
+          Suplem.
+        </button>
+      </nav>
     </header>
 
     <!-- ===== DASHBOARD ===== -->
@@ -429,38 +461,6 @@
     </section>
 
   </div>
-
-  <!-- BOTTOM NAV -->
-  <nav class="bottom-nav">
-    <button class="nav-item active" data-section="dashboard">
-      <span class="icon">📊</span>
-      Dashboard
-    </button>
-    <button class="nav-item" data-section="entrenamiento">
-      <span class="icon">💪</span>
-      Entreno
-    </button>
-    <button class="nav-item" data-section="nutricion">
-      <span class="icon">🥗</span>
-      Nutrición
-    </button>
-    <button class="nav-item" data-section="medicacion">
-      <span class="icon">💊</span>
-      Meds
-    </button>
-    <button class="nav-item" data-section="progreso">
-      <span class="icon">📈</span>
-      Progreso
-    </button>
-    <button class="nav-item" data-section="calendario">
-      <span class="icon">📅</span>
-      Calendar
-    </button>
-    <button class="nav-item" data-section="suplementos">
-      <span class="icon">💎</span>
-      Suplem.
-    </button>
-  </nav>
 
   <!-- FOOTER -->
   <footer class="app-footer">
