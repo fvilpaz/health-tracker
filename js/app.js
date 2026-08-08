@@ -275,10 +275,9 @@ function renderPlanTable() {
 
     html += `<div class="${cardClass}" data-week="${w}">`;
 
-    // Semana + fecha
+    // Fila 1: semana/fecha + inputs
+    html += `<div class="plan-row-top">`;
     html += `<span class="plan-week-label">Sem ${w}<span class="plan-date">${dateLabel}</span></span>`;
-
-    // Inputs peso y cintura
     html += `<div class="plan-inputs">`;
     html += `<div class="plan-input-group">`;
     html += `<span class="plan-target"><span>${targetWeight}</span> kg</span>`;
@@ -289,8 +288,9 @@ function renderPlanTable() {
     html += `<input type="number" step="0.1" min="40" max="200" value="${actualWaist}" placeholder="—" data-w="${w}" data-field="waist">`;
     html += `</div>`;
     html += `</div>`;
+    html += `</div>`;
 
-    // L M V + guardar
+    // Fila 2: L M V + guardar
     html += `<div class="plan-row-bottom">`;
     html += `<div class="plan-checks">`;
     ['L', 'M', 'V'].forEach((label, i) => {
