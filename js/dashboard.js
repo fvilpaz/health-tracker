@@ -100,6 +100,7 @@ function updateDashboard() {
   renderMetas();
   renderAnalisis();
   renderSemana();
+  renderPlanTable();   // el plan saca peso, cintura y casillas de los datos: si cambian, se repinta
 }
 
 function semaforo(el, valor, naranjaDesde, rojoDesde) {

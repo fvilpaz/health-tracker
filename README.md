@@ -47,16 +47,20 @@ health-tracker/
 ├── icons/                  ← Iconos 192/512, maskable y de iOS
 ├── vendor/                 ← Chart.js y pdf.js servidos desde aquí (ver vendor/README.md)
 ├── css/styles.css          ← Estilos completos (dark mode, responsive)
-├── js/
-│   ├── app.js              ← Lógica principal, dashboard, navegación
+├── js/                     ← Un archivo por tarea (se cargan en este orden desde index.html)
 │   ├── iconos.js           ← Todos los iconos (línea y duotono) en un solo sitio
 │   ├── storage.js          ← Wrapper de localStorage + esc() para pintar datos sin riesgo
 │   ├── copia.js            ← Exportar/importar la copia, validando lo que entra (solo lo que tiene la forma correcta)
 │   ├── timer.js            ← Temporizador con círculo SVG
 │   ├── charts.js           ← Gráfica Chart.js para peso
-│   ├── semana.js           ← Bloques de fuerza hechos (sessions), semana y bloque que toca
+│   ├── workout.js          ← Fases del entreno, temporizador y sus botones
+│   ├── semana.js           ← Bloques hechos (sessions), lunes de cada semana, aviso de color y racha
 │   ├── analisis.js         ← Análisis: catálogo de pruebas, tabla, comparativa, lector del PDF y PDF guardados
-│   └── workout.js          ← Fases de entrenamiento y timer
+│   ├── dashboard.js        ← Panel principal (tarjetas y semáforo) y metas
+│   ├── plan.js             ← Plan de 12 semanas (objetivos, lo real de cada semana y casillas)
+│   ├── medidas.js          ← Guardar peso, cintura y altura; historial de peso
+│   ├── logros.js           ← Logros
+│   └── app.js              ← Arranque, configuración inicial, tema, navegación, avisos e instalación
 ├── data/workouts.json      ← Datos de ejercicios por fase
 ├── docs/
 │   ├── PLAN.md             ← Plan de mejoras priorizado
