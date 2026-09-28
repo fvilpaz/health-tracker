@@ -131,7 +131,7 @@ function showTimerState(exerciseName, subLabel, duration, isRest, onDone) {
   const phaseEl = document.getElementById('timerPhaseLabel');
   const statusEl = document.getElementById('timerStatus');
   if (nameEl) nameEl.textContent = exerciseName;
-  if (phaseEl) phaseEl.textContent = isRest ? '😮‍💨 DESCANSA' : (subLabel || '');
+  if (phaseEl) phaseEl.innerHTML = isRest ? duo('viento', 'estado info') + ' DESCANSA' : (subLabel || '');
   if (statusEl) statusEl.textContent = '';
 
   const fg = document.getElementById('timerCircleFg');
@@ -165,12 +165,12 @@ function workoutDone() {
     // Llegar aquí = todas las vueltas hechas: es el único caso que cuenta como entreno
     const minutos = Math.max(1, Math.round((Date.now() - workoutStartedAt) / 60000));
     saveSession(currentBlock, minutos, phaseExercises(workoutData.strength).map(e => e.name));
-    nameEl.textContent = `¡Bloque ${currentBlock} completado! 🎉`;
+    nameEl.innerHTML = `¡Bloque ${currentBlock} completado! ${duo('confeti', 'estado fiesta')}`;
     labelEl.textContent = `${sessionsInWeek().length} de ${WEEK_GOAL} esta semana`;
   } else {
     // Calentamiento o calma sueltos: no cuentan como entreno
     nameEl.textContent = currentPhase === 'warmup' ? 'Calentamiento hecho ✓' : 'Vuelta a la calma hecha ✓';
-    labelEl.textContent = currentPhase === 'warmup' ? 'Ahora, 💪 Fuerza' : '';
+    labelEl.innerHTML = currentPhase === 'warmup' ? `Ahora, ${duo('pesa')} Fuerza` : '';
   }
   document.getElementById('timerNumber').textContent = '✓';
   document.getElementById('timerStatus').textContent = 'Pulsa el cuadrado para volver';

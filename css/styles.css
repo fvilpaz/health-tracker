@@ -90,7 +90,7 @@ a { color: inherit; text-decoration: none; }
   transition: background var(--transition);
 }
 .theme-toggle:hover { background: var(--border); }
-.theme-toggle .tema-ico { width: 20px; height: 20px; color: var(--yellow); }   /* sol y luna en amarillo */
+.theme-toggle .tema-ico { width: 20px; height: 20px; color: var(--nav-icon); }   /* sol y luna en azul, como las pestañas */
 
 /* ===== NAV ===== */
 .top-nav {
@@ -145,6 +145,18 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: 0.5px;
   margin-bottom: 12px;
 }
+/* Iconos: tamaño base de los de línea (.ico) y de los macizos (.duo); los estados llevan su color */
+.ico, .duo { width: 1.15em; height: 1.15em; vertical-align: -0.2em; flex: none; }
+.estado.ok { color: var(--green); } .estado.alerta { color: var(--orange); } .estado.mal { color: var(--red); }
+.estado.info { color: var(--blue); } .estado.racha { color: var(--orange); } .estado.idea, .estado.fiesta { color: var(--yellow); }
+.leyenda-ico { color: var(--blue); }
+.setup-duo { width: 56px; height: 56px; color: var(--blue); }
+.vacio-ico { width: 44px; height: 44px; color: var(--blue); margin-bottom: 8px; }
+.logro-icon .duo { width: 28px; height: 28px; color: var(--blue); }
+.timer-btn .ico { width: 24px; height: 24px; }
+.timer-btn.play .ico { width: 28px; height: 28px; }
+.w-del .ico, .setup-close .ico { width: 16px; height: 16px; }
+.lab-tit .tit-ico { width: 18px; height: 18px; color: var(--blue); vertical-align: -3px; }
 .card-title .tit-ico { width: 17px; height: 17px; color: var(--blue); vertical-align: -3px; margin-right: 4px; }
 .card-title .tit-ico.aviso { color: var(--orange); }
 

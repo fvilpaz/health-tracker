@@ -37,8 +37,8 @@ function showSetup() {
   overlay.id = 'setupOverlay';
   overlay.innerHTML = `
     <div class="setup-card">
-      <button class="setup-close" id="setupCloseBtn" aria-label="Cerrar">✕</button>
-      <div class="setup-icon">🏃‍♂️</div>
+      <button class="setup-close" id="setupCloseBtn" aria-label="Cerrar">${ICONO.cerrar}</button>
+      <div class="setup-icon">${duo('correr', 'setup-duo')}</div>
       <h2 class="setup-title">Health Tracker</h2>
       <p class="setup-subtitle">Configura tu plan</p>
 
@@ -108,14 +108,9 @@ function initTheme() {
   applyTheme(saved);
 }
 
-const TEMA_ICONO = {
-  sol: '<svg class="tema-ico" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M184,128a56,56,0,1,1-56-56A56,56,0,0,1,184,128Z" opacity="0.2"/><path d="M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm72,88a64,64,0,1,1-64-64A64.07,64.07,0,0,1,192,128Zm-16,0a48,48,0,1,0-48,48A48.05,48.05,0,0,0,176,128ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z"/></svg>',
-  luna: '<svg class="tema-ico" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M227.89,147.89A96,96,0,1,1,108.11,28.11,96.09,96.09,0,0,0,227.89,147.89Z" opacity="0.2"/><path d="M233.54,142.23a8,8,0,0,0-8-2,88.08,88.08,0,0,1-109.8-109.8,8,8,0,0,0-10-10,104.84,104.84,0,0,0-52.91,37A104,104,0,0,0,136,224a103.09,103.09,0,0,0,62.52-20.88,104.84,104.84,0,0,0,37-52.91A8,8,0,0,0,233.54,142.23ZM188.9,190.34A88,88,0,0,1,65.66,67.11a89,89,0,0,1,31.4-26A106,106,0,0,0,96,56,104.11,104.11,0,0,0,200,160a106,106,0,0,0,14.92-1.06A89,89,0,0,1,188.9,190.34Z"/></svg>',
-};
-
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
-  // El icono enseña el tema en el que estás: luna en oscuro, sol en claro (los dos en amarillo)
+  // El icono enseña el tema en el que estás: luna en oscuro, sol en claro (los dos en azul)
   const btn = document.getElementById('themeBtn');
   btn.innerHTML = theme === 'dark' ? TEMA_ICONO.luna : TEMA_ICONO.sol;
   btn.setAttribute('aria-label', theme === 'dark' ? 'Pasar a tema claro' : 'Pasar a tema oscuro');
@@ -181,7 +176,7 @@ function updateDashboard() {
 
   // Racha
   const streakEl = document.getElementById('dashStreak');
-  if (streakEl) streakEl.textContent = streak ? `🔥 ${plural(streak, 'semana cumplida', 'semanas cumplidas')} seguidas` : '🔥 Cumple 3 bloques esta semana para empezar la racha';
+  if (streakEl) streakEl.innerHTML = duo('llama', 'estado racha') + ' ' + (streak ? `${plural(streak, 'semana cumplida', 'semanas cumplidas')} seguidas` : 'Cumple 3 bloques esta semana para empezar la racha');
 
   // Progreso del plan
   if (startDate && currentWeight && startWeight) {
@@ -236,13 +231,13 @@ function updateDashboard() {
     whtrEl.textContent = whtr;
     if (whtr < 0.5) {
       whtrEl.style.color = 'var(--green)';
-      if (whtrStatusEl) whtrStatusEl.textContent = '✅ Riesgo bajo';
+      if (whtrStatusEl) whtrStatusEl.innerHTML = estado('ok') + ' Riesgo bajo';
     } else if (whtr < 0.6) {
       whtrEl.style.color = 'var(--orange)';
-      if (whtrStatusEl) whtrStatusEl.textContent = '⚠️ Riesgo moderado';
+      if (whtrStatusEl) whtrStatusEl.innerHTML = estado('alerta') + ' Riesgo moderado';
     } else {
       whtrEl.style.color = 'var(--red)';
-      if (whtrStatusEl) whtrStatusEl.textContent = '❌ Riesgo alto';
+      if (whtrStatusEl) whtrStatusEl.innerHTML = estado('mal') + ' Riesgo alto';
     }
   }
   semaforo(whtrEl, whtrNum, 0.5, 0.6);   // la raya de la tarjeta, del mismo color que el número
@@ -311,33 +306,20 @@ const LAB_INFO = {
   densidad_orina: ['Lo concentrada que está la orina. Alta = bebes poca agua.', 'Bebe más agua, sobre todo si tomas dapagliflozina.'],
 };
 
-// Iconos de línea en el color del texto del botón (blanco sobre azul); los emojis traen su propio color
-const ICONO = (() => {
-  const svg = trazos => `<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${trazos}</svg>`;
-  const hoja = '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>';
-  return {
-    pdf: svg(hoja),
-    adjuntar: svg(hoja + '<line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/>'),
-    jugar: svg('<polygon points="6 3 20 12 6 21 6 3"/>'),
-    mas: svg('<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>'),
-    papelera: svg('<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>'),
-  };
-})();
-
 const labFechaLarga = d => new Date(d + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
 const labDebe = t => t.min != null && t.max != null ? `${labNum(t.min)} – ${labNum(t.max)}`
   : t.max != null ? `≤ ${labNum(t.max)}` : t.min != null ? `≥ ${labNum(t.min)}` : 'sin rango';
 
 // a → b de una prueba: mejora, empeora, igual o informativo
 function labComparar(t, a, b) {
-  if (t.mejor === 'info') return { icono: 'ℹ️', clase: 'info', txt: 'informativo' };
+  if (t.mejor === 'info') return { icono: estado('info'), clase: 'info', txt: 'informativo' };
   if (a === b) return { icono: '＝', clase: 'igual', txt: 'igual' };
   // 'rango': solo cuenta entrar o salir del rango; si no cambia de lado, se queda en "igual"
   const mejora = t.mejor === 'bajo' ? b < a
                : t.mejor === 'alto' ? b > a
                : labFuera(t, a) === labFuera(t, b) ? null : labFuera(t, a);
-  return mejora === true ? { icono: '✅', clase: 'mejora', txt: 'mejora' }
-       : mejora === false ? { icono: '❌', clase: 'peora', txt: 'empeora' }
+  return mejora === true ? { icono: estado('ok'), clase: 'mejora', txt: 'mejora' }
+       : mejora === false ? { icono: estado('mal'), clase: 'peora', txt: 'empeora' }
        : { icono: '＝', clase: 'igual', txt: 'igual' };
 }
 
@@ -356,13 +338,13 @@ function renderAnalisis() {
   tabla.innerHTML = labs.slice().reverse().map(l => {
     const pruebas = LAB_TESTS.filter(t => l.values[t.k] != null);
     const fuera = pruebas.filter(t => t.mejor !== 'info' && labFuera(t, l.values[t.k])).length;
-    return `<details class="lab-sec"><summary><div class="lab-tit">📅 ${labFechaLarga(l.date)}` +
-      `<small>${pruebas.length} pruebas · ${fuera ? `⚠️ ${fuera} fuera de rango` : '✅ todo en rango'}</small></div><span class="lab-flecha"></span></summary>` +
+    return `<details class="lab-sec"><summary><div class="lab-tit">${duo('semana', 'tit-ico')} ${labFechaLarga(l.date)}` +
+      `<small>${pruebas.length} pruebas · ${fuera ? `${estado('alerta')} ${fuera} fuera de rango` : `${estado('ok')} todo en rango`}</small></div><span class="lab-flecha"></span></summary>` +
       `<div class="lab-cuerpo"><button class="btn btn-primary lab-pdf" data-fecha="${l.date}" title="Adjuntar PDF" aria-label="Adjuntar PDF">${ICONO.adjuntar}</button>` +
       `<button class="btn btn-red lab-pdf-quitar" data-fecha="${l.date}" title="Borrar PDF" aria-label="Borrar PDF" hidden>${ICONO.papelera}</button>` +
       pruebas.map(t => {
         const v = l.values[t.k], mal = t.mejor !== 'info' && labFuera(t, v);
-        return `<div class="lab-fila ${mal ? 'fuera' : ''}"><div class="lab-fila-top"><span>${t.mejor === 'info' ? 'ℹ️' : mal ? '⚠️' : '✅'} ${t.n}</span>` +
+        return `<div class="lab-fila ${mal ? 'fuera' : ''}"><div class="lab-fila-top"><span>${estado(t.mejor === 'info' ? 'info' : mal ? 'alerta' : 'ok')} ${t.n}</span>` +
           `<strong>${labNum(v)} <small>${t.u}</small></strong></div>` +
           `<div class="lab-fila-ref">Debería: ${labDebe(t)} ${t.u}</div><div class="lab-fila-que">${LAB_INFO[t.k][0]}</div></div>`;
       }).join('') + '</div></details>';
@@ -390,7 +372,7 @@ function renderAnalisis() {
   resumen.innerHTML =
     `<div class="lab-elegir"><select id="labCmpA">${opciones(labCmp.a)}</select><span>→</span><select id="labCmpB">${opciones(labCmp.b)}</select></div>` +
     (filas.length ? filas.join('') : '<div class="meta-aviso">Estos dos análisis no tienen pruebas en común.</div>') +
-    (sugerir.length ? '<div class="lab-sug"><div class="lab-sug-tit">💡 Sugerencias</div>' +
+    (sugerir.length ? '<div class="lab-sug"><div class="lab-sug-tit">' + duo('bombilla', 'estado idea') + ' Sugerencias</div>' +
       sugerir.map(t => `<div><strong>${t.n}:</strong> ${LAB_INFO[t.k][1]}</div>`).join('') + '</div>' : '');
 }
 
@@ -475,7 +457,7 @@ document.getElementById('labAddBtn').addEventListener('click', () => {
       if (fecha) document.getElementById('labDate').value = fecha;
       LAB_TESTS.forEach(t => { document.getElementById('lab_' + t.k).value = valores[t.k] ?? ''; });
       const leidas = LAB_TESTS.filter(t => valores[t.k] != null);
-      estado.textContent = `📄 ${archivo.name} · ${leidas.length} valores leídos${fecha ? ' · fecha ' + labFecha(fecha) : ' · no encontré la fecha: ponla tú'}`;
+      estado.innerHTML = `${ICONO.pdf} ${archivo.name} · ${leidas.length} valores leídos${fecha ? ' · fecha ' + labFecha(fecha) : ' · no encontré la fecha: ponla tú'}`;
       document.getElementById('labLeidos').innerHTML = leidas.length
         ? '<table class="labs">' + leidas.map(t => `<tr><td>${t.n}</td><td class="n ${labFuera(t, valores[t.k]) ? 'fuera' : ''}">${labNum(valores[t.k])} <small>${t.u}</small></td></tr>`).join('') + '</table>'
         : '<div class="meta-aviso">No he encontrado ningún valor conocido en este PDF. Rellénalos a mano abajo.</div>';
@@ -573,7 +555,7 @@ function renderMetas() {
     return `<div class="meta-row ${hecho ? 'hecha' : ''}">
       <span class="meta-plazo">${mt.plazo}</span>
       <div class="meta-info"><strong>${mt.peso.toFixed(1)} kg</strong><span>${mt.texto}</span></div>
-      <span class="meta-falta">${hecho ? '✅ Conseguido' : `te faltan <strong>${falta.toFixed(1)} kg</strong>`}</span>
+      <span class="meta-falta">${hecho ? `${estado('ok')} Conseguido` : `te faltan <strong>${falta.toFixed(1)} kg</strong>`}</span>
     </div>`;
   }).join('') + `<div class="meta-aviso">Ahora: <strong>${current.toFixed(1)} kg</strong> · IMC ${(current / m2).toFixed(1)}</div>`;
 }
@@ -774,7 +756,7 @@ function renderWeightLog() {
   if (!container) return;
 
   if (!entries.length) {
-    container.innerHTML = '<div class="empty-state"><div class="icon">⚖️</div>Aún no hay registros de peso</div>';
+    container.innerHTML = '<div class="empty-state">' + duo('balanza', 'vacio-ico') + '<div>Aún no hay registros de peso</div></div>';
     return;
   }
 
@@ -791,7 +773,7 @@ function renderWeightLog() {
       <span class="w-date">${e.date}</span>
       <span class="w-value">${e.weight} kg</span>
       ${diff ? `<span class="w-diff ${diffClass}">${diffText}</span>` : '<span></span>'}
-      <button class="w-del" data-date="${e.date}" title="Eliminar">✕</button>
+      <button class="w-del" data-date="${e.date}" title="Eliminar" aria-label="Eliminar">${ICONO.cerrar}</button>
     `;
     container.appendChild(div);
   });
@@ -820,8 +802,8 @@ document.querySelectorAll('.block-btn').forEach(btn => {
 document.getElementById('startWorkoutBtn').addEventListener('click', startWorkout);
 
 document.getElementById('pauseBtn').addEventListener('click', () => {
-  if (Timer.isRunning()) { Timer.pause(); document.getElementById('pauseBtn').textContent = '▶'; }
-  else { Timer.resume(); document.getElementById('pauseBtn').textContent = '⏸'; }
+  if (Timer.isRunning()) { Timer.pause(); document.getElementById('pauseBtn').innerHTML = ICONO.jugar; }
+  else { Timer.resume(); document.getElementById('pauseBtn').innerHTML = ICONO.pausa; }
 });
 
 document.getElementById('stopBtn').addEventListener('click', () => {
@@ -829,20 +811,20 @@ document.getElementById('stopBtn').addEventListener('click', () => {
   workoutActive = false;
   document.getElementById('workoutSetup').style.display = 'block';
   document.getElementById('timerView').style.display = 'none';
-  document.getElementById('pauseBtn').textContent = '⏸';
+  document.getElementById('pauseBtn').innerHTML = ICONO.pausa;
   renderWorkoutPhase(currentPhase);
 });
 
 /* ===== LOGROS ===== */
 const LOGROS_DEF = [
-  { id: 'first_train', icon: '🏁', name: 'Primer entreno', desc: 'Completa tu primer entrenamiento', check: () => getSessions().length >= 1 },
-  { id: 'week', icon: '🔥', name: 'Semana cumplida', desc: '3 bloques en una semana', check: () => completedWeeks() >= 1 },
-  { id: 'kg1', icon: '⚖️', name: '1 kg perdido', desc: 'Primer kilo perdido', check: () => { const w = Storage.get('weights', []); return w.length >= 2 && (w[0].weight - w[w.length - 1].weight) >= 1; } },
-  { id: 'month', icon: '📅', name: 'Primer mes', desc: '4 semanas cumplidas', check: () => completedWeeks() >= 4 },
-  { id: 'kg5', icon: '🏆', name: '5 kg perdidos', desc: '5 kilos menos', check: () => { const w = Storage.get('weights', []); return w.length >= 2 && (w[0].weight - w[w.length - 1].weight) >= 5; } },
-  { id: 'goal', icon: '🎯', name: 'Peso objetivo', desc: 'Llegas a tu peso objetivo', check: () => { const w = Storage.get('weights', []); const g = Storage.get('settings', {}).goalWeight; return w.length && g && w[w.length - 1].weight <= g; } },
-  { id: 'waist1', icon: '📏', name: '1 cm menos', desc: 'Primer cm de cintura perdido', check: () => { const w = Storage.get('waists', []); return w.length >= 2 && (w[0].waist - w[w.length - 1].waist) >= 1; } },
-  { id: 'whtr', icon: '💚', name: 'Ratio saludable', desc: 'Cintura/altura < 0.5', check: () => { const w = Storage.get('waists', []); const h = getHeightCm(); return w.length && h && (w[w.length - 1].waist / h) < 0.5; } }
+  { id: 'first_train', icon: duo('bandera'), name: 'Primer entreno', desc: 'Completa tu primer entrenamiento', check: () => getSessions().length >= 1 },
+  { id: 'week', icon: duo('llama'), name: 'Semana cumplida', desc: '3 bloques en una semana', check: () => completedWeeks() >= 1 },
+  { id: 'kg1', icon: duo('balanza'), name: '1 kg perdido', desc: 'Primer kilo perdido', check: () => { const w = Storage.get('weights', []); return w.length >= 2 && (w[0].weight - w[w.length - 1].weight) >= 1; } },
+  { id: 'month', icon: duo('semana'), name: 'Primer mes', desc: '4 semanas cumplidas', check: () => completedWeeks() >= 4 },
+  { id: 'kg5', icon: duo('trofeo'), name: '5 kg perdidos', desc: '5 kilos menos', check: () => { const w = Storage.get('weights', []); return w.length >= 2 && (w[0].weight - w[w.length - 1].weight) >= 5; } },
+  { id: 'goal', icon: duo('diana'), name: 'Peso objetivo', desc: 'Llegas a tu peso objetivo', check: () => { const w = Storage.get('weights', []); const g = Storage.get('settings', {}).goalWeight; return w.length && g && w[w.length - 1].weight <= g; } },
+  { id: 'waist1', icon: duo('regla'), name: '1 cm menos', desc: 'Primer cm de cintura perdido', check: () => { const w = Storage.get('waists', []); return w.length >= 2 && (w[0].waist - w[w.length - 1].waist) >= 1; } },
+  { id: 'whtr', icon: duo('corazon'), name: 'Ratio saludable', desc: 'Cintura/altura < 0.5', check: () => { const w = Storage.get('waists', []); const h = getHeightCm(); return w.length && h && (w[w.length - 1].waist / h) < 0.5; } }
 ];
 
 function checkLogros() {
@@ -936,3 +918,4 @@ if ('serviceWorker' in navigator) {
 
 /* ===== ICONOS de los botones del HTML: <span data-ico="jugar"> → su trazo de ICONO ===== */
 document.querySelectorAll('[data-ico]').forEach(el => { el.outerHTML = ICONO[el.dataset.ico]; });
+document.querySelectorAll('[data-duo]').forEach(el => { el.outerHTML = duo(el.dataset.duo, el.className); });

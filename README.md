@@ -34,7 +34,7 @@ Tracker semanal integrado con:
 - **localStorage** — tus datos no salen de tu navegador
 - **GitHub Pages** — deploy automático en cada push
 - **Botón ▶ en ejercicios** — busca vídeos en YouTube al instante
-- **Iconos**: pestañas y títulos con [Phosphor](https://phosphoricons.com) duotono (MIT); botones con trazos estilo [Lucide](https://lucide.dev) (ISC). Todo dentro de la app, sin cargar nada de fuera
+- **Iconos** (sin emojis, se ven igual en cualquier móvil): pestañas, títulos, logros y estados con [Phosphor](https://phosphoricons.com) duotono (MIT); botones con trazos estilo [Lucide](https://lucide.dev) (ISC). Todo dentro de la app, en `js/iconos.js`
 - **PWA instalable** — en Chrome del móvil: menú ⋮ → *Instalar aplicación*. Funciona sin conexión y las actualizaciones llegan solas
 
 ## Estructura
@@ -48,6 +48,7 @@ health-tracker/
 ├── css/styles.css          ← Estilos completos (dark mode, responsive)
 ├── js/
 │   ├── app.js              ← Lógica principal, dashboard, navegación
+│   ├── iconos.js           ← Todos los iconos (línea y duotono) en un solo sitio
 │   ├── storage.js          ← Wrapper de localStorage
 │   ├── timer.js            ← Temporizador con círculo SVG
 │   ├── charts.js           ← Gráfica Chart.js para peso
