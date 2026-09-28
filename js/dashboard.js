@@ -103,15 +103,33 @@ function updateDashboard() {
   renderPlanTable();   // el plan saca peso, cintura y casillas de los datos: si cambian, se repinta
 }
 
+// Color de una medida: verde por debajo de «naranjaDesde», naranja hasta «rojoDesde», rojo desde ahí; sin dato, sin color
+const colorSemaforo = (valor, naranjaDesde, rojoDesde) =>
+  valor == null ? '' : valor >= rojoDesde ? 'var(--red)' : valor >= naranjaDesde ? 'var(--orange)' : 'var(--green)';
+
 function semaforo(el, valor, naranjaDesde, rojoDesde) {
   if (!el) return;
-  const color = valor == null ? '' : valor >= rojoDesde ? 'var(--red)' : valor >= naranjaDesde ? 'var(--orange)' : 'var(--green)';
+  const color = colorSemaforo(valor, naranjaDesde, rojoDesde);
   el.style.color = color;
   el.closest('.stat-card').style.borderLeftColor = color;
 }
 
 /* ===== METAS (corto, medio y largo plazo) ===== */
 // Se calculan con el último peso, la altura y el objetivo que pone el usuario: ningún dato escrito en el código.
+// Metas de peso a partir del peso actual, la altura y el objetivo (si lo hay), de la más alta a la más baja.
+// Corto: salir de la obesidad (IMC < 30) · Medio: tu objetivo · Largo: IMC 27. «falta» en kg; «hecho» si ya llegaste.
+function calcularMetas(pesoActual, alturaCm, objetivo) {
+  const m2 = (alturaCm / 100) ** 2;
+  return [
+    { plazo: 'Corto', peso: 30 * m2, texto: 'Sales de la franja de obesidad (IMC por debajo de 30)' },
+    objetivo ? { plazo: 'Medio', peso: objetivo, texto: 'Tu peso objetivo' } : null,
+    { plazo: 'Largo', peso: 27 * m2, texto: 'IMC 27: mucha menos grasa en el hígado y menos riesgo' },
+  ].filter(Boolean).sort((a, b) => b.peso - a.peso).map(mt => {
+    const falta = pesoActual - mt.peso;
+    return { ...mt, falta, hecho: falta < 0 || (mt.plazo === 'Medio' && falta <= 0) };
+  });
+}
+
 function renderMetas() {
   const box = document.getElementById('metasList');
   if (!box) return;
@@ -123,16 +141,9 @@ function renderMetas() {
     return;
   }
   const m2 = (heightCm / 100) ** 2;
-  const goal = Storage.get('settings', {}).goalWeight;
-  const metas = [
-    { plazo: 'Corto', peso: 30 * m2, texto: 'Sales de la franja de obesidad (IMC por debajo de 30)' },
-    goal ? { plazo: 'Medio', peso: goal, texto: 'Tu peso objetivo' } : null,
-    { plazo: 'Largo', peso: 27 * m2, texto: 'IMC 27: mucha menos grasa en el hígado y menos riesgo' },
-  ].filter(Boolean).sort((a, b) => b.peso - a.peso);
+  const metas = calcularMetas(current, heightCm, Storage.get('settings', {}).goalWeight);
 
-  box.innerHTML = metas.map(mt => {
-    const falta = current - mt.peso;
-    const hecho = falta < 0 || (mt.plazo === 'Medio' && falta <= 0);
+  box.innerHTML = metas.map(({ falta, hecho, ...mt }) => {
     return `<div class="meta-row ${hecho ? 'hecha' : ''}">
       <span class="meta-plazo">${mt.plazo}</span>
       <div class="meta-info"><strong>${mt.peso.toFixed(1)} kg</strong><span>${mt.texto}</span></div>
