@@ -74,3 +74,12 @@ test('con el móvil ralentizando (pantalla apagada), el tiempo sigue siendo el d
   reloj.pasar(25000, 1);                    // pasan 25 s más: ya tenía que haber acabado
   assert.equal(fin.veces, 1);
 });
+
+test('pausar cuando ya tenía que haber acabado (pantalla apagada mucho rato) no lo deja colgado', () => {
+  const { Timer, reloj, fin } = arrancar(30);
+  reloj.pasar(40000, 0);                    // 40 s sin que salte el intervalo
+  Timer.pause();                            // al volver, lo primero que tocas es «pausa»
+  Timer.resume();
+  reloj.pasar(2000);
+  assert.equal(fin.veces, 1);               // tenía que dar el ejercicio por terminado, no quedarse parado
+});

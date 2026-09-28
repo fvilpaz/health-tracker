@@ -332,6 +332,7 @@ table.labs td.fuera { color: var(--red); }
 .lab-cmp.mejora em { color: var(--green); }
 .lab-cmp.peora em { color: var(--red); }
 .lab-cmp.igual em, .lab-cmp.info em { color: var(--text-muted); }
+.phase-tab:disabled, .block-btn:disabled { opacity: 0.45; cursor: not-allowed; }   /* entreno en marcha */
 .phase-tab {
   padding: 8px 4px;
   border: 2px solid var(--border);
