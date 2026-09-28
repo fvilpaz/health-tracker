@@ -541,58 +541,6 @@ function checkLogros() {
   });
 }
 
-/* ===== COPIA DE SEGURIDAD (exportar / importar) ===== */
-// Los datos viven en localStorage de ESTE navegador: la copia permite llevarlos a otro aparato.
-// Formato: cabecera (app, versión, fecha) + todas las claves 'ht_' tal cual (patrón de Crypto_Portafolio).
-const BACKUP_APP = 'health-tracker', BACKUP_VERSION = 1;
-
-document.getElementById('exportBtn').addEventListener('click', () => {
-  const data = {};
-  for (let i = 0; i < localStorage.length; i++) {
-    const k = localStorage.key(i);
-    if (k.startsWith('ht_')) data[k.slice(3)] = Storage.get(k.slice(3));
-  }
-  const fecha = new Date().toISOString().slice(0, 10);
-  const blob = new Blob([JSON.stringify({ app: BACKUP_APP, version: BACKUP_VERSION, exportedAt: new Date().toISOString(), data }, null, 2)],
-                        { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `health-tracker-${fecha}.json`;
-  a.click();
-  URL.revokeObjectURL(a.href);
-  showToast('Copia descargada ✓');
-});
-
-document.getElementById('importBtn').addEventListener('click', () => document.getElementById('importFile').click());
-
-document.getElementById('importFile').addEventListener('change', async e => {
-  const file = e.target.files[0];
-  e.target.value = '';                                   // para poder elegir el mismo archivo otra vez
-  if (!file) return;
-  let copia;
-  try { copia = JSON.parse(await file.text()); } catch { return showToast('Ese archivo no es una copia válida'); }
-  if (copia?.app !== BACKUP_APP || !copia.data || typeof copia.data !== 'object' || Array.isArray(copia.data)) return showToast('Ese archivo no es una copia de Health Tracker');
-  // Solo entra lo que tiene la forma correcta (ver copia.js); lo descartado se avisa en la pregunta
-  const { datos: d, descartados } = limpiarCopia(copia.data);
-  const n = k => Array.isArray(d[k]) ? d[k].length : 0;
-  const aviso = descartados ? `\n\n⚠ ${descartados} ${descartados === 1 ? 'dato no válido se ignora' : 'datos no válidos se ignoran'}.` : '';
-  // Archivo que solo trae análisis: se AÑADEN (misma fecha → se sustituye), sin borrar nada más
-  if (Object.keys(copia.data).length === 1 && Array.isArray(d.labs)) {
-    if (!n('labs')) return showToast('El archivo no trae ningún análisis válido');
-    if (!confirm(`Este archivo trae ${n('labs')} análisis. Se añaden a los que ya tienes (sin borrar nada más).${aviso}\n\n¿Continuar?`)) return;
-    const fechas = new Set(d.labs.map(l => l.date));
-    Storage.set('labs', Storage.get('labs', []).filter(l => !fechas.has(l.date)).concat(d.labs));
-    renderAnalisis();
-    return showToast(`${n('labs')} análisis añadidos ✓`);
-  }
-  const cuando = copia.exportedAt ? new Date(copia.exportedAt).toLocaleDateString('es-ES') : 'fecha desconocida';
-  if (!confirm(`Copia del ${cuando}: ${n('weights')} pesos, ${n('waists')} cinturas, ${n('sessions')} bloques de fuerza.\n\n` +
-               `Esto SUSTITUYE los datos de este aparato.${aviso}\n\n¿Continuar?`)) return;
-  Object.keys(localStorage).filter(k => k.startsWith('ht_')).forEach(k => localStorage.removeItem(k));
-  Object.entries(d).forEach(([k, v]) => Storage.set(k, v));
-  location.reload();
-});
-
 /* ===== TOAST ===== */
 function showToast(msg) {
   const t = document.getElementById('toast');
