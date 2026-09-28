@@ -216,6 +216,10 @@ function updateDashboard() {
     waistLostEl.textContent = diff > 0 ? `-${diff}` : diff;
   }
 
+  // Semáforo de peso (por IMC) y cintura (por cintura/altura); sin altura, sin color
+  semaforo(weightEl, heightCm && currentWeight ? currentWeight / (heightCm / 100) ** 2 : null, 25, 30);
+  semaforo(waistEl, heightCm && currentWaist ? currentWaist / heightCm : null, 0.5, 0.6);
+
   // Ratio cintura/altura (WHtR)
   const whtrEl = document.getElementById('dashWHtR');
   const whtrStatusEl = document.getElementById('dashWHtRStatus');
@@ -240,6 +244,13 @@ function updateDashboard() {
 
   renderMetas();
   renderAnalisis();
+}
+
+function semaforo(el, valor, naranjaDesde, rojoDesde) {
+  if (!el) return;
+  const color = valor == null ? '' : valor >= rojoDesde ? 'var(--red)' : valor >= naranjaDesde ? 'var(--orange)' : 'var(--green)';
+  el.style.color = color;
+  el.closest('.stat-card').style.borderLeftColor = color;
 }
 
 /* ===== ANÁLISIS ===== */
