@@ -83,7 +83,11 @@ function showSetup() {
     const waist = parseFloat(document.getElementById('setupWaist').value);
     const height = parseInt(document.getElementById('setupHeight').value);
 
-    if (!date || isNaN(weight) || isNaN(waist) || isNaN(height)) return;
+    // Mismos rangos que en Progreso, y avisando de qué falta (antes: con un campo vacío no hacía nada,
+    // y aceptaba 5 kg o 999 cm, que rompían el panel, las metas y el plan)
+    if (!date) return showToast('Pon la fecha de inicio');
+    if (weeks < 4 || weeks > 24) return showToast('El plan tiene que durar entre 4 y 24 semanas');
+    if (!medidaValida('height', height) || !medidaValida('weight', weight) || !medidaValida('waist', waist)) return;
 
     const dateObj = new Date(date + 'T00:00:00');
     const dateLabel = dateObj.toLocaleDateString('es-ES');
