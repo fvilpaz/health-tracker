@@ -40,6 +40,8 @@ const Timer = (() => {
 
   function pause() {
     if (!running) return;
+    tick();                  // si con la pantalla apagada ya se había acabado el tiempo, se termina (antes se quedaba colgado)
+    if (!running) return;
     enPausa = fin - Date.now();
     clearInterval(intervalId);
     intervalId = null;

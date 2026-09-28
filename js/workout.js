@@ -83,9 +83,23 @@ document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible' && workoutActive) mantenerPantalla(true);
 });
 
+// Con un entreno en marcha no se puede cambiar de fase ni de bloque: antes se podía, se mezclaban los ejercicios
+// y hasta se apuntaba como hecho un bloque de fuerza que no se había hecho (revisión del 28-sep).
+function bloquearEleccion(si) {
+  document.querySelectorAll('.phase-tab, .block-btn').forEach(b => { b.disabled = si; b.setAttribute('aria-disabled', si); });
+}
+
+// El botón de pausa dice lo que hará (también al lector de pantalla)
+function actualizarPausa() {
+  const b = document.getElementById('pauseBtn'), corre = Timer.isRunning();
+  b.innerHTML = corre ? ICONO.pausa : ICONO.jugar;
+  b.setAttribute('aria-label', corre ? 'Pausar' : 'Seguir');
+}
+
 function startWorkout() {
   if (!workoutData) return;
   workoutActive = true;
+  bloquearEleccion(true);
   mantenerPantalla(true);
   workoutStartedAt = Date.now();
   currentExerciseIdx = 0;
@@ -177,6 +191,7 @@ function highlightExercise(idx) {
 
 function workoutDone() {
   workoutActive = false;
+  bloquearEleccion(false);
   mantenerPantalla(false);
   Timer.stop();
   const nameEl = document.getElementById('timerExerciseName'), labelEl = document.getElementById('timerPhaseLabel');
@@ -200,26 +215,29 @@ function workoutDone() {
 
 /* ===== ENTRENAMIENTO ===== */
 document.querySelectorAll('.phase-tab').forEach(tab => {
-  tab.addEventListener('click', () => renderWorkoutPhase(tab.dataset.phase));
+  tab.addEventListener('click', () => { if (!workoutActive) renderWorkoutPhase(tab.dataset.phase); });
 });
 
 document.querySelectorAll('.block-btn').forEach(btn => {
-  btn.addEventListener('click', () => { currentBlock = btn.dataset.block; renderWorkoutPhase('strength'); });
+  btn.addEventListener('click', () => { if (workoutActive) return; currentBlock = btn.dataset.block; renderWorkoutPhase('strength'); });
 });
 
 document.getElementById('startWorkoutBtn').addEventListener('click', startWorkout);
 
 document.getElementById('pauseBtn').addEventListener('click', () => {
-  if (Timer.isRunning()) { Timer.pause(); document.getElementById('pauseBtn').innerHTML = ICONO.jugar; }
-  else { Timer.resume(); document.getElementById('pauseBtn').innerHTML = ICONO.pausa; }
+  if (Timer.isRunning()) Timer.pause(); else Timer.resume();
+  actualizarPausa();   // según cómo haya quedado: si el tiempo ya se había acabado, pasa al siguiente y sigue corriendo
 });
 
 document.getElementById('stopBtn').addEventListener('click', () => {
+  // Parar a medias tira el bloque: se pregunta. Con el entreno ya terminado, este botón es «volver» y no pregunta.
+  if (workoutActive && !confirm('¿Parar el entreno? Este bloque no contará.')) return;
   Timer.stop();
   workoutActive = false;
+  bloquearEleccion(false);
   mantenerPantalla(false);
   document.getElementById('workoutSetup').style.display = 'block';
   document.getElementById('timerView').style.display = 'none';
-  document.getElementById('pauseBtn').innerHTML = ICONO.pausa;
+  actualizarPausa();
   renderWorkoutPhase(currentPhase);
 });

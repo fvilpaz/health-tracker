@@ -99,9 +99,10 @@ function renderSemana() {
 
 // «Entrenar»: al Entreno, con el bloque que toca y empezando por el calentamiento
 document.getElementById('semanaActual')?.addEventListener('click', e => {
-  if (e.target.id !== 'semanaEntrenar') return;
-  currentBlock = nextBlock();
+  if (!e.target.closest('#semanaEntrenar')) return;   // también si tocas el icono (antes solo el texto)
   document.querySelector('[data-section="entrenamiento"]').click();
+  if (workoutActive) return;                           // con un entreno en marcha, solo te lleva a él
+  currentBlock = nextBlock();
   renderWorkoutPhase('warmup');
 });
 
