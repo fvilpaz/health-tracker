@@ -90,8 +90,7 @@ a { color: inherit; text-decoration: none; }
   transition: background var(--transition);
 }
 .theme-toggle:hover { background: var(--border); }
-.theme-toggle .tema-ico { width: 20px; height: 20px; color: var(--nav-icon); }
-.theme-toggle .tema-ico.sol { color: var(--yellow); }
+.theme-toggle .tema-ico { width: 20px; height: 20px; color: var(--yellow); }   /* sol y luna en amarillo */
 
 /* ===== NAV ===== */
 .top-nav {
