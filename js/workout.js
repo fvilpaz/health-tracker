@@ -66,9 +66,27 @@ async function renderWorkoutPhase(phase) {
   }
 }
 
+// Pantalla encendida mientras entrenas: el móvil no se apaga a mitad de un ejercicio.
+// Si el navegador no lo permite, no pasa nada. El sistema lo suelta al cambiar de app: se pide otra vez al volver.
+let pantallaEncendida = null;
+async function mantenerPantalla(encender) {
+  try {
+    if (encender && !pantallaEncendida && 'wakeLock' in navigator) {
+      pantallaEncendida = await navigator.wakeLock.request('screen');
+      pantallaEncendida.addEventListener('release', () => { pantallaEncendida = null; });
+    } else if (!encender && pantallaEncendida) {
+      await pantallaEncendida.release();
+    }
+  } catch { pantallaEncendida = null; }
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && workoutActive) mantenerPantalla(true);
+});
+
 function startWorkout() {
   if (!workoutData) return;
   workoutActive = true;
+  mantenerPantalla(true);
   workoutStartedAt = Date.now();
   currentExerciseIdx = 0;
   currentRound = 1;
@@ -159,6 +177,7 @@ function highlightExercise(idx) {
 
 function workoutDone() {
   workoutActive = false;
+  mantenerPantalla(false);
   Timer.stop();
   const nameEl = document.getElementById('timerExerciseName'), labelEl = document.getElementById('timerPhaseLabel');
   if (currentPhase === 'strength') {
@@ -198,6 +217,7 @@ document.getElementById('pauseBtn').addEventListener('click', () => {
 document.getElementById('stopBtn').addEventListener('click', () => {
   Timer.stop();
   workoutActive = false;
+  mantenerPantalla(false);
   document.getElementById('workoutSetup').style.display = 'block';
   document.getElementById('timerView').style.display = 'none';
   document.getElementById('pauseBtn').innerHTML = ICONO.pausa;
