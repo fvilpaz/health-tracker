@@ -572,10 +572,11 @@ function renderPlanTable() {
   const weights = Storage.get('weights', []);
   const waists = Storage.get('waists', []);
 
-  const startWeight = weights.length ? weights[0].weight : 97;
-  const goalWeight = settings.goalWeight || 90;
-  const startWaist = waists.length ? waists[0].waist : 105;
-  const goalWaist = Math.max(60, startWaist - 9);
+  // Objetivos a partir de TUS datos (antes había 97 kg, 105 cm y 90 kg escritos a fuego como respaldo)
+  const startWeight = weights.length ? weights[0].weight : null;
+  const goalWeight = settings.goalWeight || (startWeight && startWeight - 7);
+  const startWaist = waists.length ? waists[0].waist : null;
+  const goalWaist = startWaist && Math.max(60, startWaist - 9);
   const totalWeeks = settings.totalWeeks || 12;
 
   const startDate = Storage.get('startDate', null);
@@ -589,8 +590,6 @@ function renderPlanTable() {
   const now = new Date();
   const currentWeekNum = Math.min(totalWeeks, Math.max(1, Math.floor((now - start) / (7 * 24 * 3600 * 1000)) + 1));
 
-  const planData = Storage.get('plan', {});
-
   let html = '<div class="plan-cards">';
 
   for (let w = 1; w <= totalWeeks; w++) {
@@ -598,12 +597,12 @@ function renderPlanTable() {
     weekDate.setDate(start.getDate() + (w - 1) * 7);
     const dateLabel = weekDate.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
 
-    const targetWeight = (startWeight - ((startWeight - goalWeight) / totalWeeks) * w).toFixed(1);
-    const targetWaist = (startWaist - ((startWaist - goalWaist) / totalWeeks) * w).toFixed(1);
+    const targetWeight = startWeight ? startWeight - ((startWeight - goalWeight) / totalWeeks) * w : null;
+    const targetWaist = startWaist ? startWaist - ((startWaist - goalWaist) / totalWeeks) * w : null;
 
-    const wd = planData[w] || {};
-    const actualWeight = wd.weight || '';
-    const actualWaist = wd.waist || '';
+    // Lo real de la semana sale de lo que registras en Progreso (una sola fuente): la última medida de esa semana
+    const realWeight = ultimaDeSemana(weights, 'weight', weekDate);
+    const realWaist = ultimaDeSemana(waists, 'waist', weekDate);
     const hechos = sessionsInWeek(weekDate).length;   // las casillas salen solas de los bloques hechos esa semana
     const checks = [0, 1, 2].map(i => i < hechos);
     const isCurrent = w === currentWeekNum;
@@ -627,14 +626,8 @@ function renderPlanTable() {
     });
     html += `</div>`;
     html += `<div class="plan-inputs">`;
-    html += `<div class="plan-input-group">`;
-    html += `<span class="plan-target"><span>${targetWeight}</span> kg</span>`;
-    html += `<input type="number" step="0.1" min="30" max="300" value="${esc(actualWeight)}" placeholder="" data-w="${w}" data-field="weight">`;
-    html += `</div>`;
-    html += `<div class="plan-input-group">`;
-    html += `<span class="plan-target"><span>${targetWaist}</span> cm</span>`;
-    html += `<input type="number" step="0.1" min="40" max="200" value="${esc(actualWaist)}" placeholder="" data-w="${w}" data-field="waist">`;
-    html += `</div>`;
+    html += planValor(targetWeight, realWeight, 'kg');
+    html += planValor(targetWaist, realWaist, 'cm');
     html += `</div>`;
     html += `</div>`;
 
@@ -643,48 +636,26 @@ function renderPlanTable() {
 
   html += '</div>';
   container.innerHTML = html;
+}
 
-  // Event listeners
-  container.querySelectorAll('.plan-save').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const wk = btn.dataset.w;
-      const row = container.querySelector(`tr[data-week="${wk}"]`);
-      const weightInput = row.querySelector('input[data-field="weight"]');
-      const waistInput = row.querySelector('input[data-field="waist"]');
-      const checks = [];
-      row.querySelectorAll('.plan-check').forEach(c => checks.push(c.classList.contains('checked')));
-
-      const plan = Storage.get('plan', {});
-      plan[wk] = {
-        weight: weightInput.value ? parseFloat(weightInput.value) : null,
-        waist: waistInput.value ? parseFloat(waistInput.value) : null,
-        checks
-      };
-      Storage.set('plan', plan);
-
-      // Sync with weights/waists arrays
-      if (weightInput.value) {
-        const weights = Storage.get('weights', []);
-        const today = new Date().toLocaleDateString('es-ES');
-        const existing = weights.findIndex(e => e.date === today);
-        if (existing >= 0) weights[existing].weight = parseFloat(weightInput.value);
-        else weights.push({ date: today, weight: parseFloat(weightInput.value) });
-        Storage.set('weights', weights);
-      }
-      if (waistInput.value) {
-        const waists = Storage.get('waists', []);
-        const today = new Date().toLocaleDateString('es-ES');
-        const existing = waists.findIndex(e => e.date === today);
-        if (existing >= 0) waists[existing].waist = parseFloat(waistInput.value);
-        else waists.push({ date: today, waist: parseFloat(waistInput.value) });
-        Storage.set('waists', waists);
-      }
-
-      updateDashboard();
-      checkLogros();
-      showToast(`Semana ${wk} guardada ✓`);
-    });
+// Última medida (peso o cintura) registrada en la semana que empieza el lunes «lunes». Las fechas van «d/m/aaaa».
+function ultimaDeSemana(lista, campo, lunes) {
+  const desde = isoDate(lunes), fin = new Date(lunes);
+  fin.setDate(lunes.getDate() + 6);
+  const hasta = isoDate(fin);
+  const enSemana = lista.filter(e => {
+    const [d, m, y] = String(e.date).split('/');
+    const f = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    return f >= desde && f <= hasta;
   });
+  return enSemana.length ? enSemana[enSemana.length - 1][campo] : null;
+}
+
+// Objetivo arriba y lo real debajo (verde si llegas al objetivo de esa semana)
+function planValor(objetivo, real, unidad) {
+  const cumple = real != null && objetivo != null && real <= objetivo;
+  return `<div class="plan-input-group"><span class="plan-target"><span>${objetivo != null ? objetivo.toFixed(1) : '—'}</span> ${unidad}</span>` +
+    `<span class="plan-real${real != null ? ' con-dato' : ''}${cumple ? ' cumple' : ''}">${real != null ? esc(real) : '—'}</span></div>`;
 }
 
 // Lunes de la semana de «ref». getDay() da 0 en domingo: (getDay() + 6) % 7 son los días desde el lunes

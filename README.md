@@ -22,7 +22,7 @@ App web personal de salud y seguimiento de progreso. Sin servidor, sin backend, 
 
 Tracker semanal integrado con:
 - **Objetivos a partir de tus datos**: peso inicial − 7 kg y cintura inicial − 9 cm (nada escrito en el código)
-- **Campos para valores reales** por semana
+- **Peso y cintura reales de cada semana**: salen solos de lo que registras en Progreso (la última medida de esa semana; en verde si llegas al objetivo)
 - **Casillas de entrenos** que se rellenan solas con los bloques hechos cada semana
 - **Sincronización automática** con el historial de peso y cintura
 

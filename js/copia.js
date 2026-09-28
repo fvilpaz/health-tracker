@@ -20,8 +20,11 @@ function limpiarCopia(entrada) {
     descartados += v.length - datos[clave].length;
   };
 
+  // Claves que la app ya no usa (racha por días y calendario viejo): se ignoran sin contarlas como error,
+  // porque vienen en cualquier copia hecha antes del 28-sep-2026.
+  const obsoleta = clave => clave === 'streak' || clave.startsWith('calendar_');
   for (const clave of Object.keys(entrada)) {
-    if (!['settings', 'startDate', 'weights', 'waists', 'sessions', 'labs', 'plan', 'logros', 'theme', 'trainings'].includes(clave)) descartados++;
+    if (!['settings', 'startDate', 'weights', 'waists', 'sessions', 'labs', 'plan', 'logros', 'theme', 'trainings'].includes(clave) && !obsoleta(clave)) descartados++;
   }
 
   const s = entrada.settings;
