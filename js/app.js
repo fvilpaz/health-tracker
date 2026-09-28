@@ -285,44 +285,101 @@ const labFuera = (t, v) => (t.min != null && v < t.min) || (t.max != null && v >
 const labFecha = d => new Date(d + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: '2-digit' });
 const labNum = v => Number.isInteger(v) ? String(v) : String(v).replace('.', ',');
 
+// Qué es cada prueba y qué hacer si está fuera de rango o empeora (textos generales, sin datos de nadie)
+const LAB_INFO = {
+  hba1c:          ['Tu azúcar medio de los últimos 3 meses. En diabetes el objetivo habitual es bajar de 7 %.', 'Menos azúcar, refrescos y harina blanca; fuerza 3 veces por semana y bajar peso.'],
+  glucosa:        ['Azúcar en sangre en ayunas: la foto de esa mañana.', 'Lo mismo que la HbA1c: comida, fuerza y peso.'],
+  trigliceridos:  ['Grasa en sangre. Sube con azúcar, alcohol y harinas.', 'Fuera refrescos y bollería; pescado azul dos o tres veces por semana.'],
+  hdl:            ['Colesterol «bueno»: recoge la grasa de las arterias. Cuanto más, mejor.', 'Sube con fuerza, bajando peso y con menos azúcar. No se trata con pastillas.'],
+  ldl:            ['Colesterol «malo». En diabetes se pide por debajo de 100.', 'Menos embutido y grasa saturada; más legumbre y fibra. Coméntalo con tu médico.'],
+  no_hdl:         ['Todo el colesterol que no es el bueno. Buen resumen del riesgo.', 'Baja con lo mismo que los triglicéridos y el LDL.'],
+  colesterol:     ['Colesterol total. Dice menos que el HDL y el LDL por separado.', 'Fíjate en el HDL y el LDL.'],
+  alt:            ['Enzima del hígado. Alta = hígado que sufre, casi siempre por grasa.', 'Baja al perder peso (con un 7–10 % menos suele normalizarse). Nada de alcohol.'],
+  ast:            ['Otra enzima del hígado.', 'Igual que la ALT: bajar peso y nada de alcohol.'],
+  ggt:            ['Enzima del hígado muy sensible al alcohol.', 'Evitar el alcohol.'],
+  bilirrubina:    ['Pigmento de la bilis. En el síndrome de Gilbert sale en el límite y no tiene importancia.', ''],
+  ck:             ['Enzima del músculo. Sube tras caminar mucho o hacer esfuerzo los días antes.', 'Normal si has hecho ejercicio; si sigue alta en reposo, coméntalo.'],
+  creatinina:     ['Riñón: cómo elimina desechos.', 'Ojo con la creatina en polvo: la sube sin que el riñón esté mal. Avisa al médico.'],
+  filtrado:       ['Cuánto filtra el riñón. Por encima de 60 está bien.', 'Es lo primero que daña la diabetes: que te lo miren cada año.'],
+  acido_urico:    ['Sube con carne roja, marisco y alcohol.', 'Menos carne roja y marisco, más agua.'],
+  b12:            ['Vitamina. La metformina puede bajarla con los años.', 'Si baja, díselo a tu médico.'],
+  tsh:            ['Tiroides.', 'Fuera de rango: consulta a tu médico.'],
+  glucosa_orina:  ['Azúcar en la orina. La dapagliflozina la sube a propósito: así funciona.', ''],
+  densidad_orina: ['Lo concentrada que está la orina. Alta = bebes poca agua.', 'Bebe más agua, sobre todo si tomas dapagliflozina.'],
+};
+
+const labFechaLarga = d => new Date(d + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+const labDebe = t => t.min != null && t.max != null ? `${labNum(t.min)} – ${labNum(t.max)}`
+  : t.max != null ? `≤ ${labNum(t.max)}` : t.min != null ? `≥ ${labNum(t.min)}` : 'sin rango';
+
+// a → b de una prueba: mejora, empeora, igual o informativo
+function labComparar(t, a, b) {
+  if (t.mejor === 'info') return { icono: 'ℹ️', clase: 'info', txt: 'informativo' };
+  if (a === b) return { icono: '＝', clase: 'igual', txt: 'igual' };
+  // 'rango': solo cuenta entrar o salir del rango; si no cambia de lado, se queda en "igual"
+  const mejora = t.mejor === 'bajo' ? b < a
+               : t.mejor === 'alto' ? b > a
+               : labFuera(t, a) === labFuera(t, b) ? null : labFuera(t, a);
+  return mejora === true ? { icono: '✅', clase: 'mejora', txt: 'mejora' }
+       : mejora === false ? { icono: '❌', clase: 'peora', txt: 'empeora' }
+       : { icono: '＝', clase: 'igual', txt: 'igual' };
+}
+
+let labCmp = {};   // qué dos análisis se comparan (por defecto, el anterior y el último)
+
 function renderAnalisis() {
   const tabla = document.getElementById('labsTabla'), resumen = document.getElementById('labsResumen');
   if (!tabla || !resumen) return;
   const labs = Storage.get('labs', []).slice().sort((a, b) => a.date.localeCompare(b.date));
   if (!labs.length) {
-    tabla.innerHTML = '<div class="meta-aviso">Aún no hay análisis. Añádelos con el botón o importa un archivo con ⬆ Importar (en Progreso).</div>';
+    tabla.innerHTML = '<div class="meta-aviso">Aún no hay análisis. Pulsa «Añadir análisis» y elige el PDF del laboratorio.</div>';
     resumen.innerHTML = '<div class="meta-aviso">Aparecerá cuando tengas dos análisis.</div>';
     return;
   }
-  // Historial: una columna por análisis, solo las pruebas que tengan algún valor
-  const usadas = LAB_TESTS.filter(t => labs.some(l => l.values[t.k] != null));
-  tabla.innerHTML = `<table class="labs"><thead><tr><th>Prueba</th>${labs.map(l => `<th>${labFecha(l.date)}<button class="lab-pdf" data-fecha="${l.date}">＋ PDF</button></th>`).join('')}</tr></thead><tbody>` +
-    usadas.map(t => `<tr><td>${t.n}<small>${[t.min != null ? '≥ ' + labNum(t.min) : '', t.max != null ? '≤ ' + labNum(t.max) : ''].filter(Boolean).join(' · ')} ${t.u}</small></td>` +
-      labs.map(l => { const v = l.values[t.k]; return v == null ? '<td class="n">—</td>' : `<td class="n ${labFuera(t, v) ? 'fuera' : ''}">${labNum(v)}</td>`; }).join('') + '</tr>').join('') +
-    '</tbody></table>';
+  // Un desplegable por análisis, el más reciente arriba: tu valor, cuánto debería estar y qué es
+  tabla.innerHTML = labs.slice().reverse().map(l => {
+    const pruebas = LAB_TESTS.filter(t => l.values[t.k] != null);
+    const fuera = pruebas.filter(t => t.mejor !== 'info' && labFuera(t, l.values[t.k])).length;
+    return `<details class="lab-sec"><summary><div class="lab-tit">📅 ${labFechaLarga(l.date)}` +
+      `<small>${pruebas.length} pruebas · ${fuera ? `⚠️ ${fuera} fuera de rango` : '✅ todo en rango'}</small></div><span class="lab-flecha"></span></summary>` +
+      `<div class="lab-cuerpo"><button class="lab-pdf" data-fecha="${l.date}">＋ PDF</button>` +
+      pruebas.map(t => {
+        const v = l.values[t.k], mal = t.mejor !== 'info' && labFuera(t, v);
+        return `<div class="lab-fila ${mal ? 'fuera' : ''}"><div class="lab-fila-top"><span>${t.mejor === 'info' ? 'ℹ️' : mal ? '⚠️' : '✅'} ${t.n}</span>` +
+          `<strong>${labNum(v)} <small>${t.u}</small></strong></div>` +
+          `<div class="lab-fila-ref">Debería: ${labDebe(t)} ${t.u}</div><div class="lab-fila-que">${LAB_INFO[t.k][0]}</div></div>`;
+      }).join('') + '</div></details>';
+  }).join('');
   pdfFechas().then(fechas => tabla.querySelectorAll('.lab-pdf').forEach(b => {
-    if (fechas.includes(b.dataset.fecha)) { b.textContent = '📄 PDF'; b.classList.add('tiene'); }
+    if (fechas.includes(b.dataset.fecha)) { b.textContent = '📄 Ver PDF'; b.classList.add('tiene'); }
   })).catch(() => {});
 
-  // Resumen: último análisis frente al anterior, prueba a prueba
+  // Comparativa entre dos análisis (se eligen con los desplegables) y sugerencias
   if (labs.length < 2) { resumen.innerHTML = '<div class="meta-aviso">Aparecerá cuando tengas dos análisis.</div>'; return; }
-  const [prev, last] = labs.slice(-2);
-  const filas = LAB_TESTS.filter(t => prev.values[t.k] != null && last.values[t.k] != null).map(t => {
-    const a = prev.values[t.k], b = last.values[t.k];
-    let icono = '＝', clase = 'igual', txt = 'igual';
-    if (t.mejor === 'info') { icono = 'ℹ️'; clase = 'info'; txt = 'informativo'; }
-    else if (a !== b) {
-      // 'rango': solo cuenta entrar o salir del rango; si no cambia de lado, se queda en "igual"
-      const mejora = t.mejor === 'bajo' ? b < a
-                   : t.mejor === 'alto' ? b > a
-                   : labFuera(t, a) === labFuera(t, b) ? null : labFuera(t, a);
-      if (mejora === true) { icono = '✅'; clase = 'mejora'; txt = 'mejora'; }
-      else if (mejora === false) { icono = '❌'; clase = 'peora'; txt = 'empeora'; }
-    }
-    return `<div class="lab-cmp ${clase}"><span>${icono}</span><div>${t.n}<small>${labNum(a)} → <strong>${labNum(b)}</strong> ${t.u}</small></div><em>${txt}</em></div>`;
+  const fechas = labs.map(l => l.date);
+  if (!fechas.includes(labCmp.a) || !fechas.includes(labCmp.b)) labCmp = { a: fechas[fechas.length - 2], b: fechas[fechas.length - 1] };
+  const prev = labs.find(l => l.date === labCmp.a), last = labs.find(l => l.date === labCmp.b);
+  const opciones = sel => fechas.map(f => `<option value="${f}" ${f === sel ? 'selected' : ''}>${labFecha(f)}</option>`).join('');
+  const comunes = LAB_TESTS.filter(t => prev.values[t.k] != null && last.values[t.k] != null);
+  const filas = comunes.map(t => {
+    const a = prev.values[t.k], b = last.values[t.k], c = labComparar(t, a, b);
+    return `<div class="lab-cmp ${c.clase}"><span>${c.icono}</span><div>${t.n}<small>${labNum(a)} → <strong>${labNum(b)}</strong> ${t.u}</small></div><em>${c.txt}</em></div>`;
   });
-  resumen.innerHTML = `<div class="meta-aviso" style="margin:0 0 8px;">${labFecha(prev.date)} → ${labFecha(last.date)} · pruebas que están en los dos</div>` + filas.join('');
+  // Sugerencias: lo que empeora o sigue fuera de rango en el segundo análisis
+  const sugerir = LAB_TESTS.filter(t => LAB_INFO[t.k][1] && last.values[t.k] != null && t.mejor !== 'info' &&
+    (labFuera(t, last.values[t.k]) || (prev.values[t.k] != null && labComparar(t, prev.values[t.k], last.values[t.k]).clase === 'peora')));
+  resumen.innerHTML =
+    `<div class="lab-elegir"><select id="labCmpA">${opciones(labCmp.a)}</select><span>→</span><select id="labCmpB">${opciones(labCmp.b)}</select></div>` +
+    (filas.length ? filas.join('') : '<div class="meta-aviso">Estos dos análisis no tienen pruebas en común.</div>') +
+    (sugerir.length ? '<div class="lab-sug"><div class="lab-sug-tit">💡 Sugerencias</div>' +
+      sugerir.map(t => `<div><strong>${t.n}:</strong> ${LAB_INFO[t.k][1]}</div>`).join('') + '</div>' : '');
 }
+
+document.getElementById('labsResumen').addEventListener('change', e => {
+  if (e.target.id === 'labCmpA') labCmp.a = e.target.value;
+  if (e.target.id === 'labCmpB') labCmp.b = e.target.value;
+  renderAnalisis();
+});
 
 /* Leer el PDF del laboratorio: cada prueba es una línea «Nombre [*] valor unidad referencias».
    El patrón es cómo la llama el informe (Hospital Costa del Sol / SAS); otro laboratorio necesitaría los suyos. */
@@ -432,7 +489,9 @@ function pdfOp(modo, pedir) {
     abrir.onupgradeneeded = () => abrir.result.createObjectStore('labPdfs');
     abrir.onerror = () => ko(abrir.error);
     abrir.onsuccess = () => {
-      const req = pedir(abrir.result.transaction('labPdfs', modo).objectStore('labPdfs'));
+      const tx = abrir.result.transaction('labPdfs', modo);
+      tx.oncomplete = () => abrir.result.close();
+      const req = pedir(tx.objectStore('labPdfs'));
       req.onsuccess = () => ok(req.result);
       req.onerror = () => ko(req.error);
     };
