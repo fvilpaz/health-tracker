@@ -10,6 +10,11 @@ function medidaValida(campo, valor) {
   return false;
 }
 
+// La tecla «Intro»/«Ir» del teclado del móvil guarda (antes no hacía nada)
+[['weightInput', 'saveWeightBtn'], ['waistInput', 'saveWaistBtn'], ['heightInput', 'saveHeightBtn']].forEach(([campo, boton]) => {
+  document.getElementById(campo)?.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById(boton).click(); });
+});
+
 // Añade la medida de «fecha» a la lista; si ya había una ese día, la sustituye (una por día).
 // La deja ordenada por fecha: «la primera» y «la última» (inicial y actual) son por fecha, no por orden de apunte.
 function anotarMedida(lista, campo, valor, fecha) {
@@ -32,6 +37,8 @@ document.getElementById('saveWeightBtn').addEventListener('click', () => {
   Storage.set('weights', weights);
   input.value = '';
   updateDashboard();
+  renderWeightLog();            // el historial y la gráfica de Progreso también (antes seguían sin el peso nuevo)
+  renderWeightChart(weights);
   checkLogros();
   showToast('Peso guardado ✓');
 });
@@ -99,6 +106,8 @@ function renderWeightLog() {
   container.querySelectorAll('.w-del').forEach(btn => {
     btn.addEventListener('click', () => {
       const date = btn.dataset.date;
+      // Se tocaba sin querer al desplazar la lista y no había vuelta atrás
+      if (!confirm(`¿Borrar el peso del ${date}?`)) return;
       const updated = Storage.get('weights', []).filter(e => e.date !== date);
       Storage.set('weights', updated);
       renderWeightLog();
