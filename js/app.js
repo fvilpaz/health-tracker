@@ -22,7 +22,7 @@ function initApp() {
   const newPlanBtn = document.getElementById('newPlanBtn');
   if (newPlanBtn) {
     newPlanBtn.addEventListener('click', () => {
-      if (!confirm('¿Finalizar este plan y empezar uno nuevo?\n\nSe borrarán todos los datos (peso, cintura, entrenos, logros).\n\nSi quieres conservarlos, cancela y usa antes «⬇ Exportar» en Progreso.')) return;
+      if (!confirm('¿Finalizar este plan y empezar uno nuevo?\n\nSe borrarán todos los datos (peso, cintura, entrenos, logros).\n\nSi quieres conservarlos, cancela y usa antes «⬇️ Exportar» en Progreso.')) return;
       const keys = ['settings', 'weights', 'waists', 'startDate', 'trainings', 'streak', 'logros', 'plan'];
       keys.forEach(k => Storage.remove(k));
       location.reload();
