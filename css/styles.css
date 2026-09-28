@@ -274,8 +274,8 @@ table.labs td.fuera { color: var(--red); }
   border-bottom: 2px solid var(--text-muted); transform: translateY(-3px) rotate(45deg); transition: transform .25s; }
 .lab-sec[open] .lab-flecha:before { transform: translateY(2px) rotate(225deg); border-color: var(--blue); }
 .lab-cuerpo { padding: 4px 12px 12px; border-top: 1px solid var(--border); }
-.lab-cuerpo .lab-pdf { display: inline-block; margin: 8px 0 4px; font-size: 0.75rem; padding: 4px 10px; }
-.lab-pdf-quitar { margin: 8px 0 4px 6px; padding: 4px 10px; font-size: 0.75rem; border: 1px solid var(--border); border-radius: 6px; background: none; color: var(--red); cursor: pointer; }
+.lab-cuerpo .lab-pdf { display: inline-block; margin: 8px 0 4px; font-size: 1.1rem; padding: 6px 12px; }
+.lab-pdf-quitar { margin: 8px 0 4px 6px; padding: 6px 12px; font-size: 1.1rem; border: 1px solid var(--border); border-radius: 6px; background: none; color: var(--red); cursor: pointer; }
 .lab-fila { padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
 .lab-fila:last-child { border-bottom: none; }
 .lab-fila-top { display: flex; justify-content: space-between; gap: 8px; }
