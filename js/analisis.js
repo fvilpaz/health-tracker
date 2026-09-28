@@ -171,6 +171,12 @@ async function labLeerPdf(archivo) {
     Object.keys(filas).sort((a, b) => b - a).forEach(y =>
       lineas.push(filas[y].sort((a, b) => a.transform[4] - b.transform[4]).map(it => it.str).join(' ').replace(/\s+/g, ' ').trim()));
   }
+  return leerInforme(lineas);
+}
+
+// Del texto del informe (una línea por fila, espacios ya normalizados) saca la fecha de toma y los valores.
+// Separado del PDF para poder probarlo sin navegador (tests/analisis.test.js).
+function leerInforme(lineas) {
   const valores = {};
   for (const [k, patron] of Object.entries(LAB_PDF)) {
     for (const linea of lineas) {

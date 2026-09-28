@@ -46,3 +46,48 @@ test('ultimaDeSemana: la última medida de esa semana, o nada si no hay', () => 
   assert.equal(ultima(pesos, 'weight', lunes('2026-09-21')), 88.5);
   assert.equal(ultima(pesos, 'weight', lunes('2026-09-28')), null);
 });
+
+// Líneas con el formato del informe del laboratorio (tal como quedan tras juntar el texto del PDF).
+// Valores INVENTADOS: el repo es público.
+const INFORME = [
+  'Nº de muestra/laboratorio Fecha de toma de muestra Último Resultado Fecha del informe',
+  '12345678 03/02/2027 08:30 04/02/2027 10:00 Susceptible cambios',
+  'Glucosa * 118 mg/dL 70 - 110',
+  'Creatinina 0,88 mg/dL 0,74 - 1,30',
+  'Filtrado glomerular/1,73 m^2 (estimado) 95 mL/min 60 -',
+  'Colesterol 199 mg/dL 115 - 200',
+  'Colesterol de HDL * 38 mg/dL 40 - 70',
+  'Colesterol de LDL 128 Para resultados de triglicéridos',
+  'Colesterol de LDL (calculado)',
+  'Colesterol no HDL (calculado) 161 mg/dL',
+  'Triglicéridos * 176 mg/dL 30 - 150',
+  'Hemoglobina glicosilada (A1c) * 6,9 % - 6,5',
+  'Hemoglobina glicosilada (A1c; unidades SI) * 52 mmol/mol 19 - 42',
+  'Glucosa (orina; tira color) 250 mg/dL',
+  'Densidad (orina; tira color) * 1035,000 1010,000 - 1030,000',
+  'Proteínas (orina; tira color) Negativo mg/dL',
+];
+
+test('leerInforme: fecha de toma y cada valor en su sitio, sin confundir pruebas parecidas', () => {
+  const r = crearApp().get('leerInforme')(INFORME);
+  assert.equal(r.fecha, '2027-02-03');   // la primera fecha de la línea de debajo de la cabecera
+  assert.deepEqual(JSON.parse(JSON.stringify(r.valores)), {
+    hba1c: 6.9,            // la del %, no la de «unidades SI» (52)
+    glucosa: 118,          // la de sangre, no la de orina
+    trigliceridos: 176,
+    hdl: 38,
+    ldl: 128,              // la línea «(calculado)» sin número no cuenta
+    no_hdl: 161,
+    colesterol: 199,       // «Colesterol» a secas, no el de HDL ni LDL
+    creatinina: 0.88,      // coma decimal
+    filtrado: 95,          // el «1,73» del nombre no es el valor
+    glucosa_orina: 250,
+    densidad_orina: 1035,
+  });
+});
+
+test('leerInforme: sin la tabla de fechas, la fecha queda vacía (la pone la persona)', () => {
+  const r = crearApp().get('leerInforme')(['Glucosa * 101 mg/dL 70 - 110']);
+  assert.equal(r.fecha, null);
+  assert.equal(r.valores.glucosa, 101);
+});
