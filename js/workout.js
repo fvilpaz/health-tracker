@@ -178,3 +178,28 @@ function workoutDone() {
   updateDashboard();
   checkLogros();
 }
+
+/* ===== ENTRENAMIENTO ===== */
+document.querySelectorAll('.phase-tab').forEach(tab => {
+  tab.addEventListener('click', () => renderWorkoutPhase(tab.dataset.phase));
+});
+
+document.querySelectorAll('.block-btn').forEach(btn => {
+  btn.addEventListener('click', () => { currentBlock = btn.dataset.block; renderWorkoutPhase('strength'); });
+});
+
+document.getElementById('startWorkoutBtn').addEventListener('click', startWorkout);
+
+document.getElementById('pauseBtn').addEventListener('click', () => {
+  if (Timer.isRunning()) { Timer.pause(); document.getElementById('pauseBtn').innerHTML = ICONO.jugar; }
+  else { Timer.resume(); document.getElementById('pauseBtn').innerHTML = ICONO.pausa; }
+});
+
+document.getElementById('stopBtn').addEventListener('click', () => {
+  Timer.stop();
+  workoutActive = false;
+  document.getElementById('workoutSetup').style.display = 'block';
+  document.getElementById('timerView').style.display = 'none';
+  document.getElementById('pauseBtn').innerHTML = ICONO.pausa;
+  renderWorkoutPhase(currentPhase);
+});

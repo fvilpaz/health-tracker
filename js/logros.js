@@ -1,0 +1,32 @@
+/* Logros: qué hay que conseguir y cuáles están desbloqueados. Se movió tal cual desde app.js (28-sep-2026). */
+
+/* ===== LOGROS ===== */
+const LOGROS_DEF = [
+  { id: 'first_train', icon: duo('bandera'), name: 'Primer entreno', desc: 'Completa tu primer entrenamiento', check: () => getSessions().length >= 1 },
+  { id: 'week', icon: duo('llama'), name: 'Semana cumplida', desc: '3 bloques en una semana', check: () => completedWeeks() >= 1 },
+  { id: 'kg1', icon: duo('balanza'), name: '1 kg perdido', desc: 'Primer kilo perdido', check: () => { const w = Storage.get('weights', []); return w.length >= 2 && (w[0].weight - w[w.length - 1].weight) >= 1; } },
+  { id: 'month', icon: duo('semana'), name: 'Primer mes', desc: '4 semanas cumplidas', check: () => completedWeeks() >= 4 },
+  { id: 'kg5', icon: duo('trofeo'), name: '5 kg perdidos', desc: '5 kilos menos', check: () => { const w = Storage.get('weights', []); return w.length >= 2 && (w[0].weight - w[w.length - 1].weight) >= 5; } },
+  { id: 'goal', icon: duo('diana'), name: 'Peso objetivo', desc: 'Llegas a tu peso objetivo', check: () => { const w = Storage.get('weights', []); const g = Storage.get('settings', {}).goalWeight; return w.length && g && w[w.length - 1].weight <= g; } },
+  { id: 'waist1', icon: duo('regla'), name: '1 cm menos', desc: 'Primer cm de cintura perdido', check: () => { const w = Storage.get('waists', []); return w.length >= 2 && (w[0].waist - w[w.length - 1].waist) >= 1; } },
+  { id: 'whtr', icon: duo('corazon'), name: 'Ratio saludable', desc: 'Cintura/altura < 0.5', check: () => { const w = Storage.get('waists', []); const h = getHeightCm(); return w.length && h && (w[w.length - 1].waist / h) < 0.5; } }
+];
+
+function checkLogros() {
+  const unlocked = Storage.get('logros', []);
+  const grid = document.getElementById('logrosGrid');
+  if (!grid) return;
+
+  grid.innerHTML = '';
+  LOGROS_DEF.forEach(l => {
+    const isUnlocked = unlocked.includes(l.id) || l.check();
+    if (isUnlocked && !unlocked.includes(l.id)) {
+      unlocked.push(l.id);
+      Storage.set('logros', unlocked);
+    }
+    const div = document.createElement('div');
+    div.className = `logro ${isUnlocked ? 'unlocked' : ''}`;
+    div.innerHTML = `<div class="logro-icon">${l.icon}</div><div class="logro-name">${l.name}</div><div class="logro-desc">${l.desc}</div>`;
+    grid.appendChild(div);
+  });
+}
