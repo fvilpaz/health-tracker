@@ -84,3 +84,11 @@ test('logro «Ratio saludable» y panel usan la misma cifra (redondeada): 84,9/1
   S.set('settings', { height: 170 }); S.set('waists', [{ date: '1/1/2026', waist: 84.9 }]);
   assert.equal(!!app.get('LOGROS_DEF').find(l => l.id === 'whtr').check(), false);
 });
+
+test('diferencia (tarjetas «Perdido»): menos si bajas, más si subes, y «--» sin datos', () => {
+  const dif = crearApp().get('diferencia');
+  assert.equal(dif(90, 88.5), '-1.5');
+  assert.equal(dif(90, 90.5), '+0.5');   // antes salía «-0.5», que se lee como pérdida
+  assert.equal(dif(90, 90), '0.0');
+  assert.equal(dif(null, 90), '--');
+});
