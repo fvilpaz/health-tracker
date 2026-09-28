@@ -4,7 +4,8 @@ let currentExerciseIdx = 0;
 let currentRound = 1;
 let isResting = false;
 let workoutActive = false;
-let currentBlock = '1';   // bloque de fuerza elegido (1, 2 o 3)
+let currentBlock = '1';   // bloque de fuerza elegido (1, 2 o 3); al abrir la app, el que toca (nextBlock)
+let workoutStartedAt = 0; // para apuntar los minutos del bloque
 
 // Ejercicios de una fase. La fuerza va por bloques; el resto de fases tienen su lista fija.
 function phaseExercises(phaseData) {
@@ -68,6 +69,7 @@ async function renderWorkoutPhase(phase) {
 function startWorkout() {
   if (!workoutData) return;
   workoutActive = true;
+  workoutStartedAt = Date.now();
   currentExerciseIdx = 0;
   currentRound = 1;
   isResting = false;
@@ -158,16 +160,19 @@ function highlightExercise(idx) {
 function workoutDone() {
   workoutActive = false;
   Timer.stop();
-  const trainings = Storage.get('trainings', []);
-  const today = new Date().toLocaleDateString('es-ES');
-  if (!trainings.includes(today)) trainings.push(today);
-  Storage.set('trainings', trainings);
-
-  const streak = updateStreak();
-  Storage.set('streak', streak);
-
-  document.getElementById('timerExerciseName').textContent = '¡Entrenamiento completado! 🎉';
-  document.getElementById('timerPhaseLabel').textContent = `Racha: ${streak} días`;
+  const nameEl = document.getElementById('timerExerciseName'), labelEl = document.getElementById('timerPhaseLabel');
+  if (currentPhase === 'strength') {
+    // Llegar aquí = todas las vueltas hechas: es el único caso que cuenta como entreno
+    const minutos = Math.max(1, Math.round((Date.now() - workoutStartedAt) / 60000));
+    saveSession(currentBlock, minutos, phaseExercises(workoutData.strength).map(e => e.name));
+    Storage.set('streak', updateStreak());
+    nameEl.textContent = `¡Bloque ${currentBlock} completado! 🎉`;
+    labelEl.textContent = `${sessionsInWeek().length} de ${WEEK_GOAL} esta semana`;
+  } else {
+    // Calentamiento o calma sueltos: no cuentan como entreno
+    nameEl.textContent = currentPhase === 'warmup' ? 'Calentamiento hecho ✓' : 'Vuelta a la calma hecha ✓';
+    labelEl.textContent = currentPhase === 'warmup' ? 'Ahora, 💪 Fuerza' : '';
+  }
   document.getElementById('timerNumber').textContent = '✓';
   document.getElementById('timerStatus').textContent = 'Pulsa el cuadrado para volver';
 
@@ -176,14 +181,13 @@ function workoutDone() {
 }
 
 function updateStreak() {
-  const trainings = Storage.get('trainings', []);
+  const fechas = new Set(getSessions().map(s => s.date));
   const today = new Date();
   let streak = 0;
   for (let i = 0; i < 100; i++) {
     const d = new Date(today);
     d.setDate(d.getDate() - i);
-    const label = d.toLocaleDateString('es-ES');
-    if (trainings.includes(label)) streak++;
+    if (fechas.has(isoDate(d))) streak++;
     else if (i > 0) break;
   }
   return streak;

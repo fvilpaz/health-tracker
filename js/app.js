@@ -2,6 +2,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
   initTheme();
   await loadWorkoutData();
+  currentBlock = nextBlock();   // el Entreno abre con el bloque que toca
   renderWorkoutPhase('warmup');
 
   if (!Storage.get('settings')) {
@@ -23,7 +24,7 @@ function initApp() {
   if (newPlanBtn) {
     newPlanBtn.addEventListener('click', () => {
       if (!confirm('¿Finalizar este plan y empezar uno nuevo?\n\nSe borrarán todos los datos (peso, cintura, entrenos, logros).\n\nSi quieres conservarlos, cancela y usa antes «Exportar» en Progreso.')) return;
-      const keys = ['settings', 'weights', 'waists', 'startDate', 'trainings', 'streak', 'logros', 'plan'];
+      const keys = ['settings', 'weights', 'waists', 'startDate', 'trainings', 'sessions', 'streak', 'logros', 'plan'];
       keys.forEach(k => Storage.remove(k));
       location.reload();
     });
@@ -146,7 +147,6 @@ function initNav() {
 function updateDashboard() {
   const settings = Storage.get('settings', {});
   const weights = Storage.get('weights', []);
-  const trainings = Storage.get('trainings', []);
   const streak = Storage.get('streak', 0);
   const startDate = Storage.get('startDate', null);
 
@@ -169,12 +169,7 @@ function updateDashboard() {
   // Esta semana
   const weekEl = document.getElementById('dashWeek');
   if (weekEl) {
-    const weekStart = getWeekStart();
-    const weekCount = trainings.filter(d => {
-      const date = parseDate(d);
-      return date >= weekStart;
-    }).length;
-    weekEl.textContent = weekCount;
+    weekEl.textContent = sessionsInWeek().length;   // bloques completos de esta semana
   }
 
   // Racha
@@ -936,7 +931,7 @@ function getDayLabel(idx) {
 
 /* ===== LOGROS ===== */
 const LOGROS_DEF = [
-  { id: 'first_train', icon: '🏁', name: 'Primer entreno', desc: 'Completa tu primer entrenamiento', check: () => Storage.get('trainings', []).length >= 1 },
+  { id: 'first_train', icon: '🏁', name: 'Primer entreno', desc: 'Completa tu primer entrenamiento', check: () => getSessions().length >= 1 },
   { id: 'week', icon: '🔥', name: '7 días seguidos', desc: 'Racha de 7 días', check: () => Storage.get('streak', 0) >= 7 },
   { id: 'kg1', icon: '⚖️', name: '1 kg perdido', desc: 'Primer kilo perdido', check: () => { const w = Storage.get('weights', []); return w.length >= 2 && (w[0].weight - w[w.length - 1].weight) >= 1; } },
   { id: 'month', icon: '📅', name: 'Primer mes', desc: '30 entrenamientos completados', check: () => Storage.get('trainings', []).length >= 12 },
@@ -1006,7 +1001,7 @@ document.getElementById('importFile').addEventListener('change', async e => {
     return showToast(`${n('labs')} análisis añadidos ✓`);
   }
   const cuando = copia.exportedAt ? new Date(copia.exportedAt).toLocaleDateString('es-ES') : 'fecha desconocida';
-  if (!confirm(`Copia del ${cuando}: ${n('weights')} pesos, ${n('waists')} cinturas, ${n('trainings')} entrenos.\n\n` +
+  if (!confirm(`Copia del ${cuando}: ${n('weights')} pesos, ${n('waists')} cinturas, ${n('sessions')} bloques de fuerza.\n\n` +
                'Esto SUSTITUYE los datos de este aparato. ¿Continuar?')) return;
   Object.keys(localStorage).filter(k => k.startsWith('ht_')).forEach(k => localStorage.removeItem(k));
   Object.entries(d).forEach(([k, v]) => Storage.set(k, v));

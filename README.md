@@ -12,7 +12,7 @@ App web personal de salud y seguimiento de progreso. Sin servidor, sin backend, 
 |---------|-------------|
 | **Dashboard** | Peso actual, perdido, IMC, cintura, ratio cintura/altura, racha, logros. Peso, cintura y ratio cambian de color (🟢/🟠/🔴) según el IMC y la cintura/altura |
 | **🎯 Metas** | Metas a corto, medio y largo plazo (IMC 30, peso objetivo, IMC 27) con lo que falta; historial de análisis: **subes el PDF del laboratorio y la app lee la fecha y los valores** (tú revisas y guardas), el PDF queda adjunto. Cada análisis es un desplegable con tu valor, cuánto debería estar y qué es cada prueba; debajo, comparativa entre dos análisis (a elegir) con sugerencias |
-| **Entrenamiento** | Calentamiento → fuerza → calma, con temporizador SVG. La fuerza va en **bloques 1 / 2 / 3** (sin cardio) |
+| **Entrenamiento** | Calentamiento → fuerza → calma, con temporizador SVG. La fuerza va en **bloques 1 / 2 / 3** (sin cardio) que rotan solos. Solo cuenta como entreno el bloque de fuerza **completo**; se apunta solo con fecha, minutos y ejercicios |
 | **Nutrición** | Esquema del plato, ideas de comidas, alimentos OK y a evitar |
 | **Meds** | Ebymect, hígado graso, Gilbert, señales de alerta y suplementos (seguros, con precaución y a evitar) |
 | **Progreso** | Registro de peso, cintura y altura; gráfica de peso; historial editable; exportar e importar copia |
@@ -50,6 +50,7 @@ health-tracker/
 │   ├── storage.js          ← Wrapper de localStorage
 │   ├── timer.js            ← Temporizador con círculo SVG
 │   ├── charts.js           ← Gráfica Chart.js para peso
+│   ├── semana.js           ← Bloques de fuerza hechos (sessions), semana y bloque que toca
 │   └── workout.js          ← Fases de entrenamiento y timer
 ├── data/workouts.json      ← Datos de ejercicios por fase
 ├── docs/
