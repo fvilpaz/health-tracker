@@ -211,6 +211,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 0.85rem;
   transition: opacity var(--transition), transform var(--transition);
 }
+.btn .ico { width: 18px; height: 18px; vertical-align: -4px; margin-right: 6px; }
 .btn:active { transform: scale(0.97); opacity: 0.9; }
 .btn-primary { background: var(--blue); color: white; }
 .btn-green { background: var(--green); color: white; }
@@ -275,8 +276,8 @@ table.labs td.fuera { color: var(--red); }
   border-bottom: 2px solid var(--text-muted); transform: translateY(-3px) rotate(45deg); transition: transform .25s; }
 .lab-sec[open] .lab-flecha:before { transform: translateY(2px) rotate(225deg); border-color: var(--blue); }
 .lab-cuerpo { padding: 4px 12px 12px; border-top: 1px solid var(--border); }
-.lab-cuerpo .lab-pdf { display: inline-block; margin: 8px 0 4px; font-size: 1.1rem; padding: 6px 12px; }
-.lab-pdf-quitar { margin: 8px 0 4px 6px; padding: 6px 12px; font-size: 1.1rem; border: 1px solid var(--border); border-radius: 6px; background: none; color: var(--red); cursor: pointer; }
+.lab-cuerpo .lab-pdf, .lab-pdf-quitar { display: inline-flex; align-items: center; justify-content: center; margin: 8px 6px 4px 0; padding: 8px 14px; }
+.lab-cuerpo .btn .ico { margin: 0; }
 .lab-fila { padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
 .lab-fila:last-child { border-bottom: none; }
 .lab-fila-top { display: flex; justify-content: space-between; gap: 8px; }
@@ -289,8 +290,6 @@ table.labs td.fuera { color: var(--red); }
 .lab-elegir select { flex: 1; padding: 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface2); color: var(--text); }
 .lab-sug { margin-top: 12px; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--surface2); font-size: 0.82rem; display: flex; flex-direction: column; gap: 6px; }
 .lab-sug-tit { font-weight: 700; }
-.lab-pdf { display: block; margin-top: 4px; padding: 2px 6px; font-size: 0.68rem; border: 1px dashed var(--border); border-radius: 6px; background: none; color: var(--text-muted); cursor: pointer; }
-.lab-pdf.tiene { border-style: solid; border-color: var(--blue); color: var(--blue); }
 .lab-input { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 6px 0; font-size: 0.82rem; }
 .lab-input input[type=number] { width: 90px; }
 .lab-pdf-elegir { display: block; text-align: center; cursor: pointer; }
