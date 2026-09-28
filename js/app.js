@@ -296,10 +296,13 @@ function renderAnalisis() {
   }
   // Historial: una columna por análisis, solo las pruebas que tengan algún valor
   const usadas = LAB_TESTS.filter(t => labs.some(l => l.values[t.k] != null));
-  tabla.innerHTML = `<table class="labs"><thead><tr><th>Prueba</th>${labs.map(l => `<th>${labFecha(l.date)}</th>`).join('')}</tr></thead><tbody>` +
+  tabla.innerHTML = `<table class="labs"><thead><tr><th>Prueba</th>${labs.map(l => `<th>${labFecha(l.date)}<button class="lab-pdf" data-fecha="${l.date}">＋ PDF</button></th>`).join('')}</tr></thead><tbody>` +
     usadas.map(t => `<tr><td>${t.n}<small>${[t.min != null ? '≥ ' + labNum(t.min) : '', t.max != null ? '≤ ' + labNum(t.max) : ''].filter(Boolean).join(' · ')} ${t.u}</small></td>` +
       labs.map(l => { const v = l.values[t.k]; return v == null ? '<td class="n">—</td>' : `<td class="n ${labFuera(t, v) ? 'fuera' : ''}">${labNum(v)}</td>`; }).join('') + '</tr>').join('') +
     '</tbody></table>';
+  pdfFechas().then(fechas => tabla.querySelectorAll('.lab-pdf').forEach(b => {
+    if (fechas.includes(b.dataset.fecha)) { b.textContent = '📄 PDF'; b.classList.add('tiene'); }
+  })).catch(() => {});
 
   // Resumen: último análisis frente al anterior, prueba a prueba
   if (labs.length < 2) { resumen.innerHTML = '<div class="meta-aviso">Aparecerá cuando tengas dos análisis.</div>'; return; }
@@ -326,19 +329,59 @@ document.getElementById('labAddBtn').addEventListener('click', () => {
   if (form.style.display !== 'none') { form.style.display = 'none'; return; }
   form.innerHTML = `<div class="setup-field"><label>Fecha del análisis</label><input type="date" id="labDate" value="${new Date().toISOString().slice(0, 10)}"></div>` +
     LAB_TESTS.map(t => `<div class="lab-input"><label for="lab_${t.k}">${t.n}</label><input type="number" step="any" id="lab_${t.k}" placeholder="${t.u || '—'}"></div>`).join('') +
+    '<div class="lab-input"><label for="labPdfInput">PDF oficial (opcional)</label><input type="file" id="labPdfInput" accept="application/pdf"></div>' +
     '<p class="meta-aviso">Rellena solo las que traiga tu análisis.</p><button class="btn btn-green btn-full" id="labSaveBtn">Guardar análisis</button>';
   form.style.display = 'block';
-  document.getElementById('labSaveBtn').addEventListener('click', () => {
+  document.getElementById('labSaveBtn').addEventListener('click', async () => {
     const date = document.getElementById('labDate').value, values = {};
     LAB_TESTS.forEach(t => { const v = parseFloat(document.getElementById('lab_' + t.k).value); if (!isNaN(v)) values[t.k] = v; });
     if (!date || !Object.keys(values).length) return showToast('Pon la fecha y al menos un valor');
     const labs = Storage.get('labs', []).filter(l => l.date !== date);   // misma fecha: se sustituye
     labs.push({ date, values });
     Storage.set('labs', labs);
+    const pdf = document.getElementById('labPdfInput').files[0];
+    if (pdf) await pdfGuardar(date, pdf);
     form.style.display = 'none';
     renderAnalisis();
     showToast('Análisis guardado ✓');
   });
+});
+
+/* PDF oficiales de los análisis: en IndexedDB (localStorage no aguanta archivos). Solo en este aparato
+   y fuera de la copia JSON. Clave = fecha del análisis. */
+function pdfOp(modo, pedir) {
+  return new Promise((ok, ko) => {
+    const abrir = indexedDB.open('health-tracker', 1);
+    abrir.onupgradeneeded = () => abrir.result.createObjectStore('labPdfs');
+    abrir.onerror = () => ko(abrir.error);
+    abrir.onsuccess = () => {
+      const req = pedir(abrir.result.transaction('labPdfs', modo).objectStore('labPdfs'));
+      req.onsuccess = () => ok(req.result);
+      req.onerror = () => ko(req.error);
+    };
+  });
+}
+const pdfGuardar = (fecha, archivo) => pdfOp('readwrite', s => s.put(archivo, fecha));
+const pdfLeer = fecha => pdfOp('readonly', s => s.get(fecha));
+const pdfFechas = () => pdfOp('readonly', s => s.getAllKeys());
+
+// Un clic en el botón de una fecha: si tiene PDF lo abre; si no, pide uno para adjuntarlo
+document.getElementById('labsTabla').addEventListener('click', async e => {
+  const btn = e.target.closest('.lab-pdf');
+  if (!btn) return;
+  const fecha = btn.dataset.fecha, pdf = await pdfLeer(fecha);
+  if (pdf) return window.open(URL.createObjectURL(pdf));
+  const input = document.getElementById('labPdfFile');
+  input.dataset.fecha = fecha;
+  input.click();
+});
+document.getElementById('labPdfFile').addEventListener('change', async e => {
+  const pdf = e.target.files[0];
+  e.target.value = '';
+  if (!pdf) return;
+  await pdfGuardar(e.target.dataset.fecha, pdf);
+  renderAnalisis();
+  showToast('PDF guardado ✓');
 });
 
 /* ===== METAS (corto, medio y largo plazo) ===== */

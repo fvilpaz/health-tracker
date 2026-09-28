@@ -262,6 +262,8 @@ table.labs th { font-size: 0.72rem; color: var(--text-muted); white-space: nowra
 table.labs td small { display: block; font-size: 0.7rem; color: var(--text-muted); }
 table.labs td.n { text-align: right; font-weight: 600; white-space: nowrap; }
 table.labs td.fuera { color: var(--red); }
+.lab-pdf { display: block; margin-top: 4px; padding: 2px 6px; font-size: 0.68rem; border: 1px dashed var(--border); border-radius: 6px; background: none; color: var(--text-muted); cursor: pointer; }
+.lab-pdf.tiene { border-style: solid; border-color: var(--blue); color: var(--blue); }
 .lab-input { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 6px 0; font-size: 0.82rem; }
 .lab-input input { width: 90px; }
 .lab-cmp { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
