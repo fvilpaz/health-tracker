@@ -15,7 +15,21 @@ concurrency:
   cancel-in-progress: false   # en cola: dos push seguidos no se pisan (fallaba el segundo)
 
 jobs:
+  # Tests primero: si alguno falla, no se publica (la versión rota no llega al móvil)
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Tests (node --test, sin dependencias)
+        run: node --test tests/*.test.js
+        env:
+          TZ: Europe/Madrid
+
   deploy:
+    needs: test
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
