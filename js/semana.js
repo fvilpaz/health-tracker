@@ -3,6 +3,10 @@
    Solo se guarda un bloque COMPLETO (todas las vueltas). Caminar no se registra (va en consejos). */
 const WEEK_GOAL = 3;   // bloques por semana, de lunes a domingo
 
+// Fechas de medidas: «d/m/aaaa» escrito a mano (toLocaleDateString depende del idioma del navegador)
+const fechaEs = d => `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+const esAIso = s => { const [d, m, y] = String(s).split('/'); return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`; };
+
 const isoDate = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
 function saveSession(block, minutes, exercises) {
@@ -23,11 +27,12 @@ function getSessions() {
 }
 
 // Sesiones de la semana (lunes a domingo) que contiene «ref»
-function sessionsInWeek(ref = new Date()) {
+// «sesiones» se puede pasar ya leída para no releer el almacén en cada semana (racha, plan)
+function sessionsInWeek(ref = new Date(), sesiones = getSessions()) {
   const lunes = getWeekStart(ref), domingo = new Date(lunes);
   domingo.setDate(lunes.getDate() + 6);
   const desde = isoDate(lunes), hasta = isoDate(domingo);
-  return getSessions().filter(s => s.date >= desde && s.date <= hasta);
+  return sesiones.filter(s => s.date >= desde && s.date <= hasta);
 }
 
 // Qué bloque toca: el siguiente al último hecho (1 → 2 → 3 → 1)
@@ -77,7 +82,9 @@ function renderSemana() {
   const pasadas = sesiones.filter(s => s.date < isoDate(lunes));
   if (!pasadas.length) { historial.innerHTML = '<div class="meta-aviso">Aquí irán tus semanas anteriores.</div>'; return; }
   const semanas = [];
-  for (let l = getWeekStart(new Date(pasadas[0].date + 'T12:00')); l < lunes; l = dia(l, 7)) semanas.unshift(l);
+  // Como mucho los dos últimos años (104 semanas): con datos muy antiguos, pintar cientos de semanas congelaba la app
+  const primera = getWeekStart(new Date(pasadas[0].date + 'T12:00')), tope = dia(lunes, -7 * 104);
+  for (let l = primera > tope ? primera : tope; l < lunes; l = dia(l, 7)) semanas.unshift(l);
   historial.innerHTML = semanas.map(l => {
     const desde = isoDate(l), hasta = isoDate(dia(l, 6)), suyas = pasadas.filter(s => s.date >= desde && s.date <= hasta);
     const ok = suyas.length >= WEEK_GOAL;
@@ -107,11 +114,11 @@ function completedWeeks() {
 
 // Semanas seguidas cumplidas. La actual suma si ya está cumplida; si no, no rompe la racha (aún puedes cumplirla).
 function weekStreak(ref = new Date()) {
-  const lunes = getWeekStart(ref);
-  let racha = sessionsInWeek(lunes).length >= WEEK_GOAL ? 1 : 0;
+  const lunes = getWeekStart(ref), sesiones = getSessions();   // se leen una vez (antes, una por semana: 4 s con 2.000)
+  let racha = sessionsInWeek(lunes, sesiones).length >= WEEK_GOAL ? 1 : 0;
   for (let l = new Date(lunes); ; ) {
     l.setDate(l.getDate() - 7);
-    if (sessionsInWeek(l).length < WEEK_GOAL) return racha;
+    if (sessionsInWeek(l, sesiones).length < WEEK_GOAL) return racha;
     racha++;
   }
 }

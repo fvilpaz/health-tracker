@@ -10,12 +10,13 @@ function medidaValida(campo, valor) {
   return false;
 }
 
-// Añade la medida de «fecha» a la lista; si ya había una ese día, la sustituye (una por día)
+// Añade la medida de «fecha» a la lista; si ya había una ese día, la sustituye (una por día).
+// La deja ordenada por fecha: «la primera» y «la última» (inicial y actual) son por fecha, no por orden de apunte.
 function anotarMedida(lista, campo, valor, fecha) {
   const i = lista.findIndex(e => e.date === fecha);
   if (i >= 0) lista[i][campo] = valor;
   else lista.push({ date: fecha, [campo]: valor });
-  return lista;
+  return lista.sort((a, b) => esAIso(a.date).localeCompare(esAIso(b.date)));
 }
 
 /* ===== PESO ===== */
@@ -24,7 +25,7 @@ document.getElementById('saveWeightBtn').addEventListener('click', () => {
   const val = parseFloat(input.value);
   if (!medidaValida('weight', val)) return;
 
-  const weights = anotarMedida(Storage.get('weights', []), 'weight', val, new Date().toLocaleDateString('es-ES'));
+  const weights = anotarMedida(Storage.get('weights', []), 'weight', val, fechaEs(new Date()));
 
   if (!Storage.get('startDate')) Storage.set('startDate', new Date().toISOString());
 
@@ -58,7 +59,7 @@ document.getElementById('saveWaistBtn').addEventListener('click', () => {
   const val = parseFloat(input.value);
   if (!medidaValida('waist', val)) return;
 
-  const waists = anotarMedida(Storage.get('waists', []), 'waist', val, new Date().toLocaleDateString('es-ES'));
+  const waists = anotarMedida(Storage.get('waists', []), 'waist', val, fechaEs(new Date()));
 
   Storage.set('waists', waists);
   input.value = '';

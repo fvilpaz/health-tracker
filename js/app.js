@@ -30,9 +30,18 @@ function initApp() {
   }
 }
 
+// Guarda la configuración inicial. El peso y la cintura se AÑADEN a los que hubiera: antes se sustituían y,
+// si habías apuntado pesos sin configurar el plan, al configurarlo se perdían todos menos uno.
+function guardarConfiguracion({ date, weeks, weight, waist, height }) {
+  const dia = new Date(date + 'T00:00:00'), fecha = fechaEs(dia);
+  Storage.set('settings', { ...Storage.get('settings', {}), startDate: date, totalWeeks: weeks, goalWeight: Math.max(50, weight - 7), height });
+  Storage.set('weights', anotarMedida(Storage.get('weights', []), 'weight', weight, fecha));
+  Storage.set('waists', anotarMedida(Storage.get('waists', []), 'waist', waist, fecha));
+  Storage.set('startDate', dia.toISOString());
+}
+
 function showSetup() {
-  const today = new Date();
-  const dateStr = today.toISOString().split('T')[0];
+  const dateStr = isoDate(new Date());   // hoy en hora local (toISOString daba ayer entre las 00:00 y las 02:00)
   const overlay = document.createElement('div');
   overlay.id = 'setupOverlay';
   overlay.innerHTML = `
@@ -89,14 +98,7 @@ function showSetup() {
     if (weeks < 4 || weeks > 24) return showToast('El plan tiene que durar entre 4 y 24 semanas');
     if (!medidaValida('height', height) || !medidaValida('weight', weight) || !medidaValida('waist', waist)) return;
 
-    const dateObj = new Date(date + 'T00:00:00');
-    const dateLabel = dateObj.toLocaleDateString('es-ES');
-    const goalWeight = Math.max(50, weight - 7);
-
-    Storage.set('settings', { startDate: date, totalWeeks: weeks, goalWeight, height });
-    Storage.set('weights', [{ date: dateLabel, weight }]);
-    Storage.set('waists', [{ date: dateLabel, waist }]);
-    Storage.set('startDate', dateObj.toISOString());
+    guardarConfiguracion({ date, weeks, weight, waist, height });
 
     overlay.remove();
     initApp();
