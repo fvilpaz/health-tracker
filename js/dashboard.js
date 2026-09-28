@@ -2,6 +2,13 @@
    a corto, medio y largo plazo. Se movió tal cual desde app.js (28-sep-2026). */
 
 /* ===== DASHBOARD ===== */
+// Cambio desde la primera medida: «-1.5» si has bajado, «+0.5» si has subido (antes ponía «-» también al subir)
+function diferencia(inicio, actual) {
+  if (inicio == null || actual == null) return '--';
+  const d = Math.round((actual - inicio) * 10) / 10;
+  return d > 0 ? `+${d.toFixed(1)}` : d.toFixed(1);
+}
+
 function updateDashboard() {
   const settings = Storage.get('settings', {});
   const weights = Storage.get('weights', []);
@@ -18,15 +25,14 @@ function updateDashboard() {
 
   // Perdido
   const lostEl = document.getElementById('dashLost');
-  if (lostEl && startWeight && currentWeight) {
-    const diff = (startWeight - currentWeight).toFixed(1);
-    lostEl.textContent = diff > 0 ? `-${diff}` : diff;
-  }
+  if (lostEl) lostEl.textContent = diferencia(startWeight, currentWeight);   // sin datos, «--» (antes se quedaba el viejo)
 
   // Esta semana
   const weekEl = document.getElementById('dashWeek');
   if (weekEl) {
     weekEl.textContent = sessionsInWeek().length;   // bloques completos de esta semana
+    const objEl = document.getElementById('dashWeekGoal');
+    if (objEl) objEl.textContent = WEEK_GOAL;
   }
 
   // Racha
@@ -63,10 +69,7 @@ function updateDashboard() {
   if (waistEl) waistEl.textContent = currentWaist ? currentWaist.toFixed(1) : '--';
 
   const waistLostEl = document.getElementById('dashWaistLost');
-  if (waistLostEl && startWaist && currentWaist) {
-    const diff = (startWaist - currentWaist).toFixed(1);
-    waistLostEl.textContent = diff > 0 ? `-${diff}` : diff;
-  }
+  if (waistLostEl) waistLostEl.textContent = diferencia(startWaist, currentWaist);
 
   // Semáforo de peso (por IMC) y cintura (por cintura/altura); sin altura, sin color
   semaforo(weightEl, heightCm && currentWeight ? currentWeight / (heightCm / 100) ** 2 : null, 25, 30);
@@ -77,7 +80,10 @@ function updateDashboard() {
   // Ratio cintura/altura (WHtR)
   const whtrEl = document.getElementById('dashWHtR');
   const whtrStatusEl = document.getElementById('dashWHtRStatus');
-  if (whtrEl && currentWaist && !heightCm) {
+  if (whtrEl && !currentWaist) {             // sin cintura: nada que enseñar (antes se quedaba el valor viejo)
+    whtrEl.textContent = '--';
+    if (whtrStatusEl) whtrStatusEl.textContent = '';
+  } else if (whtrEl && currentWaist && !heightCm) {
     whtrEl.textContent = '--';
     whtrEl.style.color = '';
     if (whtrStatusEl) whtrStatusEl.textContent = 'Añade tu altura en Progreso';
@@ -147,7 +153,7 @@ function renderMetas() {
     return `<div class="meta-row ${hecho ? 'hecha' : ''}">
       <span class="meta-plazo">${mt.plazo}</span>
       <div class="meta-info"><strong>${mt.peso.toFixed(1)} kg</strong><span>${mt.texto}</span></div>
-      <span class="meta-falta">${hecho ? `${estado('ok')} Conseguido` : `te faltan <strong>${falta.toFixed(1)} kg</strong>`}</span>
+      <span class="meta-falta">${hecho ? `${estado('ok')} Conseguido` : falta < 0.05 ? 'te falta <strong>muy poco</strong>' : `te faltan <strong>${falta.toFixed(1)} kg</strong>`}</span>
     </div>`;
   }).join('') + `<div class="meta-aviso">Ahora: <strong>${current.toFixed(1)} kg</strong> · IMC ${(current / m2).toFixed(1)}</div>`;
 }

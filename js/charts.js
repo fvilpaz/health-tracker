@@ -3,6 +3,9 @@ let weightChart = null;
 function renderWeightChart(entries) {
   const ctx = document.getElementById('weightChart');
   if (!ctx) return;
+  // Sin pesos: un aviso en lugar de un lienzo vacío (y sin calcular una escala con Infinity)
+  ctx.closest('.chart-wrap')?.classList.toggle('vacia', !entries.length);
+  if (!entries.length) { if (weightChart) { weightChart.destroy(); weightChart = null; } return; }
 
   const labels = entries.map(e => e.date);
   const data = entries.map(e => e.weight);
