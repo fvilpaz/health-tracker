@@ -17,7 +17,6 @@ function initApp() {
   updateDashboard();
   renderPlanTable();
   renderWeightLog();
-  renderCalendar();
   checkLogros();
 
   const newPlanBtn = document.getElementById('newPlanBtn');
@@ -242,6 +241,7 @@ function updateDashboard() {
 
   renderMetas();
   renderAnalisis();
+  renderSemana();
 }
 
 function semaforo(el, valor, naranjaDesde, rojoDesde) {
@@ -737,11 +737,6 @@ function getWeekStart(ref = new Date()) {
   return d;
 }
 
-function parseDate(str) {
-  const [d, m, y] = str.split('/');
-  return new Date(y, m - 1, d);
-}
-
 /* ===== PESO ===== */
 document.getElementById('saveWeightBtn').addEventListener('click', () => {
   const input = document.getElementById('weightInput');
@@ -863,71 +858,6 @@ document.getElementById('stopBtn').addEventListener('click', () => {
   document.getElementById('pauseBtn').textContent = '⏸';
   renderWorkoutPhase(currentPhase);
 });
-
-/* ===== CALENDARIO ===== */
-const DAYS = [
-  { name: 'Lunes', activity: '💪 Entrenamiento', type: 'train' },
-  { name: 'Martes', activity: '🚶 Caminar 30-45 min', type: 'walk' },
-  { name: 'Miércoles', activity: '💪 Entrenamiento', type: 'train' },
-  { name: 'Jueves', activity: '🚶 Caminar 30-45 min', type: 'walk' },
-  { name: 'Viernes', activity: '💪 Entrenamiento', type: 'train' },
-  { name: 'Sábado', activity: '🌳 Paseo libre', type: 'walk' },
-  { name: 'Domingo', activity: '😴 Descanso', type: 'rest' }
-];
-
-function renderCalendar() {
-  const grid = document.getElementById('weekGrid');
-  if (!grid) return;
-  const weekKey = getWeekKey();
-  const checked = Storage.get('calendar_' + weekKey, {});
-
-  grid.innerHTML = '';
-  DAYS.forEach((day, i) => {
-    const isChecked = checked[i] || false;
-    const div = document.createElement('div');
-    div.className = 'day-row';
-    div.innerHTML = `
-      <span class="day-name">${day.name}</span>
-      <span class="day-activity">${day.activity}</span>
-      <button class="day-check ${isChecked ? 'checked' : ''}" data-idx="${i}">${isChecked ? '✓' : ''}</button>
-    `;
-    grid.appendChild(div);
-  });
-
-  grid.querySelectorAll('.day-check').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const idx = parseInt(btn.dataset.idx);
-      const wk = getWeekKey();
-      const ch = Storage.get('calendar_' + wk, {});
-      ch[idx] = !ch[idx];
-      Storage.set('calendar_' + wk, ch);
-      btn.classList.toggle('checked', ch[idx]);
-      btn.textContent = ch[idx] ? '✓' : '';
-
-      if (DAYS[idx].type === 'train' && ch[idx]) {
-        const trainings = Storage.get('trainings', []);
-        const today = getDayLabel(idx);
-        if (!trainings.includes(today)) trainings.push(today);
-        Storage.set('trainings', trainings);
-        updateDashboard();
-      }
-    });
-  });
-}
-
-function getWeekKey() {
-  const d = new Date();
-  const start = new Date(d);
-  start.setDate(d.getDate() - d.getDay() + 1);
-  return start.toISOString().slice(0, 10);
-}
-
-function getDayLabel(idx) {
-  const d = new Date();
-  const start = new Date(d);
-  start.setDate(d.getDate() - d.getDay() + 1 + idx);
-  return start.toLocaleDateString('es-ES');
-}
 
 /* ===== LOGROS ===== */
 const LOGROS_DEF = [

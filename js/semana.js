@@ -35,3 +35,65 @@ function nextBlock() {
   const ultimo = getSessions().filter(s => s.block).pop();
   return ultimo ? String(Number(ultimo.block) % 3 + 1) : '1';
 }
+
+/* ===== MI SEMANA: aviso, días y semanas anteriores ===== */
+const plural = (n, una, varias) => `${n} ${n === 1 ? una : varias}`;
+
+// 🟢 cumplida o vas bien · 🟠 vas justo · 🔴 ya no llegas, o es domingo con bloques pendientes
+function weekStatus(ref = new Date()) {
+  const hechos = sessionsInWeek(ref).length, faltan = Math.max(0, WEEK_GOAL - hechos);
+  const hoyHecho = getSessions().some(s => s.date === isoDate(ref));
+  const dias = 7 - (ref.getDay() + 6) % 7 - (hoyHecho ? 1 : 0);   // días que quedan para entrenar (hoy cuenta si aún no has entrenado)
+  const b = n => plural(n, 'bloque', 'bloques'), d = n => plural(n, 'día', 'días');
+  const falta = faltan === 1 ? 'falta' : 'faltan', queda = dias === 1 ? 'queda' : 'quedan';
+  if (!faltan) return { hechos, color: 'verde', texto: '✅ Semana cumplida. ¡Bien hecho!' };
+  if (faltan > dias) return { hechos, color: 'rojo', texto: `🔴 Esta semana ya no llegas: te ${falta} ${b(faltan)} y ${dias ? `solo ${queda} ${d(dias)}` : 'no quedan días'}.` };
+  if (ref.getDay() === 0) return { hechos, color: 'rojo', texto: `🔴 Es domingo y te ${falta} ${b(faltan)}: hoy es el último día.` };
+  if (faltan === dias) return { hechos, color: 'naranja', texto: `🟠 Vas justo: te ${falta} ${b(faltan)} y ${queda} ${d(dias)}.` };
+  return { hechos, color: 'verde', texto: `🟢 Vas bien: te ${falta} ${b(faltan)} y ${queda} ${d(dias)}.` };
+}
+
+function renderSemana() {
+  const actual = document.getElementById('semanaActual'), historial = document.getElementById('semanaHistorial');
+  if (!actual || !historial) return;
+  const hoy = new Date(), lunes = getWeekStart(hoy), est = weekStatus(hoy), sesiones = getSessions();
+  const dia = (base, n) => { const d = new Date(base); d.setDate(base.getDate() + n); return d; };
+  const corta = d => d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+  const etiqueta = s => `${s.block ? `Bloque ${s.block}` : 'Entreno'}${s.minutes ? ` · ${s.minutes} min` : ''}`;
+
+  actual.innerHTML =
+    `<div class="semana-cab"><span>${corta(lunes)} – ${corta(dia(lunes, 6))}</span><strong class="semana-cuenta ${est.color}">${est.hechos} / ${WEEK_GOAL}</strong></div>` +
+    `<div class="semana-aviso ${est.color}">${est.texto}</div>` +
+    '<div class="semana-dias">' + [0, 1, 2, 3, 4, 5, 6].map(n => {
+      const f = isoDate(dia(lunes, n)), delDia = sesiones.filter(s => s.date === f), esHoy = f === isoDate(hoy);
+      return `<div class="semana-dia${esHoy ? ' hoy' : ''}${delDia.length ? ' hecho' : ''}">` +
+        `<span class="semana-letra">${'LMXJVSD'[n]}<small>${dia(lunes, n).getDate()}</small></span>` +
+        `<span>${delDia.length ? delDia.map(s => '✅ ' + etiqueta(s)).join('<br>') : esHoy ? 'hoy' : ''}</span></div>`;
+    }).join('') + '</div>' +
+    (est.hechos < WEEK_GOAL ? `<button class="btn btn-green btn-full" id="semanaEntrenar">💪 Entrenar · toca el Bloque ${nextBlock()}</button>` : '') +
+    '<div class="meta-aviso">Consejo: deja un día de descanso entre bloques. Caminar no se apunta aquí (va en los consejos).</div>';
+
+  // Semanas anteriores: desde la del primer entreno hasta la pasada, también las que quedaron a cero
+  const pasadas = sesiones.filter(s => s.date < isoDate(lunes));
+  if (!pasadas.length) { historial.innerHTML = '<div class="meta-aviso">Aquí irán tus semanas anteriores.</div>'; return; }
+  const semanas = [];
+  for (let l = getWeekStart(new Date(pasadas[0].date + 'T12:00')); l < lunes; l = dia(l, 7)) semanas.unshift(l);
+  historial.innerHTML = semanas.map(l => {
+    const desde = isoDate(l), hasta = isoDate(dia(l, 6)), suyas = pasadas.filter(s => s.date >= desde && s.date <= hasta);
+    const ok = suyas.length >= WEEK_GOAL;
+    return `<details class="lab-sec"><summary><div class="lab-tit">${corta(l)} – ${corta(dia(l, 6))}` +
+      `<small>${suyas.length} / ${WEEK_GOAL} ${ok ? '✅ cumplida' : '· no cumplida'}</small></div><span class="lab-flecha"></span></summary>` +
+      '<div class="lab-cuerpo">' + (suyas.length ? suyas.map(s =>
+        `<div class="lab-fila"><div class="lab-fila-top"><span>${new Date(s.date + 'T12:00').toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric' })}</span><strong>${etiqueta(s)}</strong></div>` +
+        (s.exercises ? `<div class="lab-fila-que">${s.exercises.join(' · ')}</div>` : '') + '</div>').join('')
+        : '<div class="meta-aviso">Sin entrenos esta semana.</div>') + '</div></details>';
+  }).join('');
+}
+
+// «Entrenar»: al Entreno, con el bloque que toca y empezando por el calentamiento
+document.getElementById('semanaActual')?.addEventListener('click', e => {
+  if (e.target.id !== 'semanaEntrenar') return;
+  currentBlock = nextBlock();
+  document.querySelector('[data-section="entrenamiento"]').click();
+  renderWorkoutPhase('warmup');
+});
