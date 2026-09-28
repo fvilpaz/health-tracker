@@ -28,11 +28,16 @@ function comodin() {
   });
 }
 
-function crearApp() {
+// opciones.limite: tamaño máximo del almacén en caracteres (para simular que se llena, como el cupo real de ~5 MB)
+function crearApp(opciones = {}) {
   const almacen = new Map();
   const localStorage = {
     getItem: k => (almacen.has(k) ? almacen.get(k) : null),
-    setItem: (k, v) => almacen.set(k, String(v)),
+    setItem: (k, v) => {
+      const total = [...almacen].reduce((n, [c, x]) => n + (c === k ? 0 : c.length + x.length), 0) + k.length + String(v).length;
+      if (opciones.limite && total > opciones.limite) { const e = new Error('QuotaExceededError'); e.name = 'QuotaExceededError'; throw e; }
+      almacen.set(k, String(v));
+    },
     removeItem: k => almacen.delete(k),
     key: i => [...almacen.keys()][i] ?? null,
     get length() { return almacen.size; },
