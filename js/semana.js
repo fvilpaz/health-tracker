@@ -115,3 +115,12 @@ function weekStreak(ref = new Date()) {
     racha++;
   }
 }
+
+// Lunes de la semana de «ref». getDay() da 0 en domingo: (getDay() + 6) % 7 son los días desde el lunes
+// (antes el domingo saltaba al lunes SIGUIENTE y la semana salía a 0).
+function getWeekStart(ref = new Date()) {
+  const d = new Date(ref);
+  d.setHours(0,0,0,0);
+  d.setDate(d.getDate() - (d.getDay() + 6) % 7);
+  return d;
+}
