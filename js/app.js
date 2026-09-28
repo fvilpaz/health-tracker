@@ -53,13 +53,18 @@ function showSetup() {
       </div>
 
       <div class="setup-field">
+        <label>Altura (cm)</label>
+        <input type="number" id="setupHeight" placeholder="Ej: 175" step="1" min="120" max="230">
+      </div>
+
+      <div class="setup-field">
         <label>Peso actual (kg)</label>
-        <input type="number" id="setupWeight" value="97" step="0.1" min="30" max="300">
+        <input type="number" id="setupWeight" placeholder="Ej: 80" step="0.1" min="30" max="300">
       </div>
 
       <div class="setup-field">
         <label>Cintura actual (cm) — a la altura del ombligo</label>
-        <input type="number" id="setupWaist" value="105" step="0.1" min="40" max="200">
+        <input type="number" id="setupWaist" placeholder="Ej: 95" step="0.1" min="40" max="200">
       </div>
 
       <button class="btn btn-green btn-full" id="setupStartBtn">🚀 Empezar</button>
@@ -76,14 +81,15 @@ function showSetup() {
     const weeks = parseInt(document.getElementById('setupWeeks').value) || 12;
     const weight = parseFloat(document.getElementById('setupWeight').value);
     const waist = parseFloat(document.getElementById('setupWaist').value);
+    const height = parseInt(document.getElementById('setupHeight').value);
 
-    if (!date || isNaN(weight) || isNaN(waist)) return;
+    if (!date || isNaN(weight) || isNaN(waist) || isNaN(height)) return;
 
     const dateObj = new Date(date + 'T00:00:00');
     const dateLabel = dateObj.toLocaleDateString('es-ES');
     const goalWeight = Math.max(50, weight - 7);
 
-    Storage.set('settings', { startDate: date, totalWeeks: weeks, goalWeight });
+    Storage.set('settings', { startDate: date, totalWeeks: weeks, goalWeight, height });
     Storage.set('weights', [{ date: dateLabel, weight }]);
     Storage.set('waists', [{ date: dateLabel, waist }]);
     Storage.set('startDate', dateObj.toISOString());
@@ -188,10 +194,13 @@ function updateDashboard() {
     if (pctEl) pctEl.textContent = `${Math.round((weeks / totalWeeks) * 100)}%`;
   }
 
-  // IMC
-  const imc = currentWeight ? (currentWeight / (1.76 * 1.76)).toFixed(1) : '--';
+  // IMC (con la altura que pone el usuario; sin altura, no se inventa ninguna)
+  const heightCm = getHeightCm();
+  const imc = currentWeight && heightCm ? (currentWeight / (heightCm / 100) ** 2).toFixed(1) : '--';
   const imcEl = document.getElementById('dashIMC');
   if (imcEl) imcEl.textContent = imc;
+  const heightEl = document.getElementById('dashHeight');
+  if (heightEl) heightEl.textContent = heightCm ? `altura: ${(heightCm / 100).toFixed(2)} m` : 'añade tu altura en Progreso';
 
   // Cintura
   const waists = Storage.get('waists', []);
@@ -210,8 +219,12 @@ function updateDashboard() {
   // Ratio cintura/altura (WHtR)
   const whtrEl = document.getElementById('dashWHtR');
   const whtrStatusEl = document.getElementById('dashWHtRStatus');
-  if (whtrEl && currentWaist) {
-    const whtr = (currentWaist / 176).toFixed(2);
+  if (whtrEl && currentWaist && !heightCm) {
+    whtrEl.textContent = '--';
+    whtrEl.style.color = '';
+    if (whtrStatusEl) whtrStatusEl.textContent = 'Añade tu altura en Progreso';
+  } else if (whtrEl && currentWaist) {
+    const whtr = (currentWaist / heightCm).toFixed(2);
     whtrEl.textContent = whtr;
     if (whtr < 0.5) {
       whtrEl.style.color = 'var(--green)';
@@ -419,6 +432,24 @@ document.getElementById('saveWeightBtn').addEventListener('click', () => {
   showToast('Peso guardado ✓');
 });
 
+// Altura del usuario (cm), guardada en los ajustes. Sin altura: null (IMC y ratio muestran "--").
+function getHeightCm() {
+  return Storage.get('settings', {}).height || null;
+}
+if (getHeightCm()) document.getElementById('heightInput').placeholder = `Altura: ${getHeightCm()} cm`;
+
+document.getElementById('saveHeightBtn').addEventListener('click', () => {
+  const input = document.getElementById('heightInput');
+  const val = parseInt(input.value);
+  if (isNaN(val) || val < 120 || val > 230) return;
+  Storage.set('settings', { ...Storage.get('settings', {}), height: val });
+  input.value = '';
+  input.placeholder = `Altura: ${val} cm`;
+  updateDashboard();
+  checkLogros();
+  showToast('Altura guardada ✓');
+});
+
 document.getElementById('saveWaistBtn').addEventListener('click', () => {
   const input = document.getElementById('waistInput');
   const val = parseFloat(input.value);
@@ -574,9 +605,9 @@ const LOGROS_DEF = [
   { id: 'kg1', icon: '⚖️', name: '1 kg perdido', desc: 'Primer kilo perdido', check: () => { const w = Storage.get('weights', []); return w.length >= 2 && (w[0].weight - w[w.length - 1].weight) >= 1; } },
   { id: 'month', icon: '📅', name: 'Primer mes', desc: '30 entrenamientos completados', check: () => Storage.get('trainings', []).length >= 12 },
   { id: 'kg5', icon: '🏆', name: '5 kg perdidos', desc: '5 kilos menos', check: () => { const w = Storage.get('weights', []); return w.length >= 2 && (w[0].weight - w[w.length - 1].weight) >= 5; } },
-  { id: 'goal', icon: '🎯', name: 'Objetivo 90 kg', desc: 'Llegas a tu peso objetivo', check: () => { const w = Storage.get('weights', []); return w.length && w[w.length - 1].weight <= 90; } },
+  { id: 'goal', icon: '🎯', name: 'Peso objetivo', desc: 'Llegas a tu peso objetivo', check: () => { const w = Storage.get('weights', []); const g = Storage.get('settings', {}).goalWeight; return w.length && g && w[w.length - 1].weight <= g; } },
   { id: 'waist1', icon: '📏', name: '1 cm menos', desc: 'Primer cm de cintura perdido', check: () => { const w = Storage.get('waists', []); return w.length >= 2 && (w[0].waist - w[w.length - 1].waist) >= 1; } },
-  { id: 'whtr', icon: '💚', name: 'Ratio saludable', desc: 'Cintura/altura < 0.5', check: () => { const w = Storage.get('waists', []); return w.length && (w[w.length - 1].waist / 176) < 0.5; } }
+  { id: 'whtr', icon: '💚', name: 'Ratio saludable', desc: 'Cintura/altura < 0.5', check: () => { const w = Storage.get('waists', []); const h = getHeightCm(); return w.length && h && (w[w.length - 1].waist / h) < 0.5; } }
 ];
 
 function checkLogros() {

@@ -91,7 +91,7 @@
         <div class="stat-card purple" style="grid-column: span 3;">
           <div class="stat-label">IMC</div>
           <div class="stat-value" id="dashIMC">--</div>
-          <div class="stat-unit">altura: 1.76 m</div>
+          <div class="stat-unit" id="dashHeight">altura: --</div>
         </div>
       </div>
 
@@ -326,6 +326,10 @@
         <div class="weight-input-row">
           <input type="number" id="waistInput" placeholder="Cintura: 98" step="0.1" min="40" max="200">
           <button class="btn btn-green" id="saveWaistBtn">Cintura</button>
+        </div>
+        <div class="weight-input-row">
+          <input type="number" id="heightInput" placeholder="Altura (cm)" step="1" min="120" max="230">
+          <button class="btn btn-primary" id="saveHeightBtn">Altura</button>
         </div>
         <div style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">Mide en ayunas, a la altura del ombligo, sin apretar</div>
       </div>
