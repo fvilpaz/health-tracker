@@ -60,6 +60,7 @@ health-tracker/
 ├── docs/
 │   ├── PLAN.md             ← Plan de mejoras priorizado
 │   └── SESION.md           ← Notas internas (no público)
+├── tests/                  ← Tests (node --test): semana, copias/seguridad, análisis y plan
 └── .github/workflows/
     └── pages.yml           ← Deploy automático a GitHub Pages
 ```
@@ -69,6 +70,16 @@ health-tracker/
 Todos los datos se guardan en `localStorage` de tu navegador; los PDF de los análisis, en IndexedDB. No se envía nada a ningún servidor y el repositorio no contiene datos de nadie. Si borras los datos del navegador, se pierden: exporta una copia de vez en cuando desde **Progreso → 💾 Tus datos** (los PDF no van en la copia).
 
 **Varios aparatos:** cada navegador tiene sus propios datos. Exporta en uno e importa en el otro. Un archivo que solo trae análisis se **añade** sin borrar lo demás.
+
+## Tests
+
+```bash
+node --test tests/*.test.js
+```
+
+Sin dependencias: `tests/entorno.js` carga los scripts **reales** de la app en una página falsa (localStorage en memoria,
+`document` que no hace nada) y los tests llaman a sus funciones. Se lanzan solos en cada push **antes** de publicar:
+si uno falla, la web no se actualiza. Los datos de los tests son inventados (el repo es público).
 
 ## Seguridad
 
