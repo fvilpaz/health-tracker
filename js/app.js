@@ -281,7 +281,7 @@ const LAB_TESTS = [
 
 const labFuera = (t, v) => (t.min != null && v < t.min) || (t.max != null && v > t.max);
 const labFecha = d => new Date(d + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: '2-digit' });
-const labNum = v => Number.isInteger(v) ? String(v) : String(v).replace('.', ',');
+const labNum = v => esc(Number.isInteger(v) ? String(v) : String(v).replace('.', ','));
 
 // Qué es cada prueba y qué hacer si está fuera de rango o empeora (textos generales, sin datos de nadie)
 const LAB_INFO = {
@@ -340,8 +340,8 @@ function renderAnalisis() {
     const fuera = pruebas.filter(t => t.mejor !== 'info' && labFuera(t, l.values[t.k])).length;
     return `<details class="lab-sec"><summary><div class="lab-tit">${duo('semana', 'tit-ico')} ${labFechaLarga(l.date)}` +
       `<small>${pruebas.length} pruebas · ${fuera ? `${estado('alerta')} ${fuera} fuera de rango` : `${estado('ok')} todo en rango`}</small></div><span class="lab-flecha"></span></summary>` +
-      `<div class="lab-cuerpo"><button class="btn btn-primary lab-pdf" data-fecha="${l.date}" title="Adjuntar PDF" aria-label="Adjuntar PDF">${ICONO.adjuntar}</button>` +
-      `<button class="btn btn-red lab-pdf-quitar" data-fecha="${l.date}" title="Borrar PDF" aria-label="Borrar PDF" hidden>${ICONO.papelera}</button>` +
+      `<div class="lab-cuerpo"><button class="btn btn-primary lab-pdf" data-fecha="${esc(l.date)}" title="Adjuntar PDF" aria-label="Adjuntar PDF">${ICONO.adjuntar}</button>` +
+      `<button class="btn btn-red lab-pdf-quitar" data-fecha="${esc(l.date)}" title="Borrar PDF" aria-label="Borrar PDF" hidden>${ICONO.papelera}</button>` +
       pruebas.map(t => {
         const v = l.values[t.k], mal = t.mejor !== 'info' && labFuera(t, v);
         return `<div class="lab-fila ${mal ? 'fuera' : ''}"><div class="lab-fila-top"><span>${estado(t.mejor === 'info' ? 'info' : mal ? 'alerta' : 'ok')} ${t.n}</span>` +
@@ -457,7 +457,7 @@ document.getElementById('labAddBtn').addEventListener('click', () => {
       if (fecha) document.getElementById('labDate').value = fecha;
       LAB_TESTS.forEach(t => { document.getElementById('lab_' + t.k).value = valores[t.k] ?? ''; });
       const leidas = LAB_TESTS.filter(t => valores[t.k] != null);
-      estado.innerHTML = `${ICONO.pdf} ${archivo.name} · ${leidas.length} valores leídos${fecha ? ' · fecha ' + labFecha(fecha) : ' · no encontré la fecha: ponla tú'}`;
+      estado.innerHTML = `${ICONO.pdf} ${esc(archivo.name)} · ${leidas.length} valores leídos${fecha ? ' · fecha ' + labFecha(fecha) : ' · no encontré la fecha: ponla tú'}`;
       document.getElementById('labLeidos').innerHTML = leidas.length
         ? '<table class="labs">' + leidas.map(t => `<tr><td>${t.n}</td><td class="n ${labFuera(t, valores[t.k]) ? 'fuera' : ''}">${labNum(valores[t.k])} <small>${t.u}</small></td></tr>`).join('') + '</table>'
         : '<div class="meta-aviso">No he encontrado ningún valor conocido en este PDF. Rellénalos a mano abajo.</div>';
@@ -515,7 +515,7 @@ document.getElementById('labsTabla').addEventListener('click', async e => {
   const btn = e.target.closest('.lab-pdf');
   if (!btn) return;
   const fecha = btn.dataset.fecha, pdf = await pdfLeer(fecha);
-  if (pdf) return window.open(URL.createObjectURL(pdf));
+  if (pdf) return window.open(URL.createObjectURL(new Blob([pdf], { type: 'application/pdf' })));   // siempre como PDF: un HTML renombrado no se ejecuta
   const input = document.getElementById('labPdfFile');
   input.dataset.fecha = fecha;
   input.click();
@@ -626,11 +626,11 @@ function renderPlanTable() {
     html += `<div class="plan-inputs">`;
     html += `<div class="plan-input-group">`;
     html += `<span class="plan-target"><span>${targetWeight}</span> kg</span>`;
-    html += `<input type="number" step="0.1" min="30" max="300" value="${actualWeight}" placeholder="" data-w="${w}" data-field="weight">`;
+    html += `<input type="number" step="0.1" min="30" max="300" value="${esc(actualWeight)}" placeholder="" data-w="${w}" data-field="weight">`;
     html += `</div>`;
     html += `<div class="plan-input-group">`;
     html += `<span class="plan-target"><span>${targetWaist}</span> cm</span>`;
-    html += `<input type="number" step="0.1" min="40" max="200" value="${actualWaist}" placeholder="" data-w="${w}" data-field="waist">`;
+    html += `<input type="number" step="0.1" min="40" max="200" value="${esc(actualWaist)}" placeholder="" data-w="${w}" data-field="waist">`;
     html += `</div>`;
     html += `</div>`;
     html += `</div>`;
@@ -770,10 +770,10 @@ function renderWeightLog() {
     const div = document.createElement('div');
     div.className = 'weight-entry';
     div.innerHTML = `
-      <span class="w-date">${e.date}</span>
-      <span class="w-value">${e.weight} kg</span>
+      <span class="w-date">${esc(e.date)}</span>
+      <span class="w-value">${esc(e.weight)} kg</span>
       ${diff ? `<span class="w-diff ${diffClass}">${diffText}</span>` : '<span></span>'}
-      <button class="w-del" data-date="${e.date}" title="Eliminar" aria-label="Eliminar">${ICONO.cerrar}</button>
+      <button class="w-del" data-date="${esc(e.date)}" title="Eliminar" aria-label="Eliminar">${ICONO.cerrar}</button>
     `;
     container.appendChild(div);
   });
@@ -876,11 +876,15 @@ document.getElementById('importFile').addEventListener('change', async e => {
   if (!file) return;
   let copia;
   try { copia = JSON.parse(await file.text()); } catch { return showToast('Ese archivo no es una copia válida'); }
-  if (copia?.app !== BACKUP_APP || !copia.data) return showToast('Ese archivo no es una copia de Health Tracker');
-  const d = copia.data, n = k => Array.isArray(d[k]) ? d[k].length : 0;
+  if (copia?.app !== BACKUP_APP || !copia.data || typeof copia.data !== 'object' || Array.isArray(copia.data)) return showToast('Ese archivo no es una copia de Health Tracker');
+  // Solo entra lo que tiene la forma correcta (ver copia.js); lo descartado se avisa en la pregunta
+  const { datos: d, descartados } = limpiarCopia(copia.data);
+  const n = k => Array.isArray(d[k]) ? d[k].length : 0;
+  const aviso = descartados ? `\n\n⚠ ${descartados} ${descartados === 1 ? 'dato no válido se ignora' : 'datos no válidos se ignoran'}.` : '';
   // Archivo que solo trae análisis: se AÑADEN (misma fecha → se sustituye), sin borrar nada más
-  if (Object.keys(d).length === 1 && Array.isArray(d.labs)) {
-    if (!confirm(`Este archivo trae ${n('labs')} análisis. Se añaden a los que ya tienes (sin borrar nada más). ¿Continuar?`)) return;
+  if (Object.keys(copia.data).length === 1 && Array.isArray(d.labs)) {
+    if (!n('labs')) return showToast('El archivo no trae ningún análisis válido');
+    if (!confirm(`Este archivo trae ${n('labs')} análisis. Se añaden a los que ya tienes (sin borrar nada más).${aviso}\n\n¿Continuar?`)) return;
     const fechas = new Set(d.labs.map(l => l.date));
     Storage.set('labs', Storage.get('labs', []).filter(l => !fechas.has(l.date)).concat(d.labs));
     renderAnalisis();
@@ -888,7 +892,7 @@ document.getElementById('importFile').addEventListener('change', async e => {
   }
   const cuando = copia.exportedAt ? new Date(copia.exportedAt).toLocaleDateString('es-ES') : 'fecha desconocida';
   if (!confirm(`Copia del ${cuando}: ${n('weights')} pesos, ${n('waists')} cinturas, ${n('sessions')} bloques de fuerza.\n\n` +
-               'Esto SUSTITUYE los datos de este aparato. ¿Continuar?')) return;
+               `Esto SUSTITUYE los datos de este aparato.${aviso}\n\n¿Continuar?`)) return;
   Object.keys(localStorage).filter(k => k.startsWith('ht_')).forEach(k => localStorage.removeItem(k));
   Object.entries(d).forEach(([k, v]) => Storage.set(k, v));
   location.reload();

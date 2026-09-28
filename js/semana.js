@@ -59,7 +59,7 @@ function renderSemana() {
   const hoy = new Date(), lunes = getWeekStart(hoy), est = weekStatus(hoy), sesiones = getSessions();
   const dia = (base, n) => { const d = new Date(base); d.setDate(base.getDate() + n); return d; };
   const corta = d => d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
-  const etiqueta = s => `${s.block ? `Bloque ${s.block}` : 'Entreno'}${s.minutes ? ` · ${s.minutes} min` : ''}`;
+  const etiqueta = s => `${s.block ? `Bloque ${esc(s.block)}` : 'Entreno'}${s.minutes ? ` · ${esc(s.minutes)} min` : ''}`;
 
   actual.innerHTML =
     `<div class="semana-cab"><span>${corta(lunes)} – ${corta(dia(lunes, 6))}</span><strong class="semana-cuenta ${est.color}">${est.hechos} / ${WEEK_GOAL}</strong></div>` +
@@ -85,7 +85,7 @@ function renderSemana() {
       `<small>${suyas.length} / ${WEEK_GOAL} ${ok ? `${estado('ok')} cumplida` : '· no cumplida'}</small></div><span class="lab-flecha"></span></summary>` +
       '<div class="lab-cuerpo">' + (suyas.length ? suyas.map(s =>
         `<div class="lab-fila"><div class="lab-fila-top"><span>${new Date(s.date + 'T12:00').toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric' })}</span><strong>${etiqueta(s)}</strong></div>` +
-        (s.exercises ? `<div class="lab-fila-que">${s.exercises.join(' · ')}</div>` : '') + '</div>').join('')
+        (s.exercises ? `<div class="lab-fila-que">${s.exercises.map(esc).join(' · ')}</div>` : '') + '</div>').join('')
         : '<div class="meta-aviso">Sin entrenos esta semana.</div>') + '</div></details>';
   }).join('');
 }
