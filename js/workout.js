@@ -56,7 +56,7 @@ async function renderWorkoutPhase(phase) {
         ${ex.tip ? `<div class="exercise-tip">${ex.tip}</div>` : ''}
       </div>
       <div class="exercise-time">${timeLabel}</div>
-      <a class="exercise-video" href="${ytUrl}" target="_blank" rel="noopener" title="Ver cómo se hace">▶</a>
+      <a class="exercise-video" href="${ytUrl}" target="_blank" rel="noopener" title="Ver cómo se hace" aria-label="Vídeo: cómo se hace ${ex.name}">▶</a>
     `;
     list.appendChild(div);
   });

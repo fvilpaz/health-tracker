@@ -133,7 +133,7 @@ function renderAnalisis() {
   const sugerir = LAB_TESTS.filter(t => consejoPara(t, last.values[t.k] ?? 0) && last.values[t.k] != null && t.mejor !== 'info' &&
     (labFuera(t, last.values[t.k]) || (prev.values[t.k] != null && labComparar(t, prev.values[t.k], last.values[t.k]).clase === 'peora')));
   resumen.innerHTML =
-    `<div class="lab-elegir"><select id="labCmpA">${opciones(labCmp.a)}</select><span>→</span><select id="labCmpB">${opciones(labCmp.b)}</select></div>` +
+    `<div class="lab-elegir"><select id="labCmpA" aria-label="Análisis de antes">${opciones(labCmp.a)}</select><span aria-hidden="true">→</span><select id="labCmpB" aria-label="Análisis de después">${opciones(labCmp.b)}</select></div>` +
     (filas.length ? filas.join('') : '<div class="meta-aviso">Estos dos análisis no tienen pruebas en común.</div>') +
     (sugerir.length ? '<div class="lab-sug"><div class="lab-sug-tit">' + duo('bombilla', 'estado idea') + ' Sugerencias</div>' +
       sugerir.map(t => `<div><strong>${t.n}:</strong> ${consejoPara(t, last.values[t.k])}</div>`).join('') + '</div>' : '');
@@ -222,10 +222,10 @@ document.getElementById('labAddBtn').addEventListener('click', () => {
   form.innerHTML =
     '<label class="btn btn-primary btn-full lab-pdf-elegir">' + ICONO.pdf + 'Elegir el PDF del análisis<input type="file" id="labPdfInput" accept="application/pdf" hidden></label>' +
     '<div class="meta-aviso" id="labPdfEstado">Lo leo y relleno la fecha y los valores; tú solo revisas y guardas. El PDF se queda guardado con el análisis.</div>' +
-    `<div class="setup-field" style="margin-top:12px;"><label>Fecha del análisis</label><input type="date" id="labDate" value="${new Date().toISOString().slice(0, 10)}"></div>` +
+    `<div class="setup-field" style="margin-top:12px;"><label for="labDate">Fecha del análisis</label><input type="date" id="labDate" value="${isoDate(new Date())}"></div>` +
     '<div id="labLeidos"></div>' +
     '<details class="lab-mano"><summary>Rellenar o corregir a mano</summary>' +
-    LAB_TESTS.map(t => `<div class="lab-input"><label for="lab_${t.k}">${t.n}</label><input type="number" step="any" id="lab_${t.k}" placeholder="${t.u || '—'}"></div>`).join('') +
+    LAB_TESTS.map(t => `<div class="lab-input"><label for="lab_${t.k}">${t.n}</label><input type="number" step="any" inputmode="decimal" id="lab_${t.k}" placeholder="${t.u || '—'}"></div>`).join('') +
     '</details><button class="btn btn-green btn-full" id="labSaveBtn" style="margin-top:12px;">Guardar análisis</button>';
   form.style.display = 'block';
   document.getElementById('labPdfInput').addEventListener('change', async e => {

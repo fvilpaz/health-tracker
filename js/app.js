@@ -61,28 +61,28 @@ function showSetup() {
       <p class="setup-subtitle">Configura tu plan</p>
 
       <div class="setup-field">
-        <label>¿Cuándo empiezas?</label>
+        <label for="setupDate">¿Cuándo empiezas?</label>
         <input type="date" id="setupDate" value="${dateStr}">
       </div>
 
       <div class="setup-field">
-        <label>Duración del plan (semanas)</label>
-        <input type="number" id="setupWeeks" value="12" min="4" max="24" step="1">
+        <label for="setupWeeks">Duración del plan (semanas)</label>
+        <input type="number" id="setupWeeks" value="12" min="4" max="24" step="1" inputmode="numeric">
       </div>
 
       <div class="setup-field">
-        <label>Altura (cm)</label>
-        <input type="number" id="setupHeight" placeholder="Ej: 175" step="1" min="120" max="230">
+        <label for="setupHeight">Altura (cm)</label>
+        <input type="number" id="setupHeight" placeholder="Ej: 175" step="1" min="120" max="230" inputmode="numeric">
       </div>
 
       <div class="setup-field">
-        <label>Peso actual (kg)</label>
-        <input type="number" id="setupWeight" placeholder="Ej: 80" step="0.1" min="30" max="300">
+        <label for="setupWeight">Peso actual (kg)</label>
+        <input type="number" id="setupWeight" placeholder="Ej: 80" step="0.1" min="30" max="300" inputmode="decimal">
       </div>
 
       <div class="setup-field">
-        <label>Cintura actual (cm) — a la altura del ombligo</label>
-        <input type="number" id="setupWaist" placeholder="Ej: 95" step="0.1" min="40" max="200">
+        <label for="setupWaist">Cintura actual (cm) — a la altura del ombligo</label>
+        <input type="number" id="setupWaist" placeholder="Ej: 95" step="0.1" min="40" max="200" inputmode="decimal">
       </div>
 
       <button class="btn btn-green btn-full" id="setupStartBtn">${ICONO.jugar}Empezar</button>
@@ -147,9 +147,10 @@ function initNav() {
   document.querySelectorAll('.nav-item').forEach(btn => {
     btn.addEventListener('click', () => {
       const target = btn.dataset.section;
-      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(b => { b.classList.remove('active'); b.removeAttribute('aria-current'); });
       document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
       btn.classList.add('active');
+      btn.setAttribute('aria-current', 'page');
       document.getElementById(target).classList.add('active');
 
       if (target === 'progreso') {
