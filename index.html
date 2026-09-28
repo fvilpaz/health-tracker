@@ -345,6 +345,16 @@
         <div class="card-title">Historial de peso</div>
         <div class="weight-log" id="weightLog"></div>
       </div>
+
+      <div class="card">
+        <div class="card-title">💾 Tus datos</div>
+        <div class="weight-input-row">
+          <button class="btn btn-primary" id="exportBtn">⬇ Exportar</button>
+          <button class="btn btn-green" id="importBtn">⬆ Importar</button>
+          <input type="file" id="importFile" accept="application/json,.json" hidden>
+        </div>
+        <div style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">Descarga una copia con todo (ajustes, pesos, cinturas, entrenos, logros) y cárgala en otro aparato. Tus datos solo viven en este navegador: exporta de vez en cuando.</div>
+      </div>
     </section>
 
     <!-- ===== CALENDARIO ===== -->
