@@ -651,9 +651,21 @@ table.labs td.fuera { color: var(--red); }
 #setupOverlay {
   position: fixed; inset: 0; z-index: 1000;
   background: var(--bg);
-  display: flex; align-items: center; justify-content: center;
+  display: flex; justify-content: center;
   padding: 20px;
+  overflow-y: auto;      /* en móviles bajos o con el teclado abierto se puede bajar hasta «Empezar» */
 }
+#setupOverlay .setup-card { margin: auto 0; }   /* centrado si cabe; arriba del todo si no */
+
+/* Aviso (showToast): por encima de todo, centrado */
+.toast {
+  position: fixed; bottom: calc(100px + env(safe-area-inset-bottom, 0px)); left: 50%; z-index: 2000;
+  transform: translateX(-50%) translateY(10px); opacity: 0; pointer-events: none;
+  max-width: calc(100% - 32px); width: max-content; text-align: center;
+  background: var(--surface); color: var(--text); border: 1px solid var(--border); box-shadow: var(--shadow-lg);
+  padding: 10px 20px; border-radius: 99px; font-size: 0.85rem; font-weight: 600; transition: all 0.3s ease;
+}
+.toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
 .setup-card {
   background: var(--surface);
   border: 1px solid var(--border);

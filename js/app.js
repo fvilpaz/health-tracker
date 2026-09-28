@@ -44,11 +44,14 @@ function showSetup() {
   const dateStr = isoDate(new Date());   // hoy en hora local (toISOString daba ayer entre las 00:00 y las 02:00)
   const overlay = document.createElement('div');
   overlay.id = 'setupOverlay';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+  overlay.setAttribute('aria-labelledby', 'setupTitulo');
   overlay.innerHTML = `
     <div class="setup-card">
       <button class="setup-close" id="setupCloseBtn" aria-label="Cerrar">${ICONO.cerrar}</button>
       <div class="setup-icon">${duo('correr', 'setup-duo')}</div>
-      <h2 class="setup-title">Health Tracker</h2>
+      <h2 class="setup-title" id="setupTitulo">Health Tracker</h2>
       <p class="setup-subtitle">Configura tu plan</p>
 
       <div class="setup-field">
@@ -82,6 +85,7 @@ function showSetup() {
     </div>
   `;
   document.body.appendChild(overlay);
+  document.getElementById('setupHeight').focus({ preventScroll: true });
 
   const closeSetup = () => { overlay.remove(); initApp(); };
 
@@ -152,13 +156,16 @@ function initNav() {
 }
 
 /* ===== TOAST ===== */
+// Aviso corto abajo. Va por encima de todo (también de la pantalla de configuración, que antes lo tapaba),
+// centrado, y se anuncia al lector de pantalla (role=status). Un aviso nuevo reinicia el tiempo del anterior.
+let temporizadorAviso = null;
 function showToast(msg) {
   const t = document.getElementById('toast');
   if (!t) return;
   t.textContent = msg;
-  t.style.opacity = '1';
-  t.style.transform = 'translateY(0)';
-  setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(10px)'; }, 2200);
+  t.classList.add('visible');
+  clearTimeout(temporizadorAviso);
+  temporizadorAviso = setTimeout(() => t.classList.remove('visible'), 2600);
 }
 
 /* ===== PWA: instalable en el móvil (y base para la TWA) ===== */
