@@ -429,7 +429,8 @@ async function labLeerPdf(archivo) {
     for (const linea of lineas) {
       const m = linea.match(patron);
       if (!m) continue;
-      const num = linea.slice(m[0].length).match(/^\s*\*?\s*(\d+(?:,\d+)?)/);
+      // Los espacios ya van normalizados a uno: « * 154 …» → 154. Sin «\s*» dobles (backtracking cuadrático)
+      const num = linea.slice(m[0].length).match(/^ ?\*? ?(\d+(?:,\d+)?)/);
       if (num) { valores[k] = parseFloat(num[1].replace(',', '.')); break; }
     }
   }
