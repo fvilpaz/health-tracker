@@ -343,6 +343,7 @@ function renderAnalisis() {
     return `<details class="lab-sec"><summary><div class="lab-tit">📅 ${labFechaLarga(l.date)}` +
       `<small>${pruebas.length} pruebas · ${fuera ? `⚠️ ${fuera} fuera de rango` : '✅ todo en rango'}</small></div><span class="lab-flecha"></span></summary>` +
       `<div class="lab-cuerpo"><button class="lab-pdf" data-fecha="${l.date}">＋ PDF</button>` +
+      `<button class="lab-pdf-quitar" data-fecha="${l.date}" hidden>🗑 Quitar PDF</button>` +
       pruebas.map(t => {
         const v = l.values[t.k], mal = t.mejor !== 'info' && labFuera(t, v);
         return `<div class="lab-fila ${mal ? 'fuera' : ''}"><div class="lab-fila-top"><span>${t.mejor === 'info' ? 'ℹ️' : mal ? '⚠️' : '✅'} ${t.n}</span>` +
@@ -351,7 +352,9 @@ function renderAnalisis() {
       }).join('') + '</div></details>';
   }).join('');
   pdfFechas().then(fechas => tabla.querySelectorAll('.lab-pdf').forEach(b => {
-    if (fechas.includes(b.dataset.fecha)) { b.textContent = '📄 Ver PDF'; b.classList.add('tiene'); }
+    if (!fechas.includes(b.dataset.fecha)) return;
+    b.textContent = '📄 Ver PDF'; b.classList.add('tiene');
+    b.nextElementSibling.hidden = false;   // el botón de quitar solo aparece si hay PDF
   })).catch(() => {});
 
   // Comparativa entre dos análisis (se eligen con los desplegables) y sugerencias
@@ -500,9 +503,17 @@ function pdfOp(modo, pedir) {
 const pdfGuardar = (fecha, archivo) => pdfOp('readwrite', s => s.put(archivo, fecha));
 const pdfLeer = fecha => pdfOp('readonly', s => s.get(fecha));
 const pdfFechas = () => pdfOp('readonly', s => s.getAllKeys());
+const pdfBorrar = fecha => pdfOp('readwrite', s => s.delete(fecha));
 
 // Un clic en el botón de una fecha: si tiene PDF lo abre; si no, pide uno para adjuntarlo
 document.getElementById('labsTabla').addEventListener('click', async e => {
+  const quitar = e.target.closest('.lab-pdf-quitar');
+  if (quitar) {
+    if (!confirm(`¿Borrar el PDF del análisis del ${labFecha(quitar.dataset.fecha)}?\n\nLos valores se quedan; solo se borra el archivo.`)) return;
+    await pdfBorrar(quitar.dataset.fecha);
+    renderAnalisis();
+    return showToast('PDF borrado');
+  }
   const btn = e.target.closest('.lab-pdf');
   if (!btn) return;
   const fecha = btn.dataset.fecha, pdf = await pdfLeer(fecha);
