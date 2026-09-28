@@ -37,13 +37,13 @@ function updateDashboard() {
   if (startDate && currentWeight && startWeight) {
     const weeksEl = document.getElementById('weeksProgress');
     const fillEl = document.getElementById('weeksFill');
-    const start = new Date(startDate);
-    const now = new Date();
-    const weeks = Math.min(totalWeeks, Math.max(0, Math.floor((now - start) / (7 * 24 * 3600 * 1000))));
-    if (weeksEl) weeksEl.textContent = `Semana ${weeks} / ${totalWeeks}`;
-    if (fillEl) fillEl.style.width = `${(weeks / totalWeeks) * 100}%`;
+    // La misma semana que marca la tabla del plan; la barra enseña las semanas ya terminadas
+    const semana = Math.min(totalWeeks, Math.max(1, semanaDelPlan(new Date(startDate))));
+    const hechas = semana - 1;
+    if (weeksEl) weeksEl.textContent = `Semana ${semana} / ${totalWeeks}`;
+    if (fillEl) fillEl.style.width = `${(hechas / totalWeeks) * 100}%`;
     const pctEl = document.getElementById('weeksPct');
-    if (pctEl) pctEl.textContent = `${Math.round((weeks / totalWeeks) * 100)}%`;
+    if (pctEl) pctEl.textContent = `${Math.round((hechas / totalWeeks) * 100)}%`;
   }
 
   // IMC (con la altura que pone el usuario; sin altura, no se inventa ninguna)
