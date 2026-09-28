@@ -405,12 +405,14 @@ const LAB_PDF = {
   glucosa_orina:  /^Glucosa \(orina; tira color\)/,
   densidad_orina: /^Densidad \(orina; tira color\)/,
 };
-const PDFJS = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/';
+// pdf.js 4.10.38 servido desde aquí (ver vendor/README.md). Dirección completa: import() no acepta «vendor/…» a secas
+// y con «./» la resolvería desde js/app.js (→ js/vendor/…), no desde la página.
+const PDFJS = new URL('vendor/pdfjs/', document.baseURI).href;
 
 async function labLeerPdf(archivo) {
   const pdfjs = await import(PDFJS + 'pdf.min.mjs');          // solo se descarga cuando eliges un PDF
   pdfjs.GlobalWorkerOptions.workerSrc = PDFJS + 'pdf.worker.min.mjs';
-  const doc = await pdfjs.getDocument({ data: await archivo.arrayBuffer() }).promise;
+  const doc = await pdfjs.getDocument({ data: await archivo.arrayBuffer(), isEvalSupported: false }).promise;   // sin eval: lo prohíbe la CSP
   const lineas = [];
   for (let p = 1; p <= doc.numPages; p++) {
     // pdf.js da trozos de texto con su posición: se juntan en líneas por altura (y), de izquierda a derecha
