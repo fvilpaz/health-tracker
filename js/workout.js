@@ -2,7 +2,6 @@ let workoutData = null;
 let currentPhase = 'warmup';
 let currentExerciseIdx = 0;
 let currentRound = 1;
-let isResting = false;
 let workoutActive = false;
 let currentBlock = '1';   // bloque de fuerza elegido (1, 2 o 3); al abrir la app, el que toca (nextBlock)
 let workoutStartedAt = 0; // para apuntar los minutos del bloque
@@ -105,7 +104,6 @@ function startWorkout() {
   workoutStartedAt = Date.now();
   currentExerciseIdx = 0;
   currentRound = 1;
-  isResting = false;
 
   document.getElementById('workoutSetup').style.display = 'none';
   document.getElementById('timerView').style.display = 'block';
@@ -137,18 +135,9 @@ function runNextExercise() {
   const ex = exercises[currentExerciseIdx];
   highlightExercise(currentExerciseIdx);
 
-  if (isResting) {
-    isResting = false;
-    currentExerciseIdx++;
-    runNextExercise();
-    return;
-  }
-
   showTimerState(ex.name, phaseData.rounds ? `Vuelta ${currentRound}` : '', ex.seconds, false, () => {
     if (ex.rest) {
-      isResting = true;
       showTimerState('Descansa', ex.name, ex.rest, true, () => {
-        isResting = false;
         currentExerciseIdx++;
         runNextExercise();
       });
@@ -170,7 +159,6 @@ function showTimerState(exerciseName, subLabel, duration, isRest, onDone) {
   const fg = document.getElementById('timerCircleFg');
   if (fg) fg.classList.toggle('rest', isRest);
 
-  const circumference = 2 * Math.PI * 80;
 
   Timer.start(duration,
     (remaining, total, circ) => {
