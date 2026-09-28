@@ -4,6 +4,12 @@ let currentExerciseIdx = 0;
 let currentRound = 1;
 let isResting = false;
 let workoutActive = false;
+let currentBlock = '1';   // bloque de fuerza elegido (1, 2 o 3)
+
+// Ejercicios de una fase. La fuerza va por bloques; el resto de fases tienen su lista fija.
+function phaseExercises(phaseData) {
+  return phaseData.blocks ? phaseData.blocks[currentBlock].exercises : phaseData.exercises;
+}
 
 async function loadWorkoutData() {
   if (workoutData) return workoutData;
@@ -21,11 +27,18 @@ async function renderWorkoutPhase(phase) {
     t.classList.toggle('active', t.dataset.phase === phase);
   });
 
+  // Selector de bloque: solo en la pestaña de fuerza
+  const picker = document.getElementById('blockPicker');
+  if (picker) {
+    picker.style.display = phaseData.blocks ? 'grid' : 'none';
+    picker.querySelectorAll('.block-btn').forEach(b => b.classList.toggle('active', b.dataset.block === currentBlock));
+  }
+
   const list = document.getElementById('exerciseList');
   if (!list) return;
   list.innerHTML = '';
 
-  phaseData.exercises.forEach((ex, i) => {
+  phaseExercises(phaseData).forEach((ex, i) => {
     const div = document.createElement('div');
     div.className = 'exercise-item';
     div.id = `ex-${i}`;
@@ -67,7 +80,7 @@ function startWorkout() {
 
 function runNextExercise() {
   const phaseData = workoutData[currentPhase];
-  const exercises = phaseData.exercises;
+  const exercises = phaseExercises(phaseData);
 
   if (currentExerciseIdx >= exercises.length) {
     const rounds = phaseData.rounds || 1;

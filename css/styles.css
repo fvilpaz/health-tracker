@@ -231,10 +231,17 @@ a { color: inherit; text-decoration: none; }
 /* ===== ENTRENAMIENTO ===== */
 .phase-tabs {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 6px;
   margin-bottom: 16px;
 }
+/* Bloques de fuerza (1, 2, 3): mismo estilo que las pestañas de fase */
+.block-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
+.block-btn {
+  padding: 7px 4px; border: 2px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--surface); color: inherit; font: inherit; font-size: 0.75rem; font-weight: 600; cursor: pointer;
+}
+.block-btn.active { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
 .phase-tab {
   padding: 8px 4px;
   border: 2px solid var(--border);
