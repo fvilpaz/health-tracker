@@ -239,7 +239,93 @@ function updateDashboard() {
   }
 
   renderMetas();
+  renderAnalisis();
 }
+
+/* ===== ANÁLISIS ===== */
+// Catálogo de pruebas (genérico, sin datos de nadie). mejor: 'bajo' | 'alto' | 'rango' | 'info' (no se juzga).
+// Los valores de cada persona se guardan en Storage 'labs': [{ date: 'AAAA-MM-DD', values: { clave: número } }].
+const LAB_TESTS = [
+  { k: 'hba1c',          n: 'HbA1c (azúcar medio 3 meses)', u: '%',      max: 6.5,  mejor: 'bajo' },
+  { k: 'glucosa',        n: 'Glucosa en ayunas',            u: 'mg/dL',  min: 70, max: 110, mejor: 'bajo' },
+  { k: 'trigliceridos',  n: 'Triglicéridos',                u: 'mg/dL',  max: 150,  mejor: 'bajo' },
+  { k: 'hdl',            n: 'Colesterol HDL («bueno»)',     u: 'mg/dL',  min: 40,   mejor: 'alto' },
+  { k: 'ldl',            n: 'Colesterol LDL («malo»)',      u: 'mg/dL',  max: 100,  mejor: 'bajo' },
+  { k: 'no_hdl',         n: 'Colesterol no HDL',            u: 'mg/dL',  max: 130,  mejor: 'bajo' },
+  { k: 'colesterol',     n: 'Colesterol total',             u: 'mg/dL',  max: 200,  mejor: 'bajo' },
+  { k: 'alt',            n: 'ALT / GPT (hígado)',           u: 'U/L',    max: 40,   mejor: 'bajo' },
+  { k: 'ast',            n: 'AST / GOT (hígado)',           u: 'U/L',    max: 39,   mejor: 'bajo' },
+  { k: 'ggt',            n: 'GGT (hígado)',                 u: 'U/L',    max: 50,   mejor: 'bajo' },
+  { k: 'bilirrubina',    n: 'Bilirrubina',                  u: 'mg/dL',  max: 1.0,  mejor: 'info' },
+  { k: 'ck',             n: 'CK (músculo)',                 u: 'U/L',    max: 195,  mejor: 'info' },
+  { k: 'creatinina',     n: 'Creatinina (riñón)',           u: 'mg/dL',  min: 0.74, max: 1.30, mejor: 'rango' },
+  { k: 'filtrado',       n: 'Filtrado glomerular (riñón)',  u: 'mL/min', min: 60,   mejor: 'alto' },
+  { k: 'acido_urico',    n: 'Ácido úrico',                  u: 'mg/dL',  min: 3.4, max: 7.0, mejor: 'rango' },
+  { k: 'b12',            n: 'Vitamina B12',                 u: 'pg/mL',  min: 211, max: 911, mejor: 'rango' },
+  { k: 'tsh',            n: 'Tiroides (TSH)',               u: 'µUI/mL', min: 0.4, max: 4.5, mejor: 'rango' },
+  { k: 'glucosa_orina',  n: 'Glucosa en orina',             u: 'mg/dL',  mejor: 'info' },   // la sube la dapagliflozina
+  { k: 'densidad_orina', n: 'Densidad de orina',            u: '',       min: 1010, max: 1030, mejor: 'rango' },
+];
+
+const labFuera = (t, v) => (t.min != null && v < t.min) || (t.max != null && v > t.max);
+const labFecha = d => new Date(d + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: '2-digit' });
+const labNum = v => Number.isInteger(v) ? String(v) : String(v).replace('.', ',');
+
+function renderAnalisis() {
+  const tabla = document.getElementById('labsTabla'), resumen = document.getElementById('labsResumen');
+  if (!tabla || !resumen) return;
+  const labs = Storage.get('labs', []).slice().sort((a, b) => a.date.localeCompare(b.date));
+  if (!labs.length) {
+    tabla.innerHTML = '<div class="meta-aviso">Aún no hay análisis. Añádelos con el botón o importa un archivo con ⬆ Importar (en Progreso).</div>';
+    resumen.innerHTML = '<div class="meta-aviso">Aparecerá cuando tengas dos análisis.</div>';
+    return;
+  }
+  // Historial: una columna por análisis, solo las pruebas que tengan algún valor
+  const usadas = LAB_TESTS.filter(t => labs.some(l => l.values[t.k] != null));
+  tabla.innerHTML = `<table class="labs"><thead><tr><th>Prueba</th>${labs.map(l => `<th>${labFecha(l.date)}</th>`).join('')}</tr></thead><tbody>` +
+    usadas.map(t => `<tr><td>${t.n}<small>${[t.min != null ? '≥ ' + labNum(t.min) : '', t.max != null ? '≤ ' + labNum(t.max) : ''].filter(Boolean).join(' · ')} ${t.u}</small></td>` +
+      labs.map(l => { const v = l.values[t.k]; return v == null ? '<td class="n">—</td>' : `<td class="n ${labFuera(t, v) ? 'fuera' : ''}">${labNum(v)}</td>`; }).join('') + '</tr>').join('') +
+    '</tbody></table>';
+
+  // Resumen: último análisis frente al anterior, prueba a prueba
+  if (labs.length < 2) { resumen.innerHTML = '<div class="meta-aviso">Aparecerá cuando tengas dos análisis.</div>'; return; }
+  const [prev, last] = labs.slice(-2);
+  const filas = LAB_TESTS.filter(t => prev.values[t.k] != null && last.values[t.k] != null).map(t => {
+    const a = prev.values[t.k], b = last.values[t.k];
+    let icono = '＝', clase = 'igual', txt = 'igual';
+    if (t.mejor === 'info') { icono = 'ℹ️'; clase = 'info'; txt = 'informativo'; }
+    else if (a !== b) {
+      // 'rango': solo cuenta entrar o salir del rango; si no cambia de lado, se queda en "igual"
+      const mejora = t.mejor === 'bajo' ? b < a
+                   : t.mejor === 'alto' ? b > a
+                   : labFuera(t, a) === labFuera(t, b) ? null : labFuera(t, a);
+      if (mejora === true) { icono = '✅'; clase = 'mejora'; txt = 'mejora'; }
+      else if (mejora === false) { icono = '❌'; clase = 'peora'; txt = 'empeora'; }
+    }
+    return `<div class="lab-cmp ${clase}"><span>${icono}</span><div>${t.n}<small>${labNum(a)} → <strong>${labNum(b)}</strong> ${t.u}</small></div><em>${txt}</em></div>`;
+  });
+  resumen.innerHTML = `<div class="meta-aviso" style="margin:0 0 8px;">${labFecha(prev.date)} → ${labFecha(last.date)} · pruebas que están en los dos</div>` + filas.join('');
+}
+
+document.getElementById('labAddBtn').addEventListener('click', () => {
+  const form = document.getElementById('labForm');
+  if (form.style.display !== 'none') { form.style.display = 'none'; return; }
+  form.innerHTML = `<div class="setup-field"><label>Fecha del análisis</label><input type="date" id="labDate" value="${new Date().toISOString().slice(0, 10)}"></div>` +
+    LAB_TESTS.map(t => `<div class="lab-input"><label for="lab_${t.k}">${t.n}</label><input type="number" step="any" id="lab_${t.k}" placeholder="${t.u || '—'}"></div>`).join('') +
+    '<p class="meta-aviso">Rellena solo las que traiga tu análisis.</p><button class="btn btn-green btn-full" id="labSaveBtn">Guardar análisis</button>';
+  form.style.display = 'block';
+  document.getElementById('labSaveBtn').addEventListener('click', () => {
+    const date = document.getElementById('labDate').value, values = {};
+    LAB_TESTS.forEach(t => { const v = parseFloat(document.getElementById('lab_' + t.k).value); if (!isNaN(v)) values[t.k] = v; });
+    if (!date || !Object.keys(values).length) return showToast('Pon la fecha y al menos un valor');
+    const labs = Storage.get('labs', []).filter(l => l.date !== date);   // misma fecha: se sustituye
+    labs.push({ date, values });
+    Storage.set('labs', labs);
+    form.style.display = 'none';
+    renderAnalisis();
+    showToast('Análisis guardado ✓');
+  });
+});
 
 /* ===== METAS (corto, medio y largo plazo) ===== */
 // Se calculan con el último peso, la altura y el objetivo que pone el usuario: ningún dato escrito en el código.
@@ -694,6 +780,14 @@ document.getElementById('importFile').addEventListener('change', async e => {
   try { copia = JSON.parse(await file.text()); } catch { return showToast('Ese archivo no es una copia válida'); }
   if (copia?.app !== BACKUP_APP || !copia.data) return showToast('Ese archivo no es una copia de Health Tracker');
   const d = copia.data, n = k => Array.isArray(d[k]) ? d[k].length : 0;
+  // Archivo que solo trae análisis: se AÑADEN (misma fecha → se sustituye), sin borrar nada más
+  if (Object.keys(d).length === 1 && Array.isArray(d.labs)) {
+    if (!confirm(`Este archivo trae ${n('labs')} análisis. Se añaden a los que ya tienes (sin borrar nada más). ¿Continuar?`)) return;
+    const fechas = new Set(d.labs.map(l => l.date));
+    Storage.set('labs', Storage.get('labs', []).filter(l => !fechas.has(l.date)).concat(d.labs));
+    renderAnalisis();
+    return showToast(`${n('labs')} análisis añadidos ✓`);
+  }
   const cuando = copia.exportedAt ? new Date(copia.exportedAt).toLocaleDateString('es-ES') : 'fecha desconocida';
   if (!confirm(`Copia del ${cuando}: ${n('weights')} pesos, ${n('waists')} cinturas, ${n('trainings')} entrenos.\n\n` +
                'Esto SUSTITUYE los datos de este aparato. ¿Continuar?')) return;
