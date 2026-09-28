@@ -97,3 +97,21 @@ document.getElementById('semanaActual')?.addEventListener('click', e => {
   document.querySelector('[data-section="entrenamiento"]').click();
   renderWorkoutPhase('warmup');
 });
+
+/* ===== RACHA: semanas cumplidas (3 bloques o más) ===== */
+function completedWeeks() {
+  const porSemana = {};
+  getSessions().forEach(s => { const k = isoDate(getWeekStart(new Date(s.date + 'T12:00'))); porSemana[k] = (porSemana[k] || 0) + 1; });
+  return Object.values(porSemana).filter(n => n >= WEEK_GOAL).length;
+}
+
+// Semanas seguidas cumplidas. La actual suma si ya está cumplida; si no, no rompe la racha (aún puedes cumplirla).
+function weekStreak(ref = new Date()) {
+  const lunes = getWeekStart(ref);
+  let racha = sessionsInWeek(lunes).length >= WEEK_GOAL ? 1 : 0;
+  for (let l = new Date(lunes); ; ) {
+    l.setDate(l.getDate() - 7);
+    if (sessionsInWeek(l).length < WEEK_GOAL) return racha;
+    racha++;
+  }
+}
