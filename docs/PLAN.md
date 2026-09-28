@@ -15,9 +15,6 @@
 
 - [ ] **Mini hábitos diarios** — Checkboxes diarios: 💧 2L agua · 🚶 6k pasos · 🥗 verduras · 💪 entreno · 😴 7h sueño
 - [ ] **Gráfica de cintura en Progreso** — Igual que la de peso, con Chart.js y línea objetivo
-- [ ] **Exportar datos** — Botón para descargar JSON con todo el historial (peso, cintura, entrenos, plan, hábitos)
-- [ ] **Importar datos** — Poder restaurar desde backup JSON
-- [ ] **Objetivos escalonados** — Metas intermedias (95→90→85→80 kg) con logros por cada una
 - [ ] **Sonido al cambiar ejercicio** — Beep suave cuando termina un ejercicio (Web Audio API, sin archivos externos)
 - [ ] **Mejorar el tracker semanal** — Scroll horizontal en móvil, mejor legibilidad
 
@@ -67,7 +64,14 @@
 - [x] Botón de reiniciar plan (borra todo y vuelve al setup)
 - [x] Git init + repo público en GitHub
 - [x] Workflow de GitHub Pages (deploy automático)
+- [x] Fuerza en bloques 1 / 2 / 3, sin cardio (28-sep-2026)
+- [x] Altura la pone el usuario; fuera los datos personales del código (28-sep-2026)
+- [x] Exportar e importar copia JSON; importar solo análisis los añade sin borrar (28-sep-2026)
+- [x] Pestaña 🎯 Metas: corto / medio / largo plazo calculadas con peso y altura (28-sep-2026)
+- [x] Historial de análisis, formulario, resumen último vs anterior y PDF oficial adjunto (28-sep-2026)
+- [x] Semáforo 🟢/🟠/🔴 en peso, cintura y cintura/altura (28-sep-2026)
+- [x] Suplementos dentro de Meds (una pestaña menos) (28-sep-2026)
 
 ---
 
-_Generado: 2026-08-08 · Actualizado: 2026-08-08_
+_Generado: 2026-08-08 · Actualizado: 2026-09-28_
