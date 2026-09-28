@@ -65,7 +65,7 @@ health-tracker/
 ├── docs/
 │   ├── PLAN.md             ← Plan de mejoras priorizado
 │   └── SESION.md           ← Notas internas (no público)
-├── tests/                  ← Tests (node --test): semana, copias/seguridad, análisis y plan
+├── tests/                  ← Pruebas (node --test): semana, copias/seguridad, análisis, plan, lector del PDF, temporizador, panel, metas y logros
 └── .github/workflows/
     └── pages.yml           ← Deploy automático a GitHub Pages
 ```
