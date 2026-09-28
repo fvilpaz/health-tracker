@@ -16,7 +16,7 @@ App web personal de salud y seguimiento de progreso. Sin servidor, sin backend, 
 | **Nutrición** | Esquema del plato, ideas de comidas, alimentos OK y a evitar |
 | **Meds** | Ebymect, hígado graso, Gilbert, señales de alerta y suplementos (seguros, con precaución y a evitar) |
 | **Progreso** | Registro de peso, cintura y altura; gráfica de peso; historial editable; exportar e importar copia |
-| **Calendario** | Plan semanal con checkboxes de actividad |
+| **Semana** | Objetivo de **3 bloques por semana** (lunes a domingo, los días que quieras): aviso 🟢 vas bien · 🟠 vas justo · 🔴 no llegas o domingo con pendientes; los días con su bloque, qué bloque toca con botón para entrenar, y semanas anteriores en desplegables |
 
 ## Plan de 12 semanas
 

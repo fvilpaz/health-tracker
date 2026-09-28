@@ -488,28 +488,19 @@ table.labs td.fuera { color: var(--red); }
 }
 
 /* ===== CALENDARIO ===== */
-.week-grid { display: flex; flex-direction: column; gap: 8px; }
-.day-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-}
-.day-name { font-weight: 700; width: 80px; font-size: 0.9rem; }
-.day-activity { flex: 1; font-size: 0.83rem; color: var(--text-muted); }
-.day-check {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  border: 2px solid var(--border);
-  background: transparent;
-  font-size: 0.9rem;
-  display: flex; align-items: center; justify-content: center;
-  transition: all var(--transition);
-}
-.day-check.checked { background: var(--green); border-color: var(--green); color: white; }
+/* Mi semana */
+.semana-cab { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; color: var(--text-muted); font-size: 0.85rem; }
+.semana-cuenta { font-size: 1.6rem; font-weight: 800; }
+.semana-cuenta.verde { color: var(--green); } .semana-cuenta.naranja { color: var(--orange); } .semana-cuenta.rojo { color: var(--red); }
+.semana-aviso { padding: 10px 12px; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 600; margin-bottom: 12px; border-left: 4px solid; background: var(--surface2); }
+.semana-aviso.verde { border-color: var(--green); } .semana-aviso.naranja { border-color: var(--orange); } .semana-aviso.rojo { border-color: var(--red); }
+.semana-dias { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.semana-dia { display: flex; align-items: center; gap: 12px; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.85rem; min-height: 42px; }
+.semana-dia.hecho { border-color: var(--green); }
+.semana-dia.hoy { border-color: var(--blue); }
+.semana-dia.hoy span:last-child { color: var(--blue); font-weight: 600; }
+.semana-letra { flex: 0 0 34px; font-weight: 800; display: flex; flex-direction: column; line-height: 1.1; }
+.semana-letra small { font-weight: 400; font-size: 0.7rem; color: var(--text-muted); }
 
 /* ===== SUPLEMENTOS ===== */
 .suplement-card {

@@ -51,9 +51,9 @@
           <span class="icon">📈</span>
           Progreso
         </button>
-        <button class="nav-item" data-section="calendario">
+        <button class="nav-item" data-section="semana">
           <span class="icon">📅</span>
-          Calendar
+          Semana
         </button>
       </nav>
     </header>
@@ -495,10 +495,14 @@
     </section>
 
     <!-- ===== CALENDARIO ===== -->
-    <section id="calendario" class="section">
+    <section id="semana" class="section">
       <div class="card">
-        <div class="card-title">Semana actual</div>
-        <div class="week-grid" id="weekGrid"></div>
+        <div class="card-title">📅 Mi semana</div>
+        <div id="semanaActual"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Semanas anteriores</div>
+        <div id="semanaHistorial"></div>
       </div>
     </section>
 
