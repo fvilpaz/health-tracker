@@ -2,6 +2,15 @@
    de bloques hechos (salen de Mi semana). Se movió tal cual desde app.js (28-sep-2026). */
 
 /* ===== PLAN TABLE ===== */
+// Número de la semana del plan (1, 2, …) en la que cae «ref». La 1 es la semana (lunes a domingo) del día de inicio.
+// Se cuentan días de calendario, no milisegundos: con el cambio de hora de primavera la semana tiene una hora menos
+// y el lunes de madrugada salía todavía la semana anterior. La usan la tabla y la barra del panel (antes cada una
+// contaba a su manera y decían semanas distintas).
+function semanaDelPlan(inicio, ref = new Date()) {
+  const dia = f => Date.UTC(f.getFullYear(), f.getMonth(), f.getDate()) / 86400000;
+  return Math.floor((dia(getWeekStart(ref)) - dia(getWeekStart(inicio))) / 7) + 1;
+}
+
 function renderPlanTable() {
   const container = document.getElementById('planTable');
   if (!container) return;
@@ -25,8 +34,7 @@ function renderPlanTable() {
   // Al lunes de esa semana (también si empezó en domingo)
   start.setDate(start.getDate() - (start.getDay() + 6) % 7);
 
-  const now = new Date();
-  const currentWeekNum = Math.min(totalWeeks, Math.max(1, Math.floor((now - start) / (7 * 24 * 3600 * 1000)) + 1));
+  const currentWeekNum = Math.min(totalWeeks, Math.max(1, semanaDelPlan(start)));
 
   let html = '<div class="plan-cards">';
 

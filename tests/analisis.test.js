@@ -91,3 +91,16 @@ test('leerInforme: sin la tabla de fechas, la fecha queda vacía (la pone la per
   assert.equal(r.fecha, null);
   assert.equal(r.valores.glucosa, 101);
 });
+
+test('semanaDelPlan: la semana del plan en la que estás (1, 2…), igual para la barra y la tabla', () => {
+  const app = crearApp(), semana = app.get('semanaDelPlan');
+  const d = s => new Date(s);
+  assert.equal(semana(d('2026-09-21T00:00'), d('2026-09-21T10:00')), 1);   // el día que empieza
+  assert.equal(semana(d('2026-09-21T00:00'), d('2026-09-27T23:00')), 1);   // su domingo
+  assert.equal(semana(d('2026-09-21T00:00'), d('2026-09-28T09:00')), 2);   // el lunes siguiente
+  assert.equal(semana(d('2026-09-24T00:00'), d('2026-09-28T09:00')), 2);   // empezar en jueves: su semana es la 1
+  // Cambio de hora de primavera (28-mar-2027): esa semana tiene una hora MENOS. Contando milisegundos
+  // (fórmula vieja), el lunes 29 a las 00:30 salía todavía la semana 1. Y el de otoño, por si acaso.
+  assert.equal(semana(d('2027-03-22T00:00'), d('2027-03-29T00:30')), 2);
+  assert.equal(semana(d('2026-10-19T00:00'), d('2026-10-26T00:30')), 2);
+});
