@@ -30,11 +30,11 @@ Tracker semanal integrado con:
 
 - **Stack**: HTML5 · CSS3 · JavaScript ES6 · Chart.js 4 · pdf.js 4 (las dos en `vendor/`, verificadas contra el registro npm)
 - **Sin dependencias de build** — archivos estáticos puros
-- **Dark mode** por defecto, responsive (mobile-first)
+- **Tema oscuro** por defecto (y claro), responsive (mobile-first); colores con contraste suficiente (WCAG ≥ 4,5) en los dos
 - **localStorage** — tus datos no salen de tu navegador
 - **GitHub Pages** — deploy automático en cada push
 - **Botón ▶ en ejercicios** — busca vídeos en YouTube al instante
-- **Iconos** (sin emojis, se ven igual en cualquier móvil): pestañas, títulos, logros y estados con [Phosphor](https://phosphoricons.com) duotono (MIT); botones con trazos estilo [Lucide](https://lucide.dev) (ISC). Todo dentro de la app, en `js/iconos.js`
+- **Iconos** (sin emojis de colores, se ven igual en cualquier móvil; quedan símbolos de texto como ✓ y ▶): pestañas, títulos, logros y estados con [Phosphor](https://phosphoricons.com) duotono (MIT); botones con trazos estilo [Lucide](https://lucide.dev) (ISC). Todo dentro de la app, en `js/iconos.js`
 - **PWA instalable** — en Chrome del móvil: menú ⋮ → *Instalar aplicación*. Funciona sin conexión y las actualizaciones llegan solas
 
 ## Estructura
