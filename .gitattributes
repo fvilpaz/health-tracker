@@ -1,0 +1,2 @@
+# Librerías de terceros: tal cual se verificaron (sha512 de npm). Git no debe tocar sus finales de línea.
+vendor/** -text
