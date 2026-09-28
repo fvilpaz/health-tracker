@@ -6,6 +6,9 @@ function renderWeightChart(entries) {
 
   const labels = entries.map(e => e.date);
   const data = entries.map(e => e.weight);
+  // Objetivo y escala a partir de TUS datos (antes: línea fija en 90 kg y eje fijo de 80 a 110)
+  const objetivo = Storage.get('settings', {}).goalWeight || null;
+  const valores = objetivo ? [...data, objetivo] : data;
 
   if (weightChart) weightChart.destroy();
 
@@ -30,7 +33,7 @@ function renderWeightChart(entries) {
         tension: 0.35
       }, {
         label: 'Objetivo',
-        data: entries.map(() => 90),
+        data: objetivo ? entries.map(() => objetivo) : [],
         borderColor: '#22c55e',
         borderWidth: 1.5,
         borderDash: [6, 4],
@@ -57,8 +60,8 @@ function renderWeightChart(entries) {
         y: {
           grid: { color: gridColor },
           ticks: { color: textColor, font: { size: 11 }, callback: v => v + ' kg' },
-          suggestedMin: 80,
-          suggestedMax: 110
+          suggestedMin: Math.floor(Math.min(...valores) - 3),
+          suggestedMax: Math.ceil(Math.max(...valores) + 3)
         }
       }
     }
