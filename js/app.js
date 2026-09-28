@@ -593,8 +593,8 @@ function renderPlanTable() {
 
   const start = new Date(startDate);
   start.setHours(0,0,0,0);
-  // Adjust to Monday
-  start.setDate(start.getDate() - start.getDay() + 1);
+  // Al lunes de esa semana (también si empezó en domingo)
+  start.setDate(start.getDate() - (start.getDay() + 6) % 7);
 
   const now = new Date();
   const currentWeekNum = Math.min(totalWeeks, Math.max(1, Math.floor((now - start) / (7 * 24 * 3600 * 1000)) + 1));
@@ -733,10 +733,12 @@ function renderPlanTable() {
   });
 }
 
-function getWeekStart() {
-  const d = new Date();
+// Lunes de la semana de «ref». getDay() da 0 en domingo: (getDay() + 6) % 7 son los días desde el lunes
+// (antes el domingo saltaba al lunes SIGUIENTE y la semana salía a 0).
+function getWeekStart(ref = new Date()) {
+  const d = new Date(ref);
   d.setHours(0,0,0,0);
-  d.setDate(d.getDate() - d.getDay() + 1);
+  d.setDate(d.getDate() - (d.getDay() + 6) % 7);
   return d;
 }
 
