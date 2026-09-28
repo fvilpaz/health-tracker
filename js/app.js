@@ -862,3 +862,6 @@ function showToast(msg) {
   t.style.transform = 'translateY(0)';
   setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(10px)'; }, 2200);
 }
+
+/* ===== PWA: instalable en el móvil (y base para la TWA) ===== */
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
