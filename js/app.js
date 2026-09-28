@@ -218,7 +218,9 @@ function updateDashboard() {
 
   // Semáforo de peso (por IMC) y cintura (por cintura/altura); sin altura, sin color
   semaforo(weightEl, heightCm && currentWeight ? currentWeight / (heightCm / 100) ** 2 : null, 25, 30);
-  semaforo(waistEl, heightCm && currentWaist ? currentWaist / heightCm : null, 0.5, 0.6);
+  // redondeado a 2 decimales, igual que el número que enseña la tarjeta Cintura / altura
+  const whtrNum = heightCm && currentWaist ? +(currentWaist / heightCm).toFixed(2) : null;
+  semaforo(waistEl, whtrNum, 0.5, 0.6);
 
   // Ratio cintura/altura (WHtR)
   const whtrEl = document.getElementById('dashWHtR');
@@ -241,6 +243,7 @@ function updateDashboard() {
       if (whtrStatusEl) whtrStatusEl.textContent = '❌ Riesgo alto';
     }
   }
+  semaforo(whtrEl, whtrNum, 0.5, 0.6);   // la raya de la tarjeta, del mismo color que el número
 
   renderMetas();
   renderAnalisis();
