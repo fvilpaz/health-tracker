@@ -153,7 +153,6 @@ function updateDashboard() {
   const startDate = Storage.get('startDate', null);
 
   const currentWeight = weights.length ? weights[weights.length - 1].weight : null;
-  const goal = settings.goalWeight || 90;
   const startWeight = weights.length ? weights[0].weight : null;
   const totalWeeks = settings.totalWeeks || 12;
 
