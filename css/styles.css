@@ -214,6 +214,7 @@ a { color: inherit; text-decoration: none; }
 .btn .ico { width: 18px; height: 18px; vertical-align: -4px; margin-right: 6px; }
 .btn:active { transform: scale(0.97); opacity: 0.9; }
 .btn-primary { background: var(--blue); color: white; }
+.btn-red { background: var(--red); color: white; }   /* borrar */
 .btn-green { background: var(--green); color: white; }
 .btn-orange { background: var(--orange); color: white; }
 .btn-full { width: 100%; padding: 14px; font-size: 1rem; }
