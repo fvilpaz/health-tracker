@@ -242,6 +242,17 @@ a { color: inherit; text-decoration: none; }
   background: var(--surface); color: inherit; font: inherit; font-size: 0.75rem; font-weight: 600; cursor: pointer;
 }
 .block-btn.active { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+
+/* Metas */
+.metas-list { display: flex; flex-direction: column; gap: 10px; }
+.meta-row { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.meta-row.hecha { border-color: var(--green); background: var(--green-light); }
+.meta-plazo { flex: 0 0 56px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--blue); }
+.meta-info { flex: 1; display: flex; flex-direction: column; }
+.meta-info strong { font-size: 1.05rem; }
+.meta-info span { font-size: 0.78rem; color: var(--text-muted); }
+.meta-falta { font-size: 0.8rem; text-align: right; white-space: nowrap; }
+.meta-aviso { font-size: 0.8rem; color: var(--text-muted); margin-top: 8px; }
 .phase-tab {
   padding: 8px 4px;
   border: 2px solid var(--border);

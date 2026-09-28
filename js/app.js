@@ -237,6 +237,39 @@ function updateDashboard() {
       if (whtrStatusEl) whtrStatusEl.textContent = '❌ Riesgo alto';
     }
   }
+
+  renderMetas();
+}
+
+/* ===== METAS (corto, medio y largo plazo) ===== */
+// Se calculan con el último peso, la altura y el objetivo que pone el usuario: ningún dato escrito en el código.
+function renderMetas() {
+  const box = document.getElementById('metasList');
+  if (!box) return;
+  const heightCm = getHeightCm();
+  const weights = Storage.get('weights', []);
+  const current = weights.length ? weights[weights.length - 1].weight : null;
+  if (!heightCm || !current) {
+    box.innerHTML = '<div class="meta-aviso">Añade tu <strong>altura</strong> y tu <strong>peso</strong> en Progreso para calcular tus metas.</div>';
+    return;
+  }
+  const m2 = (heightCm / 100) ** 2;
+  const goal = Storage.get('settings', {}).goalWeight;
+  const metas = [
+    { plazo: 'Corto', peso: 30 * m2, texto: 'Sales de la franja de obesidad (IMC por debajo de 30)' },
+    goal ? { plazo: 'Medio', peso: goal, texto: 'Tu peso objetivo' } : null,
+    { plazo: 'Largo', peso: 27 * m2, texto: 'IMC 27: mucha menos grasa en el hígado y menos riesgo' },
+  ].filter(Boolean).sort((a, b) => b.peso - a.peso);
+
+  box.innerHTML = metas.map(mt => {
+    const falta = current - mt.peso;
+    const hecho = falta < 0 || (mt.plazo === 'Medio' && falta <= 0);
+    return `<div class="meta-row ${hecho ? 'hecha' : ''}">
+      <span class="meta-plazo">${mt.plazo}</span>
+      <div class="meta-info"><strong>${mt.peso.toFixed(1)} kg</strong><span>${mt.texto}</span></div>
+      <span class="meta-falta">${hecho ? '✅ Conseguido' : `te faltan <strong>${falta.toFixed(1)} kg</strong>`}</span>
+    </div>`;
+  }).join('') + `<div class="meta-aviso">Ahora: <strong>${current.toFixed(1)} kg</strong> · IMC ${(current / m2).toFixed(1)}</div>`;
 }
 
 /* ===== PLAN TABLE ===== */
