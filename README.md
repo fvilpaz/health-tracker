@@ -11,7 +11,7 @@ App web personal de salud y seguimiento de progreso. Sin servidor, sin backend, 
 | Sección | Descripción |
 |---------|-------------|
 | **Dashboard** | Peso actual, perdido, IMC, cintura, ratio cintura/altura, racha, logros. Peso, cintura y ratio cambian de color (🟢/🟠/🔴) según el IMC y la cintura/altura |
-| **🎯 Metas** | Metas a corto, medio y largo plazo (IMC 30, peso objetivo, IMC 27) con lo que falta; historial de análisis con PDF oficial adjunto y resumen del último frente al anterior |
+| **🎯 Metas** | Metas a corto, medio y largo plazo (IMC 30, peso objetivo, IMC 27) con lo que falta; historial de análisis: **subes el PDF del laboratorio y la app lee la fecha y los valores** (tú revisas y guardas), el PDF queda adjunto, y resumen del último frente al anterior |
 | **Entrenamiento** | Calentamiento → fuerza → calma, con temporizador SVG. La fuerza va en **bloques 1 / 2 / 3** (sin cardio) |
 | **Nutrición** | Esquema del plato, ideas de comidas, alimentos OK y a evitar |
 | **Meds** | Ebymect, hígado graso, Gilbert, señales de alerta y suplementos (seguros, con precaución y a evitar) |

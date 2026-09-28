@@ -324,19 +324,96 @@ function renderAnalisis() {
   resumen.innerHTML = `<div class="meta-aviso" style="margin:0 0 8px;">${labFecha(prev.date)} → ${labFecha(last.date)} · pruebas que están en los dos</div>` + filas.join('');
 }
 
+/* Leer el PDF del laboratorio: cada prueba es una línea «Nombre [*] valor unidad referencias».
+   El patrón es cómo la llama el informe (Hospital Costa del Sol / SAS); otro laboratorio necesitaría los suyos. */
+const LAB_PDF = {
+  hba1c:          /^Hemoglobina glicosilada \(A1c\)/,
+  glucosa:        /^Glucosa(?! \()/,
+  trigliceridos:  /^Triglicéridos/,
+  hdl:            /^Colesterol de HDL/,
+  ldl:            /^Colesterol de LDL(?! \()/,
+  no_hdl:         /^Colesterol no HDL \(calculado\)/,
+  colesterol:     /^Colesterol(?= [*\d])/,
+  alt:            /^Alanina transaminasa/,
+  ast:            /^Aspartato transaminasa/,
+  ggt:            /^Gamma glutamiltransferasa/,
+  bilirrubina:    /^Bilirrubina total/,
+  ck:             /^Creatina quinasa/,
+  creatinina:     /^Creatinina(?= [*\d])/,
+  filtrado:       /^Filtrado glomerular.*?\(estimado\)/,
+  acido_urico:    /^Ácido úrico/,
+  b12:            /^Vitamina B12/,
+  tsh:            /^Tirotropina/,
+  glucosa_orina:  /^Glucosa \(orina; tira color\)/,
+  densidad_orina: /^Densidad \(orina; tira color\)/,
+};
+const PDFJS = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/';
+
+async function labLeerPdf(archivo) {
+  const pdfjs = await import(PDFJS + 'pdf.min.mjs');          // solo se descarga cuando eliges un PDF
+  pdfjs.GlobalWorkerOptions.workerSrc = PDFJS + 'pdf.worker.min.mjs';
+  const doc = await pdfjs.getDocument({ data: await archivo.arrayBuffer() }).promise;
+  const lineas = [];
+  for (let p = 1; p <= doc.numPages; p++) {
+    // pdf.js da trozos de texto con su posición: se juntan en líneas por altura (y), de izquierda a derecha
+    const filas = {};
+    (await (await doc.getPage(p)).getTextContent()).items.forEach(it => {
+      const y = Math.round(it.transform[5]);
+      (filas[y] ??= []).push(it);
+    });
+    Object.keys(filas).sort((a, b) => b - a).forEach(y =>
+      lineas.push(filas[y].sort((a, b) => a.transform[4] - b.transform[4]).map(it => it.str).join(' ').replace(/\s+/g, ' ').trim()));
+  }
+  const valores = {};
+  for (const [k, patron] of Object.entries(LAB_PDF)) {
+    for (const linea of lineas) {
+      const m = linea.match(patron);
+      if (!m) continue;
+      const num = linea.slice(m[0].length).match(/^\s*\*?\s*(\d+(?:,\d+)?)/);
+      if (num) { valores[k] = parseFloat(num[1].replace(',', '.')); break; }
+    }
+  }
+  // la fecha va en una tabla: «… Fecha de toma de muestra …» y en la línea de abajo, la primera fecha
+  const f = lineas.join('\n').match(/Fecha de toma de muestra[^\n]*\n[^\n]*?(\d{2})\/(\d{2})\/(\d{4})/);
+  return { fecha: f ? `${f[3]}-${f[2]}-${f[1]}` : null, valores };
+}
+
 document.getElementById('labAddBtn').addEventListener('click', () => {
   const form = document.getElementById('labForm');
   if (form.style.display !== 'none') { form.style.display = 'none'; return; }
-  form.innerHTML = `<div class="setup-field"><label>Fecha del análisis</label><input type="date" id="labDate" value="${new Date().toISOString().slice(0, 10)}"></div>` +
+  form.innerHTML =
+    '<label class="btn btn-primary btn-full lab-pdf-elegir">📄 Elegir el PDF del análisis<input type="file" id="labPdfInput" accept="application/pdf" hidden></label>' +
+    '<div class="meta-aviso" id="labPdfEstado">Lo leo y relleno la fecha y los valores; tú solo revisas y guardas. El PDF se queda guardado con el análisis.</div>' +
+    `<div class="setup-field" style="margin-top:12px;"><label>Fecha del análisis</label><input type="date" id="labDate" value="${new Date().toISOString().slice(0, 10)}"></div>` +
+    '<div id="labLeidos"></div>' +
+    '<details class="lab-mano"><summary>Rellenar o corregir a mano</summary>' +
     LAB_TESTS.map(t => `<div class="lab-input"><label for="lab_${t.k}">${t.n}</label><input type="number" step="any" id="lab_${t.k}" placeholder="${t.u || '—'}"></div>`).join('') +
-    '<div class="lab-input"><label for="labPdfInput">PDF oficial (opcional)</label><input type="file" id="labPdfInput" accept="application/pdf"></div>' +
-    '<p class="meta-aviso">Rellena solo las que traiga tu análisis.</p><button class="btn btn-green btn-full" id="labSaveBtn">Guardar análisis</button>';
+    '</details><button class="btn btn-green btn-full" id="labSaveBtn" style="margin-top:12px;">Guardar análisis</button>';
   form.style.display = 'block';
+  document.getElementById('labPdfInput').addEventListener('change', async e => {
+    const estado = document.getElementById('labPdfEstado'), archivo = e.target.files[0];
+    if (!archivo) return;
+    estado.textContent = `Leyendo ${archivo.name}…`;
+    try {
+      const { fecha, valores } = await labLeerPdf(archivo);
+      if (fecha) document.getElementById('labDate').value = fecha;
+      LAB_TESTS.forEach(t => { document.getElementById('lab_' + t.k).value = valores[t.k] ?? ''; });
+      const leidas = LAB_TESTS.filter(t => valores[t.k] != null);
+      estado.textContent = `📄 ${archivo.name} · ${leidas.length} valores leídos${fecha ? ' · fecha ' + labFecha(fecha) : ' · no encontré la fecha: ponla tú'}`;
+      document.getElementById('labLeidos').innerHTML = leidas.length
+        ? '<table class="labs">' + leidas.map(t => `<tr><td>${t.n}</td><td class="n ${labFuera(t, valores[t.k]) ? 'fuera' : ''}">${labNum(valores[t.k])} <small>${t.u}</small></td></tr>`).join('') + '</table>'
+        : '<div class="meta-aviso">No he encontrado ningún valor conocido en este PDF. Rellénalos a mano abajo.</div>';
+    } catch {
+      estado.textContent = 'No he podido leer ese PDF. Se guardará igual; rellena los valores a mano abajo.';
+    }
+  });
   document.getElementById('labSaveBtn').addEventListener('click', async () => {
     const date = document.getElementById('labDate').value, values = {};
     LAB_TESTS.forEach(t => { const v = parseFloat(document.getElementById('lab_' + t.k).value); if (!isNaN(v)) values[t.k] = v; });
     if (!date || !Object.keys(values).length) return showToast('Pon la fecha y al menos un valor');
-    const labs = Storage.get('labs', []).filter(l => l.date !== date);   // misma fecha: se sustituye
+    const todos = Storage.get('labs', []);
+    if (todos.some(l => l.date === date) && !confirm(`Ya tienes un análisis del ${labFecha(date)}. ¿Sustituirlo por este?`)) return;
+    const labs = todos.filter(l => l.date !== date);   // misma fecha: se sustituye (tras preguntar)
     labs.push({ date, values });
     Storage.set('labs', labs);
     const pdf = document.getElementById('labPdfInput').files[0];
