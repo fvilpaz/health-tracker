@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-object-injection -- las claves son nombres del propio código (catálogos, campos) o ya validadas; nunca texto de fuera sin comprobar (revisado 28-sep-2026) */
 /* Plan de 12 semanas: objetivo de peso y cintura de cada semana, lo real (sale de Progreso) y las casillas
    de bloques hechos (salen de Mi semana). Se movió tal cual desde app.js (28-sep-2026). */
 
@@ -81,6 +82,7 @@ function renderPlanTable() {
   }
 
   html += '</div>';
+  // eslint-disable-next-line no-unsanitized/property -- objetivos y fechas calculados; lo real con esc() en planValor
   container.innerHTML = html;
 }
 

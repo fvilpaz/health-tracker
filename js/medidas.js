@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-object-injection -- las claves son nombres del propio código (catálogos, campos) o ya validadas; nunca texto de fuera sin comprobar (revisado 28-sep-2026) */
 /* Medidas: guardar peso, altura y cintura, y el historial de peso (con borrar). Se movió tal cual desde
    app.js (28-sep-2026). */
 
@@ -81,6 +82,7 @@ function renderWeightLog() {
   if (!container) return;
 
   if (!entries.length) {
+    // eslint-disable-next-line no-unsanitized/property -- solo constantes e iconos del propio código
     container.innerHTML = '<div class="empty-state">' + duo('balanza', 'vacio-ico') + '<div>Aún no hay registros de peso</div></div>';
     return;
   }
@@ -94,6 +96,7 @@ function renderWeightLog() {
 
     const div = document.createElement('div');
     div.className = 'weight-entry';
+    // eslint-disable-next-line no-unsanitized/property -- fecha y peso con esc(); diferencia calculada (número)
     div.innerHTML = `
       <span class="w-date">${esc(e.date)}</span>
       <span class="w-value">${esc(e.weight)} kg</span>

@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-non-literal-fs-filename -- las pruebas leen archivos del propio repositorio (revisado 28-sep-2026) */
 // Tests del temporizador con un reloj falso (no esperan segundos de verdad).
 const test = require('node:test');
 const assert = require('node:assert/strict');

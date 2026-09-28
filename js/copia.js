@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-object-injection -- las claves son nombres del propio código (catálogos, campos) o ya validadas; nunca texto de fuera sin comprobar (revisado 28-sep-2026) */
 /* ===== COPIA: validar lo que llega al importar =====
    Un archivo de copia puede venir de cualquier sitio (o estar manipulado). Solo entran las claves
    conocidas y los datos con la forma correcta; lo demás se descarta y se cuenta. Así un archivo
@@ -15,6 +16,7 @@ function fechaReal(y, m, d) {
   return f.getUTCFullYear() === y && f.getUTCMonth() === m - 1 && f.getUTCDate() === d && y >= 2000 && f <= manana;
 }
 const esFechaIso = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) && fechaReal(+v.slice(0, 4), +v.slice(5, 7), +v.slice(8, 10));
+// eslint-disable-next-line security/detect-unsafe-regex -- medida: 1 ms con 100.000 caracteres maliciosos (grupos anclados y acotados)
 const esInstante = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2}(\.\d+)?)?Z?)?$/.test(v) && esFechaIso(v.slice(0, 10));
 const esFechaEs = v => typeof v === 'string' && /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(v) && esFechaIso(esAIso(v));
 

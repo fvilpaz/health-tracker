@@ -37,6 +37,7 @@ function updateDashboard() {
 
   // Racha
   const streakEl = document.getElementById('dashStreak');
+  // eslint-disable-next-line no-unsanitized/property -- solo constantes e iconos del propio código y un número
   if (streakEl) streakEl.innerHTML = duo('llama', 'estado racha') + ' ' + (streak ? `${plural(streak, 'semana cumplida', 'semanas cumplidas')} seguidas` : 'Cumple 3 bloques esta semana para empezar la racha');
 
   // Progreso del plan
@@ -92,12 +93,15 @@ function updateDashboard() {
     whtrEl.textContent = whtr;
     if (whtr < 0.5) {
       whtrEl.style.color = 'var(--green)';
+      // eslint-disable-next-line no-unsanitized/property -- solo constantes e iconos del propio código
       if (whtrStatusEl) whtrStatusEl.innerHTML = estado('ok') + ' Riesgo bajo';
     } else if (whtr < 0.6) {
       whtrEl.style.color = 'var(--orange)';
+      // eslint-disable-next-line no-unsanitized/property -- solo constantes e iconos del propio código
       if (whtrStatusEl) whtrStatusEl.innerHTML = estado('alerta') + ' Riesgo moderado';
     } else {
       whtrEl.style.color = 'var(--red)';
+      // eslint-disable-next-line no-unsanitized/property -- solo constantes e iconos del propio código
       if (whtrStatusEl) whtrStatusEl.innerHTML = estado('mal') + ' Riesgo alto';
     }
   }
@@ -149,6 +153,7 @@ function renderMetas() {
   const m2 = (heightCm / 100) ** 2;
   const metas = calcularMetas(current, heightCm, Storage.get('settings', {}).goalWeight);
 
+  // eslint-disable-next-line no-unsanitized/property -- textos de las metas del código y números
   box.innerHTML = metas.map(({ falta, hecho, ...mt }) => {
     return `<div class="meta-row ${hecho ? 'hecha' : ''}">
       <span class="meta-plazo">${mt.plazo}</span>

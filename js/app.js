@@ -52,6 +52,7 @@ function showSetup() {
   overlay.setAttribute('role', 'dialog');
   overlay.setAttribute('aria-modal', 'true');
   overlay.setAttribute('aria-labelledby', 'setupTitulo');
+  // eslint-disable-next-line no-unsanitized/property -- solo constantes e iconos del propio código y la fecha de hoy
   overlay.innerHTML = `
     <div class="setup-card">
       <button class="setup-close" id="setupCloseBtn" aria-label="Cerrar">${ICONO.cerrar}</button>
@@ -129,6 +130,7 @@ function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   // El icono enseña el tema en el que estás: luna en oscuro, sol en claro (los dos en azul)
   const btn = document.getElementById('themeBtn');
+  // eslint-disable-next-line no-unsanitized/property -- solo constantes e iconos del propio código
   btn.innerHTML = theme === 'dark' ? TEMA_ICONO.luna : TEMA_ICONO.sol;
   btn.setAttribute('aria-label', theme === 'dark' ? 'Pasar a tema claro' : 'Pasar a tema oscuro');
   Storage.set('theme', theme);
@@ -189,5 +191,7 @@ if ('serviceWorker' in navigator) {
 }
 
 /* ===== ICONOS de los botones del HTML: <span data-ico="jugar"> → su trazo de ICONO ===== */
+// eslint-disable-next-line no-unsanitized/property -- solo constantes e iconos del propio código (data-ico del propio HTML)
 document.querySelectorAll('[data-ico]').forEach(el => { el.outerHTML = ICONO[el.dataset.ico]; });
+// eslint-disable-next-line no-unsanitized/property -- solo constantes e iconos del propio código (data-duo del propio HTML)
 document.querySelectorAll('[data-duo]').forEach(el => { el.outerHTML = duo(el.dataset.duo, el.className); });

@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-object-injection -- las claves son nombres del propio código (catálogos, campos) o ya validadas; nunca texto de fuera sin comprobar (revisado 28-sep-2026) */
 /* Análisis de sangre: catálogo de pruebas, tabla y comparativa, lector del PDF del laboratorio,
    PDF guardados (IndexedDB) y formulario. Se movió tal cual desde app.js (28-sep-2026). */
 
@@ -98,6 +99,7 @@ function renderAnalisis() {
     return;
   }
   // Un desplegable por análisis, el más reciente arriba: tu valor, cuánto debería estar y qué es
+  // eslint-disable-next-line no-unsanitized/property -- lo del almacén o del PDF va por esc()/labNum() o son números; probado con una copia manipulada
   tabla.innerHTML = labs.slice().reverse().map(l => {
     const pruebas = LAB_TESTS.filter(t => l.values[t.k] != null);
     const fuera = pruebas.filter(t => t.mejor !== 'info' && labFuera(t, l.values[t.k])).length;
@@ -114,6 +116,7 @@ function renderAnalisis() {
   }).join('');
   pdfFechas().then(fechas => tabla.querySelectorAll('.lab-pdf').forEach(b => {
     if (!fechas.includes(b.dataset.fecha)) return;
+    // eslint-disable-next-line no-unsanitized/property -- solo constantes e iconos del propio código
     b.innerHTML = ICONO.pdf; b.title = b.ariaLabel = 'Ver PDF';
     b.nextElementSibling.hidden = false;   // el botón de quitar solo aparece si hay PDF
   })).catch(() => {});
@@ -132,6 +135,7 @@ function renderAnalisis() {
   // Sugerencias: lo que empeora o sigue fuera de rango en el segundo análisis
   const sugerir = LAB_TESTS.filter(t => consejoPara(t, last.values[t.k] ?? 0) && last.values[t.k] != null && t.mejor !== 'info' &&
     (labFuera(t, last.values[t.k]) || (prev.values[t.k] != null && labComparar(t, prev.values[t.k], last.values[t.k]).clase === 'peora')));
+  // eslint-disable-next-line no-unsanitized/property -- lo del almacén o del PDF va por esc()/labNum() o son números; probado con una copia manipulada
   resumen.innerHTML =
     `<div class="lab-elegir"><select id="labCmpA" aria-label="Análisis de antes">${opciones(labCmp.a)}</select><span aria-hidden="true">→</span><select id="labCmpB" aria-label="Análisis de después">${opciones(labCmp.b)}</select></div>` +
     (filas.length ? filas.join('') : '<div class="meta-aviso">Estos dos análisis no tienen pruebas en común.</div>') +
@@ -175,6 +179,7 @@ const LAB_PDF = {
 const PDFJS = new URL('vendor/pdfjs/', document.baseURI).href;
 
 async function labLeerPdf(archivo) {
+  // eslint-disable-next-line no-unsanitized/method -- dirección fija (vendor/pdfjs), no depende de nada de fuera
   const pdfjs = await import(PDFJS + 'pdf.min.mjs');          // solo se descarga cuando eliges un PDF
   pdfjs.GlobalWorkerOptions.workerSrc = PDFJS + 'pdf.worker.min.mjs';
   const doc = await pdfjs.getDocument({ data: await archivo.arrayBuffer(), isEvalSupported: false }).promise;   // sin eval: lo prohíbe la CSP
@@ -202,6 +207,7 @@ function leerInforme(lineas) {
       if (!m) continue;
       // Los espacios ya van normalizados a uno: « * 154 …» → 154. Sin «\s*» dobles (backtracking cuadrático)
       // Coma o punto decimal y un «<»/«>» delante (algunos laboratorios: «0.88», «>90»)
+      // eslint-disable-next-line security/detect-unsafe-regex -- medida: 1 ms con 100.000 caracteres maliciosos (sin retroceso)
       const num = linea.slice(m[0].length).match(/^ ?\*? ?[<>]? ?(\d+(?:[.,]\d+)?)/);
       if (num) {
         let v = parseFloat(num[1].replace(',', '.'));
@@ -219,6 +225,7 @@ function leerInforme(lineas) {
 document.getElementById('labAddBtn').addEventListener('click', () => {
   const form = document.getElementById('labForm');
   if (form.style.display !== 'none') { form.style.display = 'none'; return; }
+  // eslint-disable-next-line no-unsanitized/property -- solo constantes e iconos del propio código y la fecha de hoy
   form.innerHTML =
     '<label class="btn btn-primary btn-full lab-pdf-elegir">' + ICONO.pdf + 'Elegir el PDF del análisis<input type="file" id="labPdfInput" accept="application/pdf" hidden></label>' +
     '<div class="meta-aviso" id="labPdfEstado">Lo leo y relleno la fecha y los valores; tú solo revisas y guardas. El PDF se queda guardado con el análisis.</div>' +
@@ -237,7 +244,9 @@ document.getElementById('labAddBtn').addEventListener('click', () => {
       if (fecha) document.getElementById('labDate').value = fecha;
       LAB_TESTS.forEach(t => { document.getElementById('lab_' + t.k).value = valores[t.k] ?? ''; });
       const leidas = LAB_TESTS.filter(t => valores[t.k] != null);
+      // eslint-disable-next-line no-unsanitized/property -- nombre del archivo con esc(); lo demás, números
       estadoPdf.innerHTML = `${ICONO.pdf} ${esc(archivo.name)} · ${leidas.length} valores leídos${fecha ? ' · fecha ' + labFecha(fecha) : ' · no encontré la fecha: ponla tú'}`;
+      // eslint-disable-next-line no-unsanitized/property -- valores leídos del PDF: solo números (labNum) y nombres del catálogo
       document.getElementById('labLeidos').innerHTML = leidas.length
         ? '<table class="labs">' + leidas.map(t => `<tr><td>${t.n}</td><td class="n ${labFuera(t, valores[t.k]) ? 'fuera' : ''}">${labNum(valores[t.k])} <small>${t.u}</small></td></tr>`).join('') + '</table>'
         : '<div class="meta-aviso">No he encontrado ningún valor conocido en este PDF. Rellénalos a mano abajo.</div>';
