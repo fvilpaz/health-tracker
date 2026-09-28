@@ -22,7 +22,7 @@ function initApp() {
   const newPlanBtn = document.getElementById('newPlanBtn');
   if (newPlanBtn) {
     newPlanBtn.addEventListener('click', () => {
-      if (!confirm('¿Finalizar este plan y empezar uno nuevo?\n\nSe borrarán todos los datos (peso, cintura, entrenos, logros).')) return;
+      if (!confirm('¿Finalizar este plan y empezar uno nuevo?\n\nSe borrarán todos los datos (peso, cintura, entrenos, logros).\n\nSi quieres conservarlos, cancela y usa antes «⬇ Exportar» en Progreso.')) return;
       const keys = ['settings', 'weights', 'waists', 'startDate', 'trainings', 'streak', 'logros', 'plan'];
       keys.forEach(k => Storage.remove(k));
       location.reload();
@@ -628,6 +628,46 @@ function checkLogros() {
     grid.appendChild(div);
   });
 }
+
+/* ===== COPIA DE SEGURIDAD (exportar / importar) ===== */
+// Los datos viven en localStorage de ESTE navegador: la copia permite llevarlos a otro aparato.
+// Formato: cabecera (app, versión, fecha) + todas las claves 'ht_' tal cual (patrón de Crypto_Portafolio).
+const BACKUP_APP = 'health-tracker', BACKUP_VERSION = 1;
+
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const data = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k.startsWith('ht_')) data[k.slice(3)] = Storage.get(k.slice(3));
+  }
+  const fecha = new Date().toISOString().slice(0, 10);
+  const blob = new Blob([JSON.stringify({ app: BACKUP_APP, version: BACKUP_VERSION, exportedAt: new Date().toISOString(), data }, null, 2)],
+                        { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `health-tracker-${fecha}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast('Copia descargada ✓');
+});
+
+document.getElementById('importBtn').addEventListener('click', () => document.getElementById('importFile').click());
+
+document.getElementById('importFile').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  e.target.value = '';                                   // para poder elegir el mismo archivo otra vez
+  if (!file) return;
+  let copia;
+  try { copia = JSON.parse(await file.text()); } catch { return showToast('Ese archivo no es una copia válida'); }
+  if (copia?.app !== BACKUP_APP || !copia.data) return showToast('Ese archivo no es una copia de Health Tracker');
+  const d = copia.data, n = k => Array.isArray(d[k]) ? d[k].length : 0;
+  const cuando = copia.exportedAt ? new Date(copia.exportedAt).toLocaleDateString('es-ES') : 'fecha desconocida';
+  if (!confirm(`Copia del ${cuando}: ${n('weights')} pesos, ${n('waists')} cinturas, ${n('trainings')} entrenos.\n\n` +
+               'Esto SUSTITUYE los datos de este aparato. ¿Continuar?')) return;
+  Object.keys(localStorage).filter(k => k.startsWith('ht_')).forEach(k => localStorage.removeItem(k));
+  Object.entries(d).forEach(([k, v]) => Storage.set(k, v));
+  location.reload();
+});
 
 /* ===== TOAST ===== */
 function showToast(msg) {
