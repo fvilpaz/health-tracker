@@ -9,7 +9,7 @@ const LOGROS_DEF = [
   { id: 'kg5', icon: duo('trofeo'), name: '5 kg perdidos', desc: '5 kilos menos', check: () => { const w = Storage.get('weights', []); return w.length >= 2 && (w[0].weight - w[w.length - 1].weight) >= 5; } },
   { id: 'goal', icon: duo('diana'), name: 'Peso objetivo', desc: 'Llegas a tu peso objetivo', check: () => { const w = Storage.get('weights', []); const g = Storage.get('settings', {}).goalWeight; return w.length && g && w[w.length - 1].weight <= g; } },
   { id: 'waist1', icon: duo('regla'), name: '1 cm menos', desc: 'Primer cm de cintura perdido', check: () => { const w = Storage.get('waists', []); return w.length >= 2 && (w[0].waist - w[w.length - 1].waist) >= 1; } },
-  { id: 'whtr', icon: duo('corazon'), name: 'Ratio saludable', desc: 'Cintura/altura < 0.5', check: () => { const w = Storage.get('waists', []); const h = getHeightCm(); return w.length && h && (w[w.length - 1].waist / h) < 0.5; } }
+  { id: 'whtr', icon: duo('corazon'), name: 'Ratio saludable', desc: 'Cintura/altura < 0.5', check: () => { const w = Storage.get('waists', []); const h = getHeightCm(); return w.length && h && Math.round(w[w.length - 1].waist / h * 100) / 100 < 0.5; } }   // redondeado como en el panel
 ];
 
 function checkLogros() {
