@@ -130,7 +130,7 @@ document.getElementById('exportBtn').addEventListener('click', () => {
   a.href = URL.createObjectURL(blob);
   a.download = `health-tracker-${fecha}.json`;
   a.click();
-  URL.revokeObjectURL(a.href);
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);   // en algunos móviles, liberarla al momento cortaba la descarga
   showToast('Copia descargada ✓');
 });
 

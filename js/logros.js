@@ -26,7 +26,7 @@ function checkLogros() {
     }
     const div = document.createElement('div');
     div.className = `logro ${isUnlocked ? 'unlocked' : ''}`;
-    div.innerHTML = `<div class="logro-icon">${l.icon}</div><div class="logro-name">${l.name}</div><div class="logro-desc">${l.desc}</div>`;
+    div.innerHTML = `<div class="logro-icon">${l.icon}</div><div class="logro-name">${l.name}${isUnlocked ? '' : '<span class="solo-lector"> (bloqueado)</span>'}</div><div class="logro-desc">${l.desc}</div>`;
     grid.appendChild(div);
   });
 }

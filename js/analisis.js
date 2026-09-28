@@ -229,20 +229,20 @@ document.getElementById('labAddBtn').addEventListener('click', () => {
     '</details><button class="btn btn-green btn-full" id="labSaveBtn" style="margin-top:12px;">Guardar análisis</button>';
   form.style.display = 'block';
   document.getElementById('labPdfInput').addEventListener('change', async e => {
-    const estado = document.getElementById('labPdfEstado'), archivo = e.target.files[0];
+    const estadoPdf = document.getElementById('labPdfEstado'), archivo = e.target.files[0];
     if (!archivo) return;
-    estado.textContent = `Leyendo ${archivo.name}…`;
+    estadoPdf.textContent = `Leyendo ${archivo.name}…`;
     try {
       const { fecha, valores } = await labLeerPdf(archivo);
       if (fecha) document.getElementById('labDate').value = fecha;
       LAB_TESTS.forEach(t => { document.getElementById('lab_' + t.k).value = valores[t.k] ?? ''; });
       const leidas = LAB_TESTS.filter(t => valores[t.k] != null);
-      estado.innerHTML = `${ICONO.pdf} ${esc(archivo.name)} · ${leidas.length} valores leídos${fecha ? ' · fecha ' + labFecha(fecha) : ' · no encontré la fecha: ponla tú'}`;
+      estadoPdf.innerHTML = `${ICONO.pdf} ${esc(archivo.name)} · ${leidas.length} valores leídos${fecha ? ' · fecha ' + labFecha(fecha) : ' · no encontré la fecha: ponla tú'}`;
       document.getElementById('labLeidos').innerHTML = leidas.length
         ? '<table class="labs">' + leidas.map(t => `<tr><td>${t.n}</td><td class="n ${labFuera(t, valores[t.k]) ? 'fuera' : ''}">${labNum(valores[t.k])} <small>${t.u}</small></td></tr>`).join('') + '</table>'
         : '<div class="meta-aviso">No he encontrado ningún valor conocido en este PDF. Rellénalos a mano abajo.</div>';
     } catch {
-      estado.textContent = 'No he podido leer ese PDF. Se guardará igual; rellena los valores a mano abajo.';
+      estadoPdf.textContent = 'No he podido leer ese PDF. Se guardará igual; rellena los valores a mano abajo.';
     }
   });
   document.getElementById('labSaveBtn').addEventListener('click', async () => {

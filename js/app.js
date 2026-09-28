@@ -20,8 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initApp() {
   initNav();
-  updateDashboard();
-  renderPlanTable();
+  updateDashboard();   // ya pinta también el plan (antes se pintaba dos veces al abrir)
   renderWeightLog();
   checkLogros();
 
@@ -125,6 +124,8 @@ function initTheme() {
 }
 
 function applyTheme(theme) {
+  // La barra de arriba del móvil, del color de la cabecera del tema
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#1e293b' : '#ffffff');
   document.documentElement.setAttribute('data-theme', theme);
   // El icono enseña el tema en el que estás: luna en oscuro, sol en claro (los dos en azul)
   const btn = document.getElementById('themeBtn');
