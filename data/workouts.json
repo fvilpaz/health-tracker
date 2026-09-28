@@ -1,6 +1,5 @@
 {
   "warmup": {
-    "title": "🔥 Calentamiento",
     "duration": 4,
     "exercises": [
       {
@@ -36,7 +35,6 @@
     ]
   },
   "strength": {
-    "title": "💪 Fuerza",
     "duration": 14,
     "rounds": 3,
     "rest_between_rounds": 60,
@@ -71,7 +69,6 @@
     }
   },
   "cooldown": {
-    "title": "🧘 Vuelta a la calma",
     "duration": 2,
     "exercises": [
       {
