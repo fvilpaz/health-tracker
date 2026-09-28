@@ -22,7 +22,7 @@ function initApp() {
   const newPlanBtn = document.getElementById('newPlanBtn');
   if (newPlanBtn) {
     newPlanBtn.addEventListener('click', () => {
-      if (!confirm('¿Finalizar este plan y empezar uno nuevo?\n\nSe borrarán todos los datos (peso, cintura, entrenos, logros).\n\nSi quieres conservarlos, cancela y usa antes «⬇️ Exportar» en Progreso.')) return;
+      if (!confirm('¿Finalizar este plan y empezar uno nuevo?\n\nSe borrarán todos los datos (peso, cintura, entrenos, logros).\n\nSi quieres conservarlos, cancela y usa antes «Exportar» en Progreso.')) return;
       const keys = ['settings', 'weights', 'waists', 'startDate', 'trainings', 'streak', 'logros', 'plan'];
       keys.forEach(k => Storage.remove(k));
       location.reload();
@@ -308,6 +308,17 @@ const LAB_INFO = {
   densidad_orina: ['Lo concentrada que está la orina. Alta = bebes poca agua.', 'Bebe más agua, sobre todo si tomas dapagliflozina.'],
 };
 
+// Iconos de línea en el color del texto del botón (blanco sobre azul); los emojis traen su propio color
+const ICONO = (() => {
+  const svg = trazos => `<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${trazos}</svg>`;
+  const hoja = '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>';
+  return {
+    pdf: svg(hoja),
+    adjuntar: svg(hoja + '<line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/>'),
+    papelera: svg('<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>'),
+  };
+})();
+
 const labFechaLarga = d => new Date(d + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
 const labDebe = t => t.min != null && t.max != null ? `${labNum(t.min)} – ${labNum(t.max)}`
   : t.max != null ? `≤ ${labNum(t.max)}` : t.min != null ? `≥ ${labNum(t.min)}` : 'sin rango';
@@ -342,8 +353,8 @@ function renderAnalisis() {
     const fuera = pruebas.filter(t => t.mejor !== 'info' && labFuera(t, l.values[t.k])).length;
     return `<details class="lab-sec"><summary><div class="lab-tit">📅 ${labFechaLarga(l.date)}` +
       `<small>${pruebas.length} pruebas · ${fuera ? `⚠️ ${fuera} fuera de rango` : '✅ todo en rango'}</small></div><span class="lab-flecha"></span></summary>` +
-      `<div class="lab-cuerpo"><button class="lab-pdf" data-fecha="${l.date}" title="Adjuntar PDF" aria-label="Adjuntar PDF">＋📄</button>` +
-      `<button class="lab-pdf-quitar" data-fecha="${l.date}" title="Borrar PDF" aria-label="Borrar PDF" hidden>🗑</button>` +
+      `<div class="lab-cuerpo"><button class="btn btn-primary lab-pdf" data-fecha="${l.date}" title="Adjuntar PDF" aria-label="Adjuntar PDF">${ICONO.adjuntar}</button>` +
+      `<button class="btn btn-primary lab-pdf-quitar" data-fecha="${l.date}" title="Borrar PDF" aria-label="Borrar PDF" hidden>${ICONO.papelera}</button>` +
       pruebas.map(t => {
         const v = l.values[t.k], mal = t.mejor !== 'info' && labFuera(t, v);
         return `<div class="lab-fila ${mal ? 'fuera' : ''}"><div class="lab-fila-top"><span>${t.mejor === 'info' ? 'ℹ️' : mal ? '⚠️' : '✅'} ${t.n}</span>` +
@@ -353,7 +364,7 @@ function renderAnalisis() {
   }).join('');
   pdfFechas().then(fechas => tabla.querySelectorAll('.lab-pdf').forEach(b => {
     if (!fechas.includes(b.dataset.fecha)) return;
-    b.textContent = '📄'; b.title = b.ariaLabel = 'Ver PDF'; b.classList.add('tiene');
+    b.innerHTML = ICONO.pdf; b.title = b.ariaLabel = 'Ver PDF';
     b.nextElementSibling.hidden = false;   // el botón de quitar solo aparece si hay PDF
   })).catch(() => {});
 
