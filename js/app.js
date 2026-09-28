@@ -146,7 +146,7 @@ function initNav() {
 function updateDashboard() {
   const settings = Storage.get('settings', {});
   const weights = Storage.get('weights', []);
-  const streak = Storage.get('streak', 0);
+  const streak = weekStreak();
   const startDate = Storage.get('startDate', null);
 
   const currentWeight = weights.length ? weights[weights.length - 1].weight : null;
@@ -173,7 +173,7 @@ function updateDashboard() {
 
   // Racha
   const streakEl = document.getElementById('dashStreak');
-  if (streakEl) streakEl.textContent = `🔥 ${streak} días de racha`;
+  if (streakEl) streakEl.textContent = streak ? `🔥 ${plural(streak, 'semana cumplida', 'semanas cumplidas')} seguidas` : '🔥 Cumple 3 bloques esta semana para empezar la racha';
 
   // Progreso del plan
   if (startDate && currentWeight && startWeight) {
@@ -609,7 +609,8 @@ function renderPlanTable() {
     const wd = planData[w] || {};
     const actualWeight = wd.weight || '';
     const actualWaist = wd.waist || '';
-    const checks = wd.checks || [false, false, false];
+    const hechos = sessionsInWeek(weekDate).length;   // las casillas salen solas de los bloques hechos esa semana
+    const checks = [0, 1, 2].map(i => i < hechos);
     const isCurrent = w === currentWeekNum;
     const isPast = w < currentWeekNum;
 
@@ -627,7 +628,7 @@ function renderPlanTable() {
     html += `<div class="plan-row-bottom">`;
     html += `<div class="plan-checks">`;
     [1, 2, 3].forEach((num, i) => {
-      html += `<button class="plan-check ${checks[i] ? 'checked' : ''}" data-w="${w}" data-idx="${i}">${checks[i] ? '✓' : num}</button>`;
+      html += `<span class="plan-check ${checks[i] ? 'checked' : ''}">${checks[i] ? '✓' : num}</span>`;
     });
     html += `</div>`;
     html += `<div class="plan-inputs">`;
@@ -687,43 +688,6 @@ function renderPlanTable() {
       updateDashboard();
       checkLogros();
       showToast(`Semana ${wk} guardada ✓`);
-    });
-  });
-
-  container.querySelectorAll('.plan-check').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const wk = btn.dataset.w;
-      const idx = parseInt(btn.dataset.idx);
-      const row = container.querySelector(`div[data-week="${wk}"]`);
-      const checks = [];
-      row.querySelectorAll('.plan-check').forEach(c => {
-        if (parseInt(c.dataset.idx) === idx) {
-          c.classList.toggle('checked');
-          c.textContent = c.classList.contains('checked') ? '✓' : parseInt(c.dataset.idx) + 1;
-        }
-        checks.push(c.classList.contains('checked'));
-      });
-
-      const plan = Storage.get('plan', {});
-      if (!plan[wk]) plan[wk] = { weight: null, waist: null, checks: [false, false, false] };
-      plan[wk].checks = checks;
-      Storage.set('plan', plan);
-
-      // Sync trainings
-      const trainings = Storage.get('trainings', []);
-      const weekStart = new Date(Storage.get('startDate'));
-      weekStart.setDate(weekStart.getDate() + (parseInt(wk) - 1) * 7);
-      const dayLabels = [0, 2, 4].map(d => {
-        const dd = new Date(weekStart);
-        dd.setDate(weekStart.getDate() + d);
-        return dd.toLocaleDateString('es-ES');
-      });
-      if (checks[idx]) {
-        const label = dayLabels[idx];
-        if (!trainings.includes(label)) trainings.push(label);
-      }
-      Storage.set('trainings', trainings);
-      updateDashboard();
     });
   });
 }
@@ -862,9 +826,9 @@ document.getElementById('stopBtn').addEventListener('click', () => {
 /* ===== LOGROS ===== */
 const LOGROS_DEF = [
   { id: 'first_train', icon: '🏁', name: 'Primer entreno', desc: 'Completa tu primer entrenamiento', check: () => getSessions().length >= 1 },
-  { id: 'week', icon: '🔥', name: '7 días seguidos', desc: 'Racha de 7 días', check: () => Storage.get('streak', 0) >= 7 },
+  { id: 'week', icon: '🔥', name: 'Semana cumplida', desc: '3 bloques en una semana', check: () => completedWeeks() >= 1 },
   { id: 'kg1', icon: '⚖️', name: '1 kg perdido', desc: 'Primer kilo perdido', check: () => { const w = Storage.get('weights', []); return w.length >= 2 && (w[0].weight - w[w.length - 1].weight) >= 1; } },
-  { id: 'month', icon: '📅', name: 'Primer mes', desc: '30 entrenamientos completados', check: () => Storage.get('trainings', []).length >= 12 },
+  { id: 'month', icon: '📅', name: 'Primer mes', desc: '4 semanas cumplidas', check: () => completedWeeks() >= 4 },
   { id: 'kg5', icon: '🏆', name: '5 kg perdidos', desc: '5 kilos menos', check: () => { const w = Storage.get('weights', []); return w.length >= 2 && (w[0].weight - w[w.length - 1].weight) >= 5; } },
   { id: 'goal', icon: '🎯', name: 'Peso objetivo', desc: 'Llegas a tu peso objetivo', check: () => { const w = Storage.get('weights', []); const g = Storage.get('settings', {}).goalWeight; return w.length && g && w[w.length - 1].weight <= g; } },
   { id: 'waist1', icon: '📏', name: '1 cm menos', desc: 'Primer cm de cintura perdido', check: () => { const w = Storage.get('waists', []); return w.length >= 2 && (w[0].waist - w[w.length - 1].waist) >= 1; } },

@@ -10,7 +10,7 @@ App web personal de salud y seguimiento de progreso. Sin servidor, sin backend, 
 
 | Sección | Descripción |
 |---------|-------------|
-| **Dashboard** | Peso actual, perdido, IMC, cintura, ratio cintura/altura, racha, logros. Peso, cintura y ratio cambian de color (🟢/🟠/🔴) según el IMC y la cintura/altura |
+| **Dashboard** | Peso actual, perdido, IMC, cintura, ratio cintura/altura, bloques de esta semana, racha de **semanas cumplidas**, logros. Peso, cintura y ratio cambian de color (🟢/🟠/🔴) según el IMC y la cintura/altura |
 | **🎯 Metas** | Metas a corto, medio y largo plazo (IMC 30, peso objetivo, IMC 27) con lo que falta; historial de análisis: **subes el PDF del laboratorio y la app lee la fecha y los valores** (tú revisas y guardas), el PDF queda adjunto. Cada análisis es un desplegable con tu valor, cuánto debería estar y qué es cada prueba; debajo, comparativa entre dos análisis (a elegir) con sugerencias |
 | **Entrenamiento** | Calentamiento → fuerza → calma, con temporizador SVG. La fuerza va en **bloques 1 / 2 / 3** (sin cardio) que rotan solos. Solo cuenta como entreno el bloque de fuerza **completo**; se apunta solo con fecha, minutos y ejercicios |
 | **Nutrición** | Esquema del plato, ideas de comidas, alimentos OK y a evitar |
@@ -23,7 +23,7 @@ App web personal de salud y seguimiento de progreso. Sin servidor, sin backend, 
 Tracker semanal integrado con:
 - **Objetivos a partir de tus datos**: peso inicial − 7 kg y cintura inicial − 9 cm (nada escrito en el código)
 - **Campos para valores reales** por semana
-- **Checkboxes de entrenos** (Lun/Mié/Vie)
+- **Casillas de entrenos** que se rellenan solas con los bloques hechos cada semana
 - **Sincronización automática** con el historial de peso y cintura
 
 ## Características técnicas

@@ -165,7 +165,6 @@ function workoutDone() {
     // Llegar aquí = todas las vueltas hechas: es el único caso que cuenta como entreno
     const minutos = Math.max(1, Math.round((Date.now() - workoutStartedAt) / 60000));
     saveSession(currentBlock, minutos, phaseExercises(workoutData.strength).map(e => e.name));
-    Storage.set('streak', updateStreak());
     nameEl.textContent = `¡Bloque ${currentBlock} completado! 🎉`;
     labelEl.textContent = `${sessionsInWeek().length} de ${WEEK_GOAL} esta semana`;
   } else {
@@ -178,17 +177,4 @@ function workoutDone() {
 
   updateDashboard();
   checkLogros();
-}
-
-function updateStreak() {
-  const fechas = new Set(getSessions().map(s => s.date));
-  const today = new Date();
-  let streak = 0;
-  for (let i = 0; i < 100; i++) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    if (fechas.has(isoDate(d))) streak++;
-    else if (i > 0) break;
-  }
-  return streak;
 }
