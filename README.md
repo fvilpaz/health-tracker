@@ -51,7 +51,7 @@ health-tracker/
 │   ├── app.js              ← Lógica principal, dashboard, navegación
 │   ├── iconos.js           ← Todos los iconos (línea y duotono) en un solo sitio
 │   ├── storage.js          ← Wrapper de localStorage + esc() para pintar datos sin riesgo
-│   ├── copia.js            ← Valida las copias que se importan (solo entra lo que tiene la forma correcta)
+│   ├── copia.js            ← Exportar/importar la copia, validando lo que entra (solo lo que tiene la forma correcta)
 │   ├── timer.js            ← Temporizador con círculo SVG
 │   ├── charts.js           ← Gráfica Chart.js para peso
 │   ├── semana.js           ← Bloques de fuerza hechos (sessions), semana y bloque que toca
