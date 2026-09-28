@@ -58,16 +58,30 @@ const labDebe = t => t.min != null && t.max != null ? `${labNum(t.min)} – ${la
   : t.max != null ? `≤ ${labNum(t.max)}` : t.min != null ? `≥ ${labNum(t.min)}` : 'sin rango';
 
 // a → b de una prueba: mejora, empeora, igual o informativo
+// Cuánto se sale del rango (0 si está dentro)
+const labDistancia = (t, v) => t.min != null && v < t.min ? t.min - v : t.max != null && v > t.max ? v - t.max : 0;
+
 function labComparar(t, a, b) {
   if (t.mejor === 'info') return { icono: estado('info'), clase: 'info', txt: 'informativo' };
   if (a === b) return { icono: '＝', clase: 'igual', txt: 'igual' };
-  // 'rango': solo cuenta entrar o salir del rango; si no cambia de lado, se queda en "igual"
-  const mejora = t.mejor === 'bajo' ? b < a
+  // Si alguno está fuera de rango, manda la distancia al rango: acercarse mejora, alejarse empeora (también por
+  // abajo: glucosa 65 → 55 es peor, antes salía «mejora»). Dentro del rango, el lado bueno de cada prueba.
+  const da = labDistancia(t, a), db = labDistancia(t, b);
+  const mejora = da || db ? (db === da ? null : db < da)
+               : t.mejor === 'bajo' ? b < a
                : t.mejor === 'alto' ? b > a
-               : labFuera(t, a) === labFuera(t, b) ? null : labFuera(t, a);
+               : null;
   return mejora === true ? { icono: estado('ok'), clase: 'mejora', txt: 'mejora' }
        : mejora === false ? { icono: estado('mal'), clase: 'peora', txt: 'empeora' }
        : { icono: '＝', clase: 'igual', txt: 'igual' };
+}
+
+// Consejo para una prueba fuera de rango o que empeora. Los de LAB_INFO son para el lado malo habitual
+// (glucosa ALTA, HDL BAJO…); si se sale por el otro lado, lo sensato es consultarlo.
+function consejoPara(t, v) {
+  const porElOtroLado = (t.mejor === 'bajo' && t.min != null && v < t.min) || (t.mejor === 'alto' && t.max != null && v > t.max);
+  return porElOtroLado ? 'Está por debajo de lo normal: coméntalo con tu médico.'.replace('por debajo', t.mejor === 'alto' ? 'por encima' : 'por debajo')
+                       : LAB_INFO[t.k][1];
 }
 
 let labCmp = {};   // qué dos análisis se comparan (por defecto, el anterior y el último)
@@ -76,6 +90,8 @@ function renderAnalisis() {
   const tabla = document.getElementById('labsTabla'), resumen = document.getElementById('labsResumen');
   if (!tabla || !resumen) return;
   const labs = Storage.get('labs', []).slice().sort((a, b) => a.date.localeCompare(b.date));
+  // Los desplegables que tenías abiertos siguen abiertos al repintar (antes se cerraban todos)
+  const abiertos = new Set([...tabla.querySelectorAll('details[open]')].map(d => d.dataset.fecha));
   if (!labs.length) {
     tabla.innerHTML = '<div class="meta-aviso">Aún no hay análisis. Pulsa «Añadir análisis» y elige el PDF del laboratorio.</div>';
     resumen.innerHTML = '<div class="meta-aviso">Aparecerá cuando tengas dos análisis.</div>';
@@ -85,7 +101,7 @@ function renderAnalisis() {
   tabla.innerHTML = labs.slice().reverse().map(l => {
     const pruebas = LAB_TESTS.filter(t => l.values[t.k] != null);
     const fuera = pruebas.filter(t => t.mejor !== 'info' && labFuera(t, l.values[t.k])).length;
-    return `<details class="lab-sec"><summary><div class="lab-tit">${duo('semana', 'tit-ico')} ${labFechaLarga(l.date)}` +
+    return `<details class="lab-sec" data-fecha="${esc(l.date)}"${abiertos.has(l.date) ? ' open' : ''}><summary><div class="lab-tit">${duo('semana', 'tit-ico')} ${esc(labFechaLarga(l.date))}` +
       `<small>${pruebas.length} pruebas · ${fuera ? `${estado('alerta')} ${fuera} fuera de rango` : `${estado('ok')} todo en rango`}</small></div><span class="lab-flecha"></span></summary>` +
       `<div class="lab-cuerpo"><button class="btn btn-primary lab-pdf" data-fecha="${esc(l.date)}" title="Adjuntar PDF" aria-label="Adjuntar PDF">${ICONO.adjuntar}</button>` +
       `<button class="btn btn-red lab-pdf-quitar" data-fecha="${esc(l.date)}" title="Borrar PDF" aria-label="Borrar PDF" hidden>${ICONO.papelera}</button>` +
@@ -107,26 +123,28 @@ function renderAnalisis() {
   const fechas = labs.map(l => l.date);
   if (!fechas.includes(labCmp.a) || !fechas.includes(labCmp.b)) labCmp = { a: fechas[fechas.length - 2], b: fechas[fechas.length - 1] };
   const prev = labs.find(l => l.date === labCmp.a), last = labs.find(l => l.date === labCmp.b);
-  const opciones = sel => fechas.map(f => `<option value="${f}" ${f === sel ? 'selected' : ''}>${labFecha(f)}</option>`).join('');
+  const opciones = sel => fechas.map(f => `<option value="${esc(f)}" ${f === sel ? 'selected' : ''}>${esc(labFecha(f))}</option>`).join('');
   const comunes = LAB_TESTS.filter(t => prev.values[t.k] != null && last.values[t.k] != null);
   const filas = comunes.map(t => {
     const a = prev.values[t.k], b = last.values[t.k], c = labComparar(t, a, b);
     return `<div class="lab-cmp ${c.clase}"><span>${c.icono}</span><div>${t.n}<small>${labNum(a)} → <strong>${labNum(b)}</strong> ${t.u}</small></div><em>${c.txt}</em></div>`;
   });
   // Sugerencias: lo que empeora o sigue fuera de rango en el segundo análisis
-  const sugerir = LAB_TESTS.filter(t => LAB_INFO[t.k][1] && last.values[t.k] != null && t.mejor !== 'info' &&
+  const sugerir = LAB_TESTS.filter(t => consejoPara(t, last.values[t.k] ?? 0) && last.values[t.k] != null && t.mejor !== 'info' &&
     (labFuera(t, last.values[t.k]) || (prev.values[t.k] != null && labComparar(t, prev.values[t.k], last.values[t.k]).clase === 'peora')));
   resumen.innerHTML =
     `<div class="lab-elegir"><select id="labCmpA">${opciones(labCmp.a)}</select><span>→</span><select id="labCmpB">${opciones(labCmp.b)}</select></div>` +
     (filas.length ? filas.join('') : '<div class="meta-aviso">Estos dos análisis no tienen pruebas en común.</div>') +
     (sugerir.length ? '<div class="lab-sug"><div class="lab-sug-tit">' + duo('bombilla', 'estado idea') + ' Sugerencias</div>' +
-      sugerir.map(t => `<div><strong>${t.n}:</strong> ${LAB_INFO[t.k][1]}</div>`).join('') + '</div>' : '');
+      sugerir.map(t => `<div><strong>${t.n}:</strong> ${consejoPara(t, last.values[t.k])}</div>`).join('') + '</div>' : '');
 }
 
 document.getElementById('labsResumen').addEventListener('change', e => {
   if (e.target.id === 'labCmpA') labCmp.a = e.target.value;
   if (e.target.id === 'labCmpB') labCmp.b = e.target.value;
+  const id = e.target.id;
   renderAnalisis();
+  document.getElementById(id)?.focus();   // sigues en el mismo desplegable después de repintar
 });
 
 /* Leer el PDF del laboratorio: cada prueba es una línea «Nombre [*] valor unidad referencias».
@@ -183,8 +201,14 @@ function leerInforme(lineas) {
       const m = linea.match(patron);
       if (!m) continue;
       // Los espacios ya van normalizados a uno: « * 154 …» → 154. Sin «\s*» dobles (backtracking cuadrático)
-      const num = linea.slice(m[0].length).match(/^ ?\*? ?(\d+(?:,\d+)?)/);
-      if (num) { valores[k] = parseFloat(num[1].replace(',', '.')); break; }
+      // Coma o punto decimal y un «<»/«>» delante (algunos laboratorios: «0.88», «>90»)
+      const num = linea.slice(m[0].length).match(/^ ?\*? ?[<>]? ?(\d+(?:[.,]\d+)?)/);
+      if (num) {
+        let v = parseFloat(num[1].replace(',', '.'));
+        if (k === 'densidad_orina' && v < 2) v = Math.round(v * 1000);   // 1.035 es lo mismo que 1035
+        valores[k] = v;
+        break;
+      }
     }
   }
   // la fecha va en una tabla: «… Fecha de toma de muestra …» y en la línea de abajo, la primera fecha
@@ -231,10 +255,11 @@ document.getElementById('labAddBtn').addEventListener('click', () => {
     labs.push({ date, values });
     Storage.set('labs', labs);
     const pdf = document.getElementById('labPdfInput').files[0];
-    if (pdf) await pdfGuardar(date, pdf);
+    let aviso = 'Análisis guardado ✓';
+    if (pdf) aviso = await guardarPdfSeguro(date, pdf) ? aviso : 'Análisis guardado, pero el PDF no se pudo guardar';
     form.style.display = 'none';
     renderAnalisis();
-    showToast('Análisis guardado ✓');
+    showToast(aviso);
   });
 });
 
@@ -259,6 +284,17 @@ const pdfLeer = fecha => pdfOp('readonly', s => s.get(fecha));
 const pdfFechas = () => pdfOp('readonly', s => s.getAllKeys());
 const pdfBorrar = fecha => pdfOp('readwrite', s => s.delete(fecha));
 
+// Solo se guardan PDF de verdad (empiezan por «%PDF-») y de 20 MB como mucho. Devuelve true si se guardó.
+async function guardarPdfSeguro(fecha, archivo) {
+  try {
+    const cabecera = new TextDecoder().decode(await archivo.slice(0, 5).arrayBuffer());
+    if (cabecera !== '%PDF-') { showToast('Ese archivo no es un PDF'); return false; }
+    if (archivo.size > 20 * 1024 * 1024) { showToast('El PDF pesa más de 20 MB'); return false; }
+    await pdfGuardar(fecha, archivo);
+    return true;
+  } catch { return false; }
+}
+
 // Un clic en el botón de una fecha: si tiene PDF lo abre; si no, pide uno para adjuntarlo
 document.getElementById('labsTabla').addEventListener('click', async e => {
   const quitar = e.target.closest('.lab-pdf-quitar');
@@ -271,7 +307,11 @@ document.getElementById('labsTabla').addEventListener('click', async e => {
   const btn = e.target.closest('.lab-pdf');
   if (!btn) return;
   const fecha = btn.dataset.fecha, pdf = await pdfLeer(fecha);
-  if (pdf) return window.open(URL.createObjectURL(new Blob([pdf], { type: 'application/pdf' })));   // siempre como PDF: un HTML renombrado no se ejecuta
+  if (pdf) {
+    const url = URL.createObjectURL(new Blob([pdf], { type: 'application/pdf' }));   // siempre como PDF: un HTML renombrado no se ejecuta
+    window.open(url);
+    return setTimeout(() => URL.revokeObjectURL(url), 60000);   // se libera la memoria (antes nunca)
+  }
   const input = document.getElementById('labPdfFile');
   input.dataset.fecha = fecha;
   input.click();
@@ -280,7 +320,7 @@ document.getElementById('labPdfFile').addEventListener('change', async e => {
   const pdf = e.target.files[0];
   e.target.value = '';
   if (!pdf) return;
-  await pdfGuardar(e.target.dataset.fecha, pdf);
+  if (!await guardarPdfSeguro(e.target.dataset.fecha, pdf)) return;
   renderAnalisis();
   showToast('PDF guardado ✓');
 });

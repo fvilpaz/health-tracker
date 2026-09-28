@@ -104,3 +104,30 @@ test('semanaDelPlan: la semana del plan en la que estás (1, 2…), igual para l
   assert.equal(semana(d('2027-03-22T00:00'), d('2027-03-29T00:30')), 2);
   assert.equal(semana(d('2026-10-19T00:00'), d('2026-10-26T00:30')), 2);
 });
+
+test('labComparar: estar fuera de rango por el otro lado también empeora (hallazgos de la revisión)', () => {
+  const app = crearApp(), cmp = (k, a, b) => app.get('labComparar')(prueba(app, k), a, b).clase;
+  assert.equal(cmp('glucosa', 65, 55), 'peora');        // hipoglucemia que baja más: antes «mejora»
+  assert.equal(cmp('glucosa', 55, 80), 'mejora');       // vuelve al rango
+  assert.equal(cmp('glucosa', 100, 90), 'mejora');      // dentro del rango, más bajo es mejor (como antes)
+  assert.equal(cmp('creatinina', 1.5, 2.5), 'peora');   // fuera y más lejos: antes «igual»
+  assert.equal(cmp('creatinina', 0.5, 1.6), 'peora');   // de demasiado bajo a demasiado alto: antes «igual»
+  assert.equal(cmp('creatinina', 2.5, 1.5), 'mejora');  // fuera pero acercándose
+});
+
+test('sugerencias: por debajo de lo normal en una prueba de «más bajo es mejor», consejo de ir al médico', () => {
+  const app = crearApp(), consejo = app.get('consejoPara');
+  assert.match(consejo(prueba(app, 'glucosa'), 55), /médico/);
+  assert.doesNotMatch(consejo(prueba(app, 'glucosa'), 150), /por debajo/);
+});
+
+test('leerInforme: laboratorios con punto decimal, con «>» delante y densidad escrita 1.035', () => {
+  const r = crearApp().get('leerInforme')([
+    'Creatinina 0.88 mg/dL 0.74 - 1.30',
+    'Filtrado glomerular/1,73 m^2 (estimado) >90 mL/min',
+    'Densidad (orina; tira color) 1.035',
+  ]);
+  assert.equal(r.valores.creatinina, 0.88);
+  assert.equal(r.valores.filtrado, 90);
+  assert.equal(r.valores.densidad_orina, 1035);
+});

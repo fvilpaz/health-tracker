@@ -78,3 +78,9 @@ test('medidaValida: acepta dentro del rango y, fuera, lo rechaza avisando', () =
   assert.equal(valida('waist', 40), true);
   assert.equal(valida('height', 231), false);
 });
+
+test('logro «Ratio saludable» y panel usan la misma cifra (redondeada): 84,9/170 se ve 0,50 y NO es logro', () => {
+  const app = crearApp(), S = app.get('Storage');
+  S.set('settings', { height: 170 }); S.set('waists', [{ date: '1/1/2026', waist: 84.9 }]);
+  assert.equal(!!app.get('LOGROS_DEF').find(l => l.id === 'whtr').check(), false);
+});
