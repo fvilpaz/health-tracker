@@ -28,7 +28,7 @@ Tracker semanal integrado con:
 
 ## Características técnicas
 
-- **Stack**: HTML5 · CSS3 · JavaScript ES6 · Chart.js 4
+- **Stack**: HTML5 · CSS3 · JavaScript ES6 · Chart.js 4 · pdf.js 4 (las dos en `vendor/`, verificadas contra el registro npm)
 - **Sin dependencias de build** — archivos estáticos puros
 - **Dark mode** por defecto, responsive (mobile-first)
 - **localStorage** — tus datos no salen de tu navegador
@@ -45,11 +45,13 @@ health-tracker/
 ├── manifest.webmanifest    ← Nombre, colores e iconos para instalarla como app
 ├── sw.js                   ← Service worker: red primero, sin conexión usa la última copia
 ├── icons/                  ← Iconos 192/512, maskable y de iOS
+├── vendor/                 ← Chart.js y pdf.js servidos desde aquí (ver vendor/README.md)
 ├── css/styles.css          ← Estilos completos (dark mode, responsive)
 ├── js/
 │   ├── app.js              ← Lógica principal, dashboard, navegación
 │   ├── iconos.js           ← Todos los iconos (línea y duotono) en un solo sitio
-│   ├── storage.js          ← Wrapper de localStorage
+│   ├── storage.js          ← Wrapper de localStorage + esc() para pintar datos sin riesgo
+│   ├── copia.js            ← Valida las copias que se importan (solo entra lo que tiene la forma correcta)
 │   ├── timer.js            ← Temporizador con círculo SVG
 │   ├── charts.js           ← Gráfica Chart.js para peso
 │   ├── semana.js           ← Bloques de fuerza hechos (sessions), semana y bloque que toca
@@ -67,6 +69,13 @@ health-tracker/
 Todos los datos se guardan en `localStorage` de tu navegador; los PDF de los análisis, en IndexedDB. No se envía nada a ningún servidor y el repositorio no contiene datos de nadie. Si borras los datos del navegador, se pierden: exporta una copia de vez en cuando desde **Progreso → 💾 Tus datos** (los PDF no van en la copia).
 
 **Varios aparatos:** cada navegador tiene sus propios datos. Exporta en uno e importa en el otro. Un archivo que solo trae análisis se **añade** sin borrar lo demás.
+
+## Seguridad
+
+- **Sin código de terceros en tiempo real**: Chart.js y pdf.js van en `vendor/`; una **CSP** solo deja ejecutar código de este sitio.
+- **Importar es seguro**: una copia manipulada no puede colar código (se valida al entrar y todo se escapa al pintarse).
+- **Ver PDF** abre siempre como PDF, aunque el archivo diga otra cosa.
+- Auditado con [nando-toolkit](https://github.com/fvilpaz) (gitleaks, ESLint de seguridad, semgrep); los informes no se suben al repo.
 
 ## Licencia
 
