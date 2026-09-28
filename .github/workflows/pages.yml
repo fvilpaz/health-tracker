@@ -23,6 +23,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v4
+      # Sella sw.js con el commit: así el móvil detecta la versión nueva, borra la caché vieja y se recarga
+      - name: Versión del service worker
+        run: sed -i "/^const CACHE/s/__VERSION__/${GITHUB_SHA::12}/" sw.js && grep -n "const CACHE" sw.js
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .

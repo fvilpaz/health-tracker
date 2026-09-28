@@ -864,4 +864,13 @@ function showToast(msg) {
 }
 
 /* ===== PWA: instalable en el móvil (y base para la TWA) ===== */
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js')
+    .then(reg => reg.update())   // mira si hay versión nueva cada vez que se abre, también en la app instalada
+    .catch(() => {});
+  // Versión nueva publicada: se recarga sola, salvo en mitad de un entreno (se cortaría el temporizador);
+  // en ese caso la versión nueva sale la próxima vez que se abra.
+  navigator.serviceWorker.addEventListener('message', e => {
+    if (e.data?.type === 'SW_UPDATED' && !workoutActive) window.location.reload();
+  });
+}
