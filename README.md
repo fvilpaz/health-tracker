@@ -55,6 +55,7 @@ health-tracker/
 │   ├── timer.js            ← Temporizador con círculo SVG
 │   ├── charts.js           ← Gráfica Chart.js para peso
 │   ├── semana.js           ← Bloques de fuerza hechos (sessions), semana y bloque que toca
+│   ├── analisis.js         ← Análisis: catálogo de pruebas, tabla, comparativa, lector del PDF y PDF guardados
 │   └── workout.js          ← Fases de entrenamiento y timer
 ├── data/workouts.json      ← Datos de ejercicios por fase
 ├── docs/
