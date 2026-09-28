@@ -9,7 +9,7 @@ const vm = require('node:vm');
 
 const RAIZ = path.join(__dirname, '..');
 // Mismo orden que index.html
-const SCRIPTS = ['js/iconos.js', 'js/storage.js', 'js/copia.js', 'js/timer.js', 'js/charts.js', 'js/workout.js', 'js/semana.js', 'js/analisis.js', 'js/dashboard.js', 'js/plan.js', 'js/app.js'];
+const SCRIPTS = ['js/iconos.js', 'js/storage.js', 'js/copia.js', 'js/timer.js', 'js/charts.js', 'js/workout.js', 'js/semana.js', 'js/analisis.js', 'js/dashboard.js', 'js/plan.js', 'js/medidas.js', 'js/app.js'];
 
 // Un objeto que acepta cualquier propiedad o llamada y devuelve otro igual: sirve de elemento, de lista, de estilo…
 function comodin() {
