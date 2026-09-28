@@ -34,12 +34,16 @@ Tracker semanal integrado con:
 - **localStorage** — tus datos no salen de tu navegador
 - **GitHub Pages** — deploy automático en cada push
 - **Botón ▶ en ejercicios** — busca vídeos en YouTube al instante
+- **PWA instalable** — en Chrome del móvil: menú ⋮ → *Instalar aplicación*. Funciona sin conexión y las actualizaciones llegan solas
 
 ## Estructura
 
 ```
 health-tracker/
 ├── index.html              ← App principal (7 pestañas)
+├── manifest.webmanifest    ← Nombre, colores e iconos para instalarla como app
+├── sw.js                   ← Service worker: red primero, sin conexión usa la última copia
+├── icons/                  ← Iconos 192/512, maskable y de iOS
 ├── css/styles.css          ← Estilos completos (dark mode, responsive)
 ├── js/
 │   ├── app.js              ← Lógica principal, dashboard, navegación

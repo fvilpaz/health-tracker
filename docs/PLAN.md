@@ -22,7 +22,6 @@
 
 ## 🔲 P2 — Medio impacto / Medio esfuerzo
 
-- [ ] **PWA (Progressive Web App)** — Manifest + service worker para instalar como app en el móvil
 - [ ] **Historial de cintura en Progreso** — Tabla con entradas de cintura igual que peso
 - [ ] **Fotos de progreso** — Opcional: guardar foto semanal (localStorage con base64, comprimida)
 - [ ] **Notas por semana** — Campo de texto libre en el tracker para anotar cómo te sientes
@@ -71,6 +70,7 @@
 - [x] Historial de análisis, formulario, resumen último vs anterior y PDF oficial adjunto (28-sep-2026)
 - [x] Semáforo 🟢/🟠/🔴 en peso, cintura y cintura/altura (28-sep-2026)
 - [x] Suplementos dentro de Meds (una pestaña menos) (28-sep-2026)
+- [x] PWA: manifest, iconos y service worker; instalable y funciona sin conexión (28-sep-2026)
 
 ---
 
