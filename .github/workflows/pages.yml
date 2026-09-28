@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false   # en cola: dos push seguidos no se pisan (fallaba el segundo)
 
 jobs:
   deploy:
