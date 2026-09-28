@@ -70,7 +70,7 @@ function renderSemana() {
         `<span class="semana-letra">${'LMXJVSD'[n]}<small>${dia(lunes, n).getDate()}</small></span>` +
         `<span>${delDia.length ? delDia.map(s => '✅ ' + etiqueta(s)).join('<br>') : esHoy ? 'hoy' : ''}</span></div>`;
     }).join('') + '</div>' +
-    (est.hechos < WEEK_GOAL ? `<button class="btn btn-green btn-full" id="semanaEntrenar">💪 Entrenar · toca el Bloque ${nextBlock()}</button>` : '') +
+    (est.hechos < WEEK_GOAL ? `<button class="btn btn-green btn-full" id="semanaEntrenar">${ICONO.jugar}Entrenar · toca el Bloque ${nextBlock()}</button>` : '') +
     '<div class="meta-aviso">Consejo: deja un día de descanso entre bloques. Caminar no se apunta aquí (va en los consejos).</div>';
 
   // Semanas anteriores: desde la del primer entreno hasta la pasada, también las que quedaron a cero

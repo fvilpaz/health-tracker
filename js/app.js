@@ -67,7 +67,7 @@ function showSetup() {
         <input type="number" id="setupWaist" placeholder="Ej: 95" step="0.1" min="40" max="200">
       </div>
 
-      <button class="btn btn-green btn-full" id="setupStartBtn">🚀 Empezar</button>
+      <button class="btn btn-green btn-full" id="setupStartBtn">${ICONO.jugar}Empezar</button>
       <button class="btn btn-full setup-cancel" id="setupCancelBtn">Cancelar, ya lo configuro luego</button>
       <p class="setup-note">Todo se guarda en tu navegador. Nada se envía a ningún servidor.</p>
     </div>
@@ -310,6 +310,8 @@ const ICONO = (() => {
   return {
     pdf: svg(hoja),
     adjuntar: svg(hoja + '<line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/>'),
+    jugar: svg('<polygon points="6 3 20 12 6 21 6 3"/>'),
+    mas: svg('<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>'),
     papelera: svg('<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>'),
   };
 })();
@@ -448,7 +450,7 @@ document.getElementById('labAddBtn').addEventListener('click', () => {
   const form = document.getElementById('labForm');
   if (form.style.display !== 'none') { form.style.display = 'none'; return; }
   form.innerHTML =
-    '<label class="btn btn-primary btn-full lab-pdf-elegir">📄 Elegir el PDF del análisis<input type="file" id="labPdfInput" accept="application/pdf" hidden></label>' +
+    '<label class="btn btn-primary btn-full lab-pdf-elegir">' + ICONO.pdf + 'Elegir el PDF del análisis<input type="file" id="labPdfInput" accept="application/pdf" hidden></label>' +
     '<div class="meta-aviso" id="labPdfEstado">Lo leo y relleno la fecha y los valores; tú solo revisas y guardas. El PDF se queda guardado con el análisis.</div>' +
     `<div class="setup-field" style="margin-top:12px;"><label>Fecha del análisis</label><input type="date" id="labDate" value="${new Date().toISOString().slice(0, 10)}"></div>` +
     '<div id="labLeidos"></div>' +
@@ -923,3 +925,6 @@ if ('serviceWorker' in navigator) {
     if (e.data?.type === 'SW_UPDATED' && !workoutActive) window.location.reload();
   });
 }
+
+/* ===== ICONOS de los botones del HTML: <span data-ico="jugar"> → su trazo de ICONO ===== */
+document.querySelectorAll('[data-ico]').forEach(el => { el.outerHTML = ICONO[el.dataset.ico]; });
