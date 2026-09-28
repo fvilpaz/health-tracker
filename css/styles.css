@@ -235,7 +235,6 @@ a { color: inherit; text-decoration: none; }
 .btn-primary { background: var(--blue); color: white; }
 .btn-red { background: var(--red); color: white; }   /* borrar */
 .btn-green { background: var(--green); color: white; }
-.btn-orange { background: var(--orange); color: white; }
 .btn-full { width: 100%; padding: 14px; font-size: 1rem; }
 
 .streak-badge {
@@ -597,7 +596,6 @@ table.labs td.fuera { color: var(--red); }
 }
 .plan-card.current { border-color: var(--blue); background: var(--blue-light); }
 .plan-card.past { opacity: 0.6; }
-.plan-row-top { display: none; }
 .plan-week-header {
   display: flex;
   align-items: baseline;
@@ -610,21 +608,16 @@ table.labs td.fuera { color: var(--red); }
 .plan-input-group { display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .plan-target { font-size: 0.6rem; color: var(--text-muted); }
 .plan-target span { color: var(--blue); font-weight: 700; }
-.plan-input-group input[type="number"] {
-  width: 70px; padding: 7px 4px; border: 1.5px solid var(--border);
-  border-radius: 8px; background: var(--surface); color: var(--text);
-  font-size: 0.9rem; font-weight: 700; font-family: inherit; text-align: center;
-}
-.plan-input-group input[type="number"]:focus { outline: none; border-color: var(--blue); }
-.plan-input-group input[type="number"]:not(:placeholder-shown) { border-color: var(--green); color: var(--green); }
+.plan-real { width: 58px; padding: 6px 4px; border: 1px solid var(--border); border-radius: 8px; text-align: center;
+  font-size: 0.8rem; font-weight: 700; color: var(--text-muted); background: var(--surface2); font-variant-numeric: tabular-nums; }
+.plan-real.con-dato { color: var(--text); }
+.plan-real.cumple { border-color: var(--green); color: var(--green); }   /* llegaste al objetivo de esa semana */
 .plan-row-bottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
-.plan-checks-wrap { display: flex; flex-direction: column; gap: 4px; }
-.plan-checks-label { font-size: 0.6rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; }
 .plan-checks { display: flex; gap: 6px; }
 .plan-check {
   width: 32px; height: 32px; border-radius: 50%;
