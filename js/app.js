@@ -482,6 +482,10 @@ document.querySelectorAll('.phase-tab').forEach(tab => {
   tab.addEventListener('click', () => renderWorkoutPhase(tab.dataset.phase));
 });
 
+document.querySelectorAll('.block-btn').forEach(btn => {
+  btn.addEventListener('click', () => { currentBlock = btn.dataset.block; renderWorkoutPhase('strength'); });
+});
+
 document.getElementById('startWorkoutBtn').addEventListener('click', startWorkout);
 
 document.getElementById('pauseBtn').addEventListener('click', () => {
