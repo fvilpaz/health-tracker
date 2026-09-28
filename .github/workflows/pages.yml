@@ -5,10 +5,9 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Cada paso solo con lo que necesita: las pruebas, solo leer; publicar, además, escribir en Pages
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages
@@ -30,6 +29,10 @@ jobs:
 
   deploy:
     needs: test
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

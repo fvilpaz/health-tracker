@@ -15,6 +15,7 @@ function phaseExercises(phaseData) {
 async function loadWorkoutData() {
   if (workoutData) return workoutData;
   const res = await fetch('data/workouts.json');
+  if (!res.ok) throw new Error('sin ejercicios');
   workoutData = await res.json();
   return workoutData;
 }

@@ -1,15 +1,21 @@
 /* ===== INIT ===== */
-document.addEventListener('DOMContentLoaded', async () => {
-  initTheme();
-  await loadWorkoutData();
-  currentBlock = nextBlock();   // el Entreno abre con el bloque que toca
-  renderWorkoutPhase('warmup');
+// Si esta página está metida dentro de otra web (iframe), no se enseña: nadie puede disfrazarla para que toques algo
+if (window.top !== window.self) document.documentElement.style.display = 'none';
 
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
   if (!Storage.get('settings')) {
     showSetup();
   } else {
     initApp();
   }
+  // Los ejercicios se cargan aparte: antes la app entera esperaba a este archivo, y sin red no arrancaba
+  loadWorkoutData()
+    .then(() => { currentBlock = nextBlock(); renderWorkoutPhase('warmup'); })   // el Entreno abre con el bloque que toca
+    .catch(() => {
+      const lista = document.getElementById('exerciseList');
+      if (lista) lista.innerHTML = '<div class="meta-aviso">No se han podido cargar los ejercicios. Revisa la conexión y vuelve a abrir la app.</div>';
+    });
 });
 
 function initApp() {
