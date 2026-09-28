@@ -52,10 +52,6 @@
           <span class="icon">📅</span>
           Calendar
         </button>
-        <button class="nav-item" data-section="suplementos">
-          <span class="icon">💎</span>
-          Suplem.
-        </button>
       </nav>
     </header>
 
@@ -317,78 +313,8 @@
           Ojos muy amarillos + malestar general → analítica de control
         </div>
       </div>
-    </section>
 
-    <!-- ===== ANÁLISIS Y METAS ===== -->
-    <section id="analisis" class="section">
-      <div class="card">
-        <div class="card-title">🎯 Tus metas</div>
-        <div class="metas-list" id="metasList"></div>
-      </div>
-      <div class="card">
-        <div class="card-title">🧪 Tus análisis</div>
-        <div class="labs-tabla" id="labsTabla"></div>
-        <button class="btn btn-primary btn-full" id="labAddBtn" style="margin-top:12px;">➕ Añadir análisis</button>
-        <div id="labForm" style="display:none; margin-top:12px;"></div>
-      </div>
-      <div class="card">
-        <div class="card-title">📊 Último análisis frente al anterior</div>
-        <div id="labsResumen"></div>
-      </div>
-    </section>
-
-    <!-- ===== PROGRESO ===== -->
-    <section id="progreso" class="section">
-      <div class="card">
-        <div class="card-title">Registrar medidas</div>
-        <div class="weight-input-row">
-          <input type="number" id="weightInput" placeholder="Peso (kg)" step="0.1" min="30" max="300">
-          <button class="btn btn-primary" id="saveWeightBtn">Peso</button>
-        </div>
-        <div class="weight-input-row">
-          <input type="number" id="waistInput" placeholder="Cintura (cm)" step="0.1" min="40" max="200">
-          <button class="btn btn-primary" id="saveWaistBtn">Cintura</button>
-        </div>
-        <div class="weight-input-row">
-          <input type="number" id="heightInput" placeholder="Altura (cm)" step="1" min="120" max="230">
-          <button class="btn btn-primary" id="saveHeightBtn">Altura</button>
-        </div>
-        <div style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">Mide en ayunas, a la altura del ombligo, sin apretar</div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">Evolución de peso</div>
-        <div class="chart-wrap">
-          <canvas id="weightChart"></canvas>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">Historial de peso</div>
-        <div class="weight-log" id="weightLog"></div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">💾 Tus datos</div>
-        <div class="weight-input-row">
-          <button class="btn btn-primary" id="exportBtn">⬇ Exportar</button>
-          <button class="btn btn-green" id="importBtn">⬆ Importar</button>
-          <input type="file" id="importFile" accept="application/json,.json" hidden>
-        </div>
-        <div style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">Descarga una copia con todo (ajustes, pesos, cinturas, entrenos, logros) y cárgala en otro aparato. Tus datos solo viven en este navegador: exporta de vez en cuando.</div>
-      </div>
-    </section>
-
-    <!-- ===== CALENDARIO ===== -->
-    <section id="calendario" class="section">
-      <div class="card">
-        <div class="card-title">Semana actual</div>
-        <div class="week-grid" id="weekGrid"></div>
-      </div>
-    </section>
-
-    <!-- ===== SUPLEMENTOS ===== -->
-    <section id="suplementos" class="section">
+      <!-- Suplementos (antes pestaña propia) -->
       <div class="disclaimer">
         Esta sección es orientativa. Consulta siempre con tu médico antes de añadir suplementos, especialmente con diabetes tipo 2 y medicación activa.
       </div>
@@ -501,6 +427,74 @@
           </div>
           <div class="sup-desc">Muchos suplementos deportivos contienen azúcares ocultos. Revisar siempre la etiqueta.</div>
         </div>
+      </div>
+    </section>
+
+    <!-- ===== ANÁLISIS Y METAS ===== -->
+    <section id="analisis" class="section">
+      <div class="card">
+        <div class="card-title">🎯 Tus metas</div>
+        <div class="metas-list" id="metasList"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">🧪 Tus análisis</div>
+        <div class="labs-tabla" id="labsTabla"></div>
+        <button class="btn btn-primary btn-full" id="labAddBtn" style="margin-top:12px;">➕ Añadir análisis</button>
+        <div id="labForm" style="display:none; margin-top:12px;"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📊 Último análisis frente al anterior</div>
+        <div id="labsResumen"></div>
+      </div>
+    </section>
+
+    <!-- ===== PROGRESO ===== -->
+    <section id="progreso" class="section">
+      <div class="card">
+        <div class="card-title">Registrar medidas</div>
+        <div class="weight-input-row">
+          <input type="number" id="weightInput" placeholder="Peso (kg)" step="0.1" min="30" max="300">
+          <button class="btn btn-primary" id="saveWeightBtn">Peso</button>
+        </div>
+        <div class="weight-input-row">
+          <input type="number" id="waistInput" placeholder="Cintura (cm)" step="0.1" min="40" max="200">
+          <button class="btn btn-primary" id="saveWaistBtn">Cintura</button>
+        </div>
+        <div class="weight-input-row">
+          <input type="number" id="heightInput" placeholder="Altura (cm)" step="1" min="120" max="230">
+          <button class="btn btn-primary" id="saveHeightBtn">Altura</button>
+        </div>
+        <div style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">Mide en ayunas, a la altura del ombligo, sin apretar</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Evolución de peso</div>
+        <div class="chart-wrap">
+          <canvas id="weightChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Historial de peso</div>
+        <div class="weight-log" id="weightLog"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">💾 Tus datos</div>
+        <div class="weight-input-row">
+          <button class="btn btn-primary" id="exportBtn">⬇ Exportar</button>
+          <button class="btn btn-green" id="importBtn">⬆ Importar</button>
+          <input type="file" id="importFile" accept="application/json,.json" hidden>
+        </div>
+        <div style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">Descarga una copia con todo (ajustes, pesos, cinturas, entrenos, logros) y cárgala en otro aparato. Tus datos solo viven en este navegador: exporta de vez en cuando.</div>
+      </div>
+    </section>
+
+    <!-- ===== CALENDARIO ===== -->
+    <section id="calendario" class="section">
+      <div class="card">
+        <div class="card-title">Semana actual</div>
+        <div class="week-grid" id="weekGrid"></div>
       </div>
     </section>
 
