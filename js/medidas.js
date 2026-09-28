@@ -1,17 +1,30 @@
 /* Medidas: guardar peso, altura y cintura, y el historial de peso (con borrar). Se movió tal cual desde
    app.js (28-sep-2026). */
 
+// Rangos admitidos; fuera de ellos se avisa (antes el botón no hacía nada y parecía roto)
+const RANGO = { weight: [30, 300, 'un peso', 'kg'], waist: [40, 200, 'una cintura', 'cm'], height: [120, 230, 'una altura', 'cm'] };
+function medidaValida(campo, valor) {
+  const [min, max, nombre, unidad] = RANGO[campo];
+  if (!isNaN(valor) && valor >= min && valor <= max) return true;
+  showToast(`Pon ${nombre} entre ${min} y ${max} ${unidad}`);
+  return false;
+}
+
+// Añade la medida de «fecha» a la lista; si ya había una ese día, la sustituye (una por día)
+function anotarMedida(lista, campo, valor, fecha) {
+  const i = lista.findIndex(e => e.date === fecha);
+  if (i >= 0) lista[i][campo] = valor;
+  else lista.push({ date: fecha, [campo]: valor });
+  return lista;
+}
+
 /* ===== PESO ===== */
 document.getElementById('saveWeightBtn').addEventListener('click', () => {
   const input = document.getElementById('weightInput');
   const val = parseFloat(input.value);
-  if (isNaN(val) || val < 30 || val > 300) return;
+  if (!medidaValida('weight', val)) return;
 
-  const weights = Storage.get('weights', []);
-  const today = new Date().toLocaleDateString('es-ES');
-  const existing = weights.findIndex(e => e.date === today);
-  if (existing >= 0) weights[existing].weight = val;
-  else weights.push({ date: today, weight: val });
+  const weights = anotarMedida(Storage.get('weights', []), 'weight', val, new Date().toLocaleDateString('es-ES'));
 
   if (!Storage.get('startDate')) Storage.set('startDate', new Date().toISOString());
 
@@ -31,7 +44,7 @@ if (getHeightCm()) document.getElementById('heightInput').placeholder = `Altura:
 document.getElementById('saveHeightBtn').addEventListener('click', () => {
   const input = document.getElementById('heightInput');
   const val = parseInt(input.value);
-  if (isNaN(val) || val < 120 || val > 230) return;
+  if (!medidaValida('height', val)) return;
   Storage.set('settings', { ...Storage.get('settings', {}), height: val });
   input.value = '';
   input.placeholder = `Altura: ${val} cm`;
@@ -43,13 +56,9 @@ document.getElementById('saveHeightBtn').addEventListener('click', () => {
 document.getElementById('saveWaistBtn').addEventListener('click', () => {
   const input = document.getElementById('waistInput');
   const val = parseFloat(input.value);
-  if (isNaN(val) || val < 40 || val > 200) return;
+  if (!medidaValida('waist', val)) return;
 
-  const waists = Storage.get('waists', []);
-  const today = new Date().toLocaleDateString('es-ES');
-  const existing = waists.findIndex(e => e.date === today);
-  if (existing >= 0) waists[existing].waist = val;
-  else waists.push({ date: today, waist: val });
+  const waists = anotarMedida(Storage.get('waists', []), 'waist', val, new Date().toLocaleDateString('es-ES'));
 
   Storage.set('waists', waists);
   input.value = '';

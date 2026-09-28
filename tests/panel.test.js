@@ -61,3 +61,20 @@ test('logros: cada uno se desbloquea con su condición y no antes', () => {
   app.get('Storage').set('sessions', lunes.flatMap(l => [0, 2, 4].map(n => { const d = new Date(l + 'T12:00'); d.setDate(d.getDate() + n); return { date: app.get('isoDate')(d), block: '1' }; })));
   assert.equal(!!app.get('LOGROS_DEF').find(l => l.id === 'month').check(), true);
 });
+
+test('anotarMedida: una medida por día; el mismo día se sustituye y otro día se añade', () => {
+  const anotar = crearApp().get('anotarMedida');
+  const lista = [{ date: '1/1/2026', weight: 90 }];
+  anotar(lista, 'weight', 89.6, '1/1/2026');
+  anotar(lista, 'weight', 89.1, '2/1/2026');
+  assert.deepEqual(plano(lista), [{ date: '1/1/2026', weight: 89.6 }, { date: '2/1/2026', weight: 89.1 }]);
+});
+
+test('medidaValida: acepta dentro del rango y, fuera, lo rechaza avisando', () => {
+  const app = crearApp(), valida = app.get('medidaValida');
+  assert.equal(valida('weight', 85.5), true);
+  assert.equal(valida('weight', 25), false);
+  assert.equal(valida('weight', NaN), false);   // campo vacío
+  assert.equal(valida('waist', 40), true);
+  assert.equal(valida('height', 231), false);
+});
