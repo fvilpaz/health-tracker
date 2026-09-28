@@ -91,6 +91,7 @@ a { color: inherit; text-decoration: none; }
 }
 .theme-toggle:hover { background: var(--border); }
 .theme-toggle .tema-ico { width: 20px; height: 20px; color: var(--nav-icon); }
+.theme-toggle .tema-ico.sol { color: var(--yellow); }
 
 /* ===== NAV ===== */
 .top-nav {
