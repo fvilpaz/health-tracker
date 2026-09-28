@@ -84,7 +84,7 @@ si uno falla, la web no se actualiza. Los datos de los tests son inventados (el 
 
 ## Seguridad
 
-- **Sin código de terceros en tiempo real**: Chart.js y pdf.js van en `vendor/`; una **CSP** solo deja ejecutar código de este sitio.
+- **Nada de terceros en tiempo real**: Chart.js, pdf.js y la fuente Inter van en `vendor/`; una **CSP** solo deja cargar código y fuentes de este sitio. La app no contacta con ningún otro servidor.
 - **Importar es seguro**: una copia manipulada no puede colar código (se valida al entrar y todo se escapa al pintarse).
 - **Ver PDF** abre siempre como PDF, aunque el archivo diga otra cosa.
 - Auditado con [nando-toolkit](https://github.com/fvilpaz) (gitleaks, ESLint de seguridad, semgrep); los informes no se suben al repo.
