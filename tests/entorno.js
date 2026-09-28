@@ -1,3 +1,5 @@
+/* eslint-disable security/detect-object-injection -- las claves son nombres del propio código (catálogos, campos) o ya validadas; nunca texto de fuera sin comprobar (revisado 28-sep-2026) */
+/* eslint-disable security/detect-non-literal-fs-filename -- las pruebas leen archivos del propio repositorio (revisado 28-sep-2026) */
 // Carga los scripts REALES de la app en una "página falsa" para poder probarlos con Node, sin navegador
 // ni dependencias. Los scripts no se tocan: se ejecutan tal cual, en un contexto con:
 //   - localStorage en memoria (cada test empieza vacío)

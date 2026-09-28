@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-non-literal-fs-filename -- las pruebas leen archivos del propio repositorio (revisado 28-sep-2026) */
 // La app instalada tiene que abrir sin conexión: el service worker guarda al instalarse la lista ESENCIAL.
 // Si mañana se añade un js/ nuevo y no se mete en esa lista, sin conexión fallaría: esta prueba lo avisa.
 const test = require('node:test');

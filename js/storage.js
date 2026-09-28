@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-object-injection -- las claves son nombres del propio código (catálogos, campos) o ya validadas; nunca texto de fuera sin comprobar (revisado 28-sep-2026) */
 const Storage = {
   get(key, fallback = null) {
     try {

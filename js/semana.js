@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-object-injection -- las claves son nombres del propio código (catálogos, campos) o ya validadas; nunca texto de fuera sin comprobar (revisado 28-sep-2026) */
 /* ===== SESIONES: bloques de fuerza completados =====
    Storage 'sessions': [{ date: 'AAAA-MM-DD', block: '1' | '2' | '3', minutes, exercises: [nombres] }]
    Solo se guarda un bloque COMPLETO (todas las vueltas). Caminar no se registra (va en consejos). */
@@ -66,6 +67,7 @@ function renderSemana() {
   const corta = d => d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
   const etiqueta = s => `${s.block ? `Bloque ${esc(s.block)}` : 'Entreno'}${s.minutes ? ` · ${esc(s.minutes)} min` : ''}`;
 
+  // eslint-disable-next-line no-unsanitized/property -- lo del almacén o del PDF va por esc()/labNum() o son números; probado con una copia manipulada
   actual.innerHTML =
     `<div class="semana-cab"><span>${corta(lunes)} – ${corta(dia(lunes, 6))}</span><strong class="semana-cuenta ${est.color}">${est.hechos} / ${WEEK_GOAL}</strong></div>` +
     `<div class="semana-aviso ${est.color}">${est.texto}</div>` +
@@ -85,6 +87,7 @@ function renderSemana() {
   // Como mucho los dos últimos años (104 semanas): con datos muy antiguos, pintar cientos de semanas congelaba la app
   const primera = getWeekStart(new Date(pasadas[0].date + 'T12:00')), tope = dia(lunes, -7 * 104);
   for (let l = primera > tope ? primera : tope; l < lunes; l = dia(l, 7)) semanas.unshift(l);
+  // eslint-disable-next-line no-unsanitized/property -- lo del almacén o del PDF va por esc()/labNum() o son números; probado con una copia manipulada
   historial.innerHTML = semanas.map(l => {
     const desde = isoDate(l), hasta = isoDate(dia(l, 6)), suyas = pasadas.filter(s => s.date >= desde && s.date <= hasta);
     const ok = suyas.length >= WEEK_GOAL;

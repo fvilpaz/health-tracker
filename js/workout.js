@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-object-injection -- las claves son nombres del propio código (catálogos, campos) o ya validadas; nunca texto de fuera sin comprobar (revisado 28-sep-2026) */
 let workoutData = null;
 let currentPhase = 'warmup';
 let currentExerciseIdx = 0;
@@ -48,6 +49,7 @@ async function renderWorkoutPhase(phase) {
       : ex.rest ? `${ex.seconds}s / ${ex.rest}s desc` : `${ex.seconds}s`;
     const ytUrl = ex.video || `https://www.youtube.com/results?search_query=${encodeURIComponent(`cómo hacer ${ex.name} ejercicio`)}`;
 
+    // eslint-disable-next-line no-unsanitized/property -- ejercicios de data/workouts.json, archivo propio de la app
     div.innerHTML = `
       <div class="exercise-num">${i + 1}</div>
       <div class="exercise-info">
@@ -92,6 +94,7 @@ function bloquearEleccion(si) {
 // El botón de pausa dice lo que hará (también al lector de pantalla)
 function actualizarPausa() {
   const b = document.getElementById('pauseBtn'), corre = Timer.isRunning();
+  // eslint-disable-next-line no-unsanitized/property -- solo constantes e iconos del propio código
   b.innerHTML = corre ? ICONO.pausa : ICONO.jugar;
   b.setAttribute('aria-label', corre ? 'Pausar' : 'Seguir');
 }
@@ -153,6 +156,7 @@ function showTimerState(exerciseName, subLabel, duration, isRest, onDone) {
   const phaseEl = document.getElementById('timerPhaseLabel');
   const statusEl = document.getElementById('timerStatus');
   if (nameEl) nameEl.textContent = exerciseName;
+  // eslint-disable-next-line no-unsanitized/property -- ejercicios de data/workouts.json, archivo propio de la app y constantes
   if (phaseEl) phaseEl.innerHTML = isRest ? duo('viento', 'estado info') + ' DESCANSA' : (subLabel || '');
   if (statusEl) statusEl.textContent = '';
 
@@ -188,11 +192,13 @@ function workoutDone() {
     // Llegar aquí = todas las vueltas hechas: es el único caso que cuenta como entreno
     const minutos = Math.max(1, Math.round((Date.now() - workoutStartedAt) / 60000));
     saveSession(currentBlock, minutos, phaseExercises(workoutData.strength).map(e => e.name));
+    // eslint-disable-next-line no-unsanitized/property -- número de bloque (1-3) e icono
     nameEl.innerHTML = `¡Bloque ${currentBlock} completado! ${duo('confeti', 'estado fiesta')}`;
     labelEl.textContent = `${sessionsInWeek().length} de ${WEEK_GOAL} esta semana`;
   } else {
     // Calentamiento o calma sueltos: no cuentan como entreno
     nameEl.textContent = currentPhase === 'warmup' ? 'Calentamiento hecho ✓' : 'Vuelta a la calma hecha ✓';
+    // eslint-disable-next-line no-unsanitized/property -- solo constantes e iconos del propio código
     labelEl.innerHTML = currentPhase === 'warmup' ? `Ahora, ${duo('pesa')} Fuerza` : '';
   }
   document.getElementById('timerNumber').textContent = '✓';

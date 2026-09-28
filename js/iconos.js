@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-object-injection -- las claves son nombres del propio código (catálogos, campos) o ya validadas; nunca texto de fuera sin comprobar (revisado 28-sep-2026) */
 /* ===== ICONOS: el único sitio donde vive cada icono =====
    LINEA: trazos finos estilo Lucide (ISC) para botones, en el color del texto (blanco sobre azul).
    DUO: macizos en dos tonos de Phosphor (MIT) para pestañas, títulos, estados y adornos.
