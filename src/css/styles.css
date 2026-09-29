@@ -707,6 +707,21 @@ table.labs td.fuera { color: var(--red); }
   color: var(--text); font-size: 1rem; font-family: inherit;
 }
 .setup-field input:focus { outline: none; border-color: var(--blue); }
+/* Cuestionario del perfil */
+.pf-barra { height: 6px; background: var(--surface2); border-radius: 99px; overflow: hidden; margin: -12px 0 20px; }
+.pf-barra > div { height: 100%; width: 0; background: var(--blue); transition: width var(--transition); }
+.pf-botones { display: flex; gap: 8px; margin-top: 8px; }
+.pf-botones .setup-cancel { margin-top: 0 !important; }
+.setup-grupo { border: none; padding: 0; }
+.setup-grupo legend { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; padding: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { position: relative; cursor: pointer; }
+.chip input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.chip span { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 14px; border-radius: 99px;
+  border: 1px solid var(--border); background: var(--surface2); color: var(--text); font-size: 0.85rem; }
+.chip input:checked + span { background: var(--btn-blue); border-color: var(--btn-blue); color: #fff; font-weight: 600; }
+.chip input:focus-visible + span { outline: 2px solid var(--blue); outline-offset: 2px; }
+.header-botones { display: flex; gap: 8px; }
 .setup-note { font-size: 0.7rem; color: var(--text-muted); margin-top: 16px; line-height: 1.4; }
 .setup-cancel {
   margin-top: 8px !important;

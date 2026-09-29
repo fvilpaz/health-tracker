@@ -10,6 +10,7 @@ App web personal de salud y seguimiento de progreso. Sin servidor, sin backend, 
 
 | Sección | Descripción |
 |---------|-------------|
+| **Bienvenida y perfil** | Al empezar: «Soy nuevo» (cuestionario de 6 pasos: tú, medidas, objetivo, salud y medicación, ejercicio, comida) o «Ya tengo mis datos» (carga tu copia). Botón «Mi perfil» arriba para cambiarlo. Menores de 18: sin metas de peso |
 | **Dashboard** | Peso actual, perdido, IMC, cintura (donde va el cinturón), barriga (por el ombligo) y lo perdido de cada una, ratio cintura/altura, bloques de esta semana, racha de **semanas cumplidas**, logros. Peso, cintura y ratio cambian de color (🟢/🟠/🔴) según el IMC y la cintura/altura |
 | **🎯 Metas** | Metas a corto, medio y largo plazo (IMC 30, peso objetivo, IMC 27) con lo que falta; historial de análisis: **subes el PDF del laboratorio y la app lee la fecha y los valores** (tú revisas y guardas), el PDF queda adjunto. Cada análisis es un desplegable con tu valor, cuánto debería estar y qué es cada prueba; debajo, comparativa entre dos análisis (a elegir) con sugerencias |
 | **Entrenamiento** | Calentamiento → fuerza → calma, con temporizador SVG. La fuerza va en **bloques 1 / 2 / 3** (sin cardio) que rotan solos. Solo cuenta como entreno el bloque de fuerza **completo**; se apunta solo con fecha, minutos y ejercicios |
@@ -62,9 +63,11 @@ health-tracker/
 │   │   ├── plan.js             ← Plan de 12 semanas (objetivos, lo real de cada semana y casillas)
 │   │   ├── medidas.js          ← Guardar peso, cintura, barriga y altura; historial de peso
 │   │   ├── logros.js           ← Logros
+│   │   ├── perfil.js           ← Cuestionario del perfil (6 pasos) y «Mi perfil»; menores sin metas de peso
 │   │   └── app.js              ← Arranque, bienvenida (nuevo o cargar tu copia), configuración inicial, tema, navegación, avisos e instalación
 │   └── data/
 │       ├── workouts.json       ← Los bloques de hoy (calentamiento, Bloque 1/2/3, vuelta a la calma)
+│       ├── health.json         ← Catálogo del cuestionario: objetivos, enfermedades, medicación, molestias, dieta, alergias
 │       └── exercises.json      ← Catálogo de calistenia (58, 24 de preparación militar): zona, nivel 1-3, impacto, molestias, material, versión fácil/difícil. Lo usarán los perfiles
 ├── tests/                  ← Pruebas (node --test): semana, copias/seguridad, análisis, plan, lector del PDF, temporizador, panel, metas y logros
 ├── perfiles/               ← Tus datos reales para importar en la app (en .gitignore: nunca se suben)

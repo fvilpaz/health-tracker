@@ -151,6 +151,10 @@ function calcularMetas(pesoActual, alturaCm, objetivo) {
 function renderMetas() {
   const box = document.getElementById('metasList');
   if (!box) return;
+  if (esMenor()) {   // las metas salen del IMC de adulto: con menos de 18 no sirven
+    box.innerHTML = '<div class="meta-aviso">Con menos de 18 años la app no pone metas de peso: eso lo lleva el pediatra.</div>';
+    return;
+  }
   const heightCm = getHeightCm();
   const weights = Storage.get('weights', []);
   const current = weights.length ? weights[weights.length - 1].weight : null;

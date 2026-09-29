@@ -7,6 +7,8 @@ Estática: HTML + CSS + JS sin compilar, datos en el `localStorage` del navegado
 - **El repositorio es PÚBLICO.** Los datos de salud (pesos, análisis, PDF) viven SOLO en el navegador del usuario.
   Nunca datos reales en el código ni en las pruebas (solo inventados). Los PDF de análisis de Nando llevan su DNI: jamás al repo.
 - Entreno: Bloque 1/2/3 de fuerza, sin cardio. **Solo cuenta el bloque completo.** Objetivo: 3 bloques por semana (lunes-domingo).
+- Perfil (`profile`): cuestionario de 6 pasos con opciones del catálogo `src/data/health.json`, nunca texto que decida nada.
+  **Menores de 18: sin metas de peso ni objetivo «perder peso»** (lo lleva el pediatra).
 - Cintura = donde va el cinturón · Barriga = por el ombligo (dos medidas distintas).
 - Sin librerías desde internet: Chart.js, pdf.js y la fuente Inter van en `src/vendor/` (verificadas con el sha512 de npm) y la CSP
   solo deja cargar código de este sitio.
