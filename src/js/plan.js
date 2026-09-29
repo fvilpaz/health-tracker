@@ -108,16 +108,21 @@ function renderPlanTable() {
     html += `<span class="plan-date">${dateLabel}</span>`;
     html += `</div>`;
     // Entrenos: las 3 casillas tan anchas como los recuadros de abajo, cada una encima de uno
-    html += `<div class="plan-entrenos"><span class="plan-mini">${duo('pesa', 'mini-ico')}ENTRENOS</span><div class="plan-inputs">`;
+    // «ENTRENOS» encima de la casilla 1, a la par de «PESO»; las otras dos llevan un hueco del mismo alto
+    html += `<div class="plan-entrenos"><div class="plan-inputs">`;
     [1, 2, 3].forEach((num, i) => {
-      html += `<div class="plan-input-group"><span class="plan-check ${checks[i] ? 'checked' : ''}">${checks[i] ? '✓' : num}</span></div>`;
+      // Las casillas 2 y 3 llevan la misma etiqueta invisible: mismo alto exacto y las tres quedan en línea
+      const etiqueta = `<span class="plan-mini${i ? ' plan-mini-hueco' : ''}"${i ? ' aria-hidden="true"' : ''}>${duo('pesa', 'mini-ico')}ENTRENOS</span>`;
+      html += `<div class="plan-input-group">${etiqueta}<span class="plan-check ${checks[i] ? 'checked' : ''}">${checks[i] ? '✓' : num}</span></div>`;
     });
     html += `</div></div>`;
 
     html += `<div class="plan-row-bottom">`;
     html += `<div class="plan-inputs">`;
-    html += planValor(targetWeight, realWeight, 'kg', 'PESO', 'balanza');
-    html += planValor(targetWaist, realWaist, 'cm', 'CINTURA', 'regla');
+    // Color = cómo estás: el peso por el IMC (OMS) y la cintura por cintura/altura, como en el Panel
+    const alt = getHeightCm();
+    html += planValor(targetWeight, realWeight, 'kg', 'PESO', 'balanza', realWeight != null && alt ? colorImc(realWeight / (alt / 100) ** 2) : '');
+    html += planValor(targetWaist, realWaist, 'cm', 'CINTURA', 'regla', realWaist != null && alt ? colorSemaforo(+(realWaist / alt).toFixed(2), 0.5, 0.6) : '');
     // Barriga: sin meta (no hay regla con fuente); solo la semana 1 enseña su valor de partida
     html += planValor(objetivoDeLaSemana(startBelly, null, totalWeeks, w), realBelly, 'cm', 'BARRIGA', 'regla');
     html += `</div>`;
@@ -153,10 +158,12 @@ function objetivoDeLaSemana(inicio, meta, semanas, w) {
   return inicio - ((inicio - meta) / Math.max(1, semanas - 1)) * (w - 1);
 }
 
-// Nombre (PESO…), objetivo y lo real debajo (verde si llegas al objetivo de esa semana)
-function planValor(objetivo, real, unidad, nombre, icono) {
-  const cumple = real != null && objetivo != null && real <= objetivo;
+// Nombre (PESO…), objetivo y lo real debajo; el color de la caja dice cómo estás (IMC, cintura/altura), no si
+// llegaste al objetivo de la semana (antes salía verde con un IMC de obesidad)
+const CLASE_COLOR = { 'var(--green)': 'sem-verde', 'var(--yellow)': 'sem-amarillo', 'var(--orange)': 'sem-naranja', 'var(--red)': 'sem-rojo' };
+function planValor(objetivo, real, unidad, nombre, icono, color = '') {
+  const clase = real != null && CLASE_COLOR[color] ? ' ' + CLASE_COLOR[color] : '';
   return `<div class="plan-input-group">${nombre ? `<span class="plan-mini">${icono ? duo(icono, 'mini-ico') : ''}${nombre}</span>` : ''}<span class="plan-target"><span>${objetivo != null ? objetivo.toFixed(1) : '—'}</span> ${unidad}</span>` +
-    `<span class="plan-real${real != null ? ' con-dato' : ''}${cumple ? ' cumple' : ''}">${real != null ? esc(real) : '—'}</span></div>`;
+    `<span class="plan-real${real != null ? ' con-dato' : ''}${clase}">${real != null ? esc(real) : '—'}</span></div>`;
 }
 

@@ -81,7 +81,7 @@ function updateDashboard() {
   if (bellyLostEl) bellyLostEl.textContent = diferencia(bellies.length ? bellies[0].belly : null, currentBelly);
 
   // Semáforo de peso (por IMC) y cintura (por cintura/altura); sin altura, sin color
-  semaforo(weightEl, heightCm && currentWeight ? currentWeight / (heightCm / 100) ** 2 : null, 25, 30);
+  pintarTarjeta(weightEl, colorImc(heightCm && currentWeight ? currentWeight / (heightCm / 100) ** 2 : null));
   // redondeado a 2 decimales, igual que el número que enseña la tarjeta Cintura / altura
   const whtrNum = heightCm && currentWaist ? +(currentWaist / heightCm).toFixed(2) : null;
   semaforo(waistEl, whtrNum, 0.5, 0.6);
@@ -128,9 +128,23 @@ function updateDashboard() {
 const colorSemaforo = (valor, naranjaDesde, rojoDesde) =>
   valor == null ? '' : valor >= rojoDesde ? 'var(--red)' : valor >= naranjaDesde ? 'var(--orange)' : 'var(--green)';
 
+// Color del peso por el IMC, con la clasificación de la OMS (docs/FUENTES.md, S1): bajo peso (< 18,5) amarillo,
+// normal verde, sobrepeso (25-29,9) amarillo, obesidad grado 1 (30-34,9) naranja, grado 2 o más (≥ 35) rojo.
+// Antes eran 3 colores y, en el tracker, el verde decía «llegaste al objetivo de la semana», no cómo estás.
+function colorImc(imc) {
+  if (imc == null) return '';
+  if (imc < 18.5) return 'var(--yellow)';
+  if (imc < 25) return 'var(--green)';
+  if (imc < 30) return 'var(--yellow)';
+  if (imc < 35) return 'var(--orange)';
+  return 'var(--red)';
+}
+
 function semaforo(el, valor, naranjaDesde, rojoDesde) {
+  pintarTarjeta(el, colorSemaforo(valor, naranjaDesde, rojoDesde));
+}
+function pintarTarjeta(el, color) {
   if (!el) return;
-  const color = colorSemaforo(valor, naranjaDesde, rojoDesde);
   el.style.color = color;
   el.closest('.stat-card').style.borderLeftColor = color;
 }
