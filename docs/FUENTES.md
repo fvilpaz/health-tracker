@@ -35,7 +35,7 @@
 | **A5** | Tensión alta | **Guía (DASH, NHLBI):** sodio **< 2.300 mg/día** (mejor 1.500); mucha verdura, fruta, lácteos desnatados e integrales; menos carne roja, dulces, bebidas azucaradas y grasa saturada. | Consejos de tensión; aviso de sal en las comidas. |
 | **A6** | Colesterol alto | **Guía (ESC/EAS 2019):** **poca grasa saturada, nada de grasas trans**, más fibra y pescado; patrón mediterráneo. | Consejos de colesterol. |
 | **A7** | Vegetariano / vegano | **Guía (Academy of Nutrition and Dietetics):** bien planificadas son adecuadas en todas las etapas; vigilar **B12, vitamina D, omega 3, calcio, hierro y zinc**; vegano: **B12 siempre** (suplemento o alimentos enriquecidos). | Fuera comidas con carne/pescado (y huevo y lácteos si es vegano); aviso de B12. |
-| **A8** | Alergias e intolerancias | **Criterio de la app:** fuera toda comida que lleve ese ingrediente; aun así, **leer siempre la etiqueta**. | Filtro por ingredientes. |
+| **A8** | Alergias, intolerancias y gustos | **Criterio de la app:** fuera toda comida que lleve ese ingrediente; aun así, **leer siempre la etiqueta**. Lo escrito en «Lo que no comes o no te gusta» también se quita, **solo para ese perfil**. | Filtro por ingredientes y por palabras. |
 | **A9** | Síndrome de Gilbert | **Guía (NHS):** no necesita tratamiento ni dieta especial; puede desencadenarse por **pasarse con el ejercicio, dormir poco, alcohol o beber poco líquido**. | Ficha de Meds. ⚠ La ficha actual dice «sube con ayuno, estrés o ejercicio intenso»: el NHS no nombra ayuno ni estrés (pendiente de que Nando decida). |
 
 ---

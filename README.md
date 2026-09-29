@@ -12,6 +12,7 @@ App web personal de salud y seguimiento de progreso. Sin servidor, sin backend, 
 |---------|-------------|
 | **Bienvenida y perfil** | Al empezar: «Soy nuevo» (cuestionario de 6 pasos: tú, medidas, objetivo, salud al estilo PAR-Q+ —enfermedades, medicación recetada y suplementos con sí/no, y tres preguntas de seguridad que avisan de ir al médico—, ejercicio, comida) o «Ya tengo mis datos» (carga tu copia). Botón «Mi perfil» arriba para cambiarlo. Menores de 18: sin metas de peso. **Meds y Nutrición enseñan solo las fichas de lo que marcas** (sin perfil, todo) |
 | **Dashboard** | Peso actual, perdido, IMC, cintura (donde va el cinturón), barriga (por el ombligo) y lo perdido de cada una, ratio cintura/altura, bloques de esta semana, racha de **semanas cumplidas**, logros. Peso, cintura y ratio cambian de color (🟢/🟠/🔴) según el IMC y la cintura/altura |
+| **Nutrición según tu perfil** | Ideas de comidas que cambian cada día, «Alimentos OK», «Limitar» y consejos, desde `src/data/nutrition.json`: según tu dieta (vegana, vegetariana, sin carne), tus alergias, lo que no comes y tus enfermedades (diabetes, hígado graso, tensión, colesterol). Reglas y fuentes oficiales en `docs/FUENTES.md` |
 | **Entreno según tu perfil** | Con perfil, la app arma 3 bloques con el catálogo: piernas, empuje, espalda y abdomen, más un extra por cada zona que quieras trabajar; tu nivel (+50, embarazo o un «sí» de seguridad: nivel 1 sin saltos), sin lo que choque con tus molestias ni material que no hay en casa; vueltas según tus minutos. Sin perfil, los bloques de siempre. El objetivo de «Mi semana» son tus días |
 | **🎯 Metas** | Metas a corto, medio y largo plazo (IMC 30, peso objetivo, IMC 27) con lo que falta; historial de análisis: **subes el PDF del laboratorio y la app lee la fecha y los valores** (tú revisas y guardas), el PDF queda adjunto. Cada análisis es un desplegable con tu valor, cuánto debería estar y qué es cada prueba; debajo, comparativa entre dos análisis (a elegir) con sugerencias |
 | **Entrenamiento** | Calentamiento → fuerza → calma, con temporizador SVG. La fuerza va en **bloques 1 / 2 / 3** (sin cardio) que rotan solos. Solo cuenta como entreno el bloque de fuerza **completo**; se apunta solo con fecha, minutos y ejercicios |
@@ -66,10 +67,12 @@ health-tracker/
 │   │   ├── logros.js           ← Logros
 │   │   ├── perfil.js           ← Cuestionario del perfil (6 pasos) y «Mi perfil»; menores sin metas de peso
 │   │   ├── rutina.js           ← Bloques según el perfil (catálogo, nivel, molestias, minutos, zonas) y objetivo semanal
+│   │   ├── nutricion.js        ← Comidas, «OK», «Limitar» y consejos según el perfil (data/nutrition.json)
 │   │   └── app.js              ← Arranque, bienvenida (nuevo o cargar tu copia), configuración inicial, tema, navegación, avisos e instalación
 │   └── data/
 │       ├── workouts.json       ← Los bloques de hoy (calentamiento, Bloque 1/2/3, vuelta a la calma)
 │       ├── health.json         ← Catálogo del cuestionario: objetivos, enfermedades, medicación, molestias, dieta, alergias
+│       ├── nutrition.json      ← Catálogo de comidas con sus ingredientes, dietas, alergias y consejos (reglas A1-A7)
 │       └── exercises.json      ← Catálogo de calistenia (58, 24 de preparación militar): zona, nivel 1-3, impacto, molestias, material, versión fácil/difícil. Lo usarán los perfiles
 ├── tests/                  ← Pruebas (node --test): semana, copias/seguridad, análisis, plan, lector del PDF, temporizador, panel, metas y logros
 ├── perfiles/               ← Tus datos reales para importar en la app (en .gitignore: nunca se suben)
