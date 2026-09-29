@@ -63,8 +63,11 @@ health-tracker/
 │   │   ├── medidas.js          ← Guardar peso, cintura, barriga y altura; historial de peso
 │   │   ├── logros.js           ← Logros
 │   │   └── app.js              ← Arranque, configuración inicial, tema, navegación, avisos e instalación
-│   └── data/workouts.json      ← Datos de ejercicios por fase
+│   └── data/
+│       ├── workouts.json       ← Los bloques de hoy (calentamiento, Bloque 1/2/3, vuelta a la calma)
+│       └── exercises.json      ← Catálogo de calistenia (58, 24 de preparación militar): zona, nivel 1-3, impacto, molestias, material, versión fácil/difícil. Lo usarán los perfiles
 ├── tests/                  ← Pruebas (node --test): semana, copias/seguridad, análisis, plan, lector del PDF, temporizador, panel, metas y logros
+├── perfiles/               ← Tus datos reales para importar en la app (en .gitignore: nunca se suben)
 ├── docs/PLAN.md            ← Plan de mejoras priorizado
 ├── CLAUDE.md               ← Contexto para la IA: reglas y decisiones que no se tocan
 └── .github/workflows/
