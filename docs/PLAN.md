@@ -5,6 +5,14 @@
 
 ---
 
+## 🔲 P0 — Decidido el 28-sep y sin hacer (lo destapó la revisión del 29-sep)
+
+- [ ] **Aviso de cetoacidosis** en la ficha de Ebymect (dapagliflozina): síntomas y «nada de ayunos ni dietas keto sin tu médico». Con fuente oficial en `docs/FUENTES.md`
+- [ ] **Hígado graso:** quitar «Omega-3 y vitamina E tienen evidencia positiva»
+- [ ] **Suplementos como se decidió:** «Lo que tomo» (omega 3, dosis con el médico), «Más adelante» (creatina: avisar al médico, sube la creatinina del análisis), «Evitar» se queda; fuera vitamina D3, magnesio, whey y B12. Hoy la creatina sale «SEGURO» y «beneficia al hígado graso» sin fuente
+
+---
+
 ## 🔲 P1 — Alto impacto / Bajo esfuerzo
 
 - [ ] **Mini hábitos diarios** — Checkboxes diarios: 💧 2L agua · 🚶 6k pasos · 🥗 verduras · 💪 entreno · 😴 7h sueño
@@ -17,7 +25,8 @@
 
 ## 🔲 P2 — Medio impacto / Medio esfuerzo
 
-- [ ] **Fichas de Meds para el resto de enfermedades** — tensión, colesterol, tiroides, asma, corazón y embarazo (hoy solo tienen ficha diabetes, hígado graso, Gilbert y Ebymect). Cada una desde una guía oficial en `docs/FUENTES.md`
+- [ ] **Fichas por medicamento** — hoy solo Ebymect tiene ficha propia; metformina sola, insulina y pastillas de la tensión se ven a través de la enfermedad. Con fuente oficial
+- [ ] **Pruebas de la interfaz automáticas** — hoy lo visual se comprueba a mano en el navegador; unas pocas pruebas que abran la app y pulsen (cuestionario, entreno, importar)
 - [ ] **Vídeos elegidos y revisados por ejercicio** — hoy el ▶ busca en YouTube; poner un enlace concreto y en castellano por ejercicio del catálogo
 - [ ] **Historial de cintura y barriga en Progreso** — Tabla con entradas, igual que la de peso
 - [ ] **Fotos de progreso** — Opcional: guardar foto semanal (comprimida)
@@ -61,6 +70,7 @@
 - [x] Entreno según el perfil (`rutina.js` + catálogo de 59 ejercicios): nivel, molestias, minutos, zonas; equilibrio a partir de 65; embarazo sin tumbarse; avisos por perfil; objetivo semanal = días del perfil
 - [x] Duración de cada fase calculada de los ejercicios (antes, a mano y mal) y descanso entre vueltas a la vista
 - [x] Meds según el perfil (fichas con `data-si`); Gilbert completado; ficha «Diabetes tipo 2: tus controles»
+- [x] Fichas de Meds de tensión, colesterol, tiroides, asma, corazón y embarazo (NHS; reglas M1-M6); cada enfermedad del cuestionario tiene ficha (prueba)
 - [x] Nutrición según el perfil (`nutricion.js` + `nutrition.json`): dieta, alergias, «lo que no comes», enfermedades; «Sugerencias del día» y «Ver todas las opciones»; «Recomendaciones» con su guía
 
 **28-sep-2026**

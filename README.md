@@ -15,7 +15,7 @@ App web personal de salud y seguimiento de progreso. Sin servidor, sin backend, 
 | **🎯 Metas** | Metas a corto, medio y largo plazo **solo si hay sobrepeso**: salir de la obesidad (IMC 30), tu objetivo y la larga (IMC 27 con hígado graso o sin perfil; IMC 25 si no), solo las que estaban por encima de tu peso inicial; con peso sano, «mantenerlo». Historial de análisis: **subes el PDF del laboratorio y la app lee la fecha y los valores** (tú revisas y guardas), el PDF queda adjunto; desplegable por análisis y comparativa entre dos con sugerencias |
 | **Entrenamiento** | Calentamiento → fuerza → calma, con temporizador SVG. La fuerza va en **bloques 1 / 2 / 3** que rotan solos: con perfil los arma la app con el catálogo (piernas, empuje, espalda y abdomen + un extra por cada zona que quieras trabajar; tu nivel —+50, embarazo o un «sí» de seguridad: nivel 1 sin saltos—; fuera lo que choca con tus molestias; equilibrio a partir de 65; vueltas según tus minutos); sin perfil, los de siempre. La duración de cada fase se calcula de los ejercicios (con el descanso entre vueltas a la vista). Avisos según tu perfil (embarazo, insulina, tensión, asma, seguridad). Solo cuenta el bloque **completo** |
 | **Nutrición** | Método del plato (ADA). **Sugerencias del día** (3 por comida, cambian cada día) y «Ver todas las opciones», según tu dieta (vegana, vegetariana, sin carne), tus alergias y «lo que no comes»; «Recomendaciones» de las guías (AESAN para todos; ADA, EASL, DASH, ESC/EAS, AND según tu perfil); «Alimentos OK» y «Limitar». Sin perfil, todo |
-| **Meds** | Solo las fichas de lo que marcas en tu perfil: Ebymect, diabetes tipo 2 (tus controles, ADA), hígado graso, Gilbert (NHS y StatPearls), señales de alerta y suplementos (seguros, con precaución y a evitar). Sin nada marcado, te dice cómo añadirlo; sin perfil, todo |
+| **Meds** | Solo las fichas de lo que marcas en tu perfil: Ebymect, diabetes tipo 2 (tus controles, ADA), hígado graso, Gilbert (NHS y StatPearls), tensión alta, colesterol, tiroides, asma, corazón y embarazo (NHS), señales de alerta y suplementos (seguros, con precaución y a evitar). Sin nada marcado, te dice cómo añadirlo; sin perfil, todo |
 | **Progreso** | Registro de peso, cintura, barriga y altura; gráfica de peso; historial editable; exportar e importar copia; **borrar todos mis datos** (solo los de esta app); **copias automáticas** (una por semana al abrir, las 5 últimas, con «Recuperar») |
 | **Semana** | Objetivo de **bloques por semana** = los días de tu perfil (sin perfil, 3), de lunes a domingo, los días que quieras: aviso 🟢 vas bien · 🟠 vas justo · 🔴 no llegas o domingo con pendientes; los días con su bloque, qué bloque toca con botón para entrenar, y semanas anteriores en desplegables |
 
@@ -72,10 +72,10 @@ health-tracker/
 │       ├── health.json         ← Catálogo del cuestionario: objetivos, enfermedades, medicación, suplementos, molestias, zonas, dieta, alergias
 │       ├── nutrition.json      ← Catálogo de comidas con sus ingredientes, dietas, alergias y consejos (reglas A1-A7)
 │       └── exercises.json      ← Catálogo de calistenia (59, 24 de preparación militar): zona, nivel 1-3, impacto, molestias, material, si se hace tumbado, versión fácil/difícil. Lo usa rutina.js
-├── tests/                  ← 99 pruebas (node --test): semana, copias y seguridad, copias automáticas, análisis y lector del PDF, temporizador, panel, metas y logros, perfil, rutina, nutrición, catálogos y estructura del HTML
+├── tests/                  ← 100 pruebas (node --test): semana, copias y seguridad, copias automáticas, análisis y lector del PDF, temporizador, panel, metas y logros, perfil, rutina, nutrición, catálogos y estructura del HTML
 ├── perfiles/               ← Tus datos reales para importar en la app (en .gitignore: nunca se suben)
 ├── docs/PLAN.md            ← Plan de mejoras priorizado
-├── docs/FUENTES.md         ← Fuente de verdad: reglas de ejercicio y comida con su guía oficial
+├── docs/FUENTES.md         ← Fuente de verdad: reglas de ejercicio (E), comida (A) y fichas de Meds (M) con su guía oficial
 ├── CLAUDE.md               ← Contexto para la IA: reglas y decisiones que no se tocan
 └── .github/workflows/
     └── pages.yml           ← Pruebas y, si pasan, publica src/ en GitHub Pages
