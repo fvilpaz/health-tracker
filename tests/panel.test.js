@@ -156,3 +156,11 @@ test('tracker semanal: la barriga sale con su nombre arriba (no tiene objetivo s
   assert.match(html, /108\.5/);
   assert.doesNotMatch(html, /cumple/);
 });
+
+test('objetivo de cada semana: la 1 es el punto de partida (sin objetivo) y la última llega justo a la meta', () => {
+  const obj = crearApp().get('objetivoDeLaSemana');
+  assert.equal(obj(95.6, 88.6, 12, 1), null);                 // semana 1: lo que pusiste al empezar
+  assert.equal(+obj(95.6, 88.6, 12, 2).toFixed(2), 94.96);    // 95,6 − 7/11
+  assert.equal(+obj(95.6, 88.6, 12, 12).toFixed(2), 88.6);    // última semana = meta
+  assert.equal(obj(95.6, null, 12, 5), null);                  // sin meta, sin objetivos
+});

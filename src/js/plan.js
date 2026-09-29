@@ -75,15 +75,20 @@ function renderPlanTable() {
 
   const currentWeekNum = Math.min(totalWeeks, Math.max(1, semanaDelPlan(start)));
 
-  let html = '<div class="plan-cards">';
+  // La leyenda es una fila más con las mismas piezas y anchos que cada semana: si en el móvil las medidas bajan a
+  // la línea de abajo, sus nombres bajan igual y siguen justo encima de su columna.
+  let html = '<div class="plan-cards"><div class="plan-card plan-leyenda" aria-hidden="true"><div class="plan-row-bottom">' +
+    `<div class="plan-leyenda-checks">${duo('pesa', 'leyenda-ico')}ENTRENOS</div><div class="plan-inputs">` +
+    [['balanza', 'PESO'], ['regla', 'CINTURA'], ['regla', 'BARRIGA']].map(([ico, n]) => `<span class="plan-leyenda-medida">${duo(ico, 'leyenda-ico')}${n}</span>`).join('') +
+    '</div></div></div>';
 
   for (let w = 1; w <= totalWeeks; w++) {
     const weekDate = new Date(start);
     weekDate.setDate(start.getDate() + (w - 1) * 7);
     const dateLabel = weekDate.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
 
-    const targetWeight = startWeight && goalWeight ? startWeight - ((startWeight - goalWeight) / totalWeeks) * w : null;
-    const targetWaist = startWaist && goalWaist ? startWaist - ((startWaist - goalWaist) / totalWeeks) * w : null;
+    const targetWeight = objetivoDeLaSemana(startWeight, goalWeight, totalWeeks, w);
+    const targetWaist = objetivoDeLaSemana(startWaist, goalWaist, totalWeeks, w);
 
     // Lo real de la semana sale de lo que registras en Progreso (una sola fuente): la última medida de esa semana
     const realWeight = ultimaDeSemana(weights, 'weight', weekDate);
@@ -112,8 +117,9 @@ function renderPlanTable() {
     });
     html += `</div>`;
     html += `<div class="plan-inputs">`;
-    html += planValor(targetWeight, realWeight, 'kg');
-    html += planValor(targetWaist, realWaist, 'cm');
+    // Semana 1: el punto de partida («inicio» y lo que pusiste al empezar), sin objetivo
+    html += planValor(targetWeight, realWeight, 'kg', w === 1 ? 'inicio' : undefined);
+    html += planValor(targetWaist, realWaist, 'cm', w === 1 ? 'inicio' : undefined);
     html += planValor(null, realBelly, 'cm', 'barriga');   // sin objetivo semanal: no hay regla con fuente para la barriga
     html += `</div>`;
     html += `</div>`;
@@ -137,6 +143,13 @@ function ultimaDeSemana(lista, campo, lunes) {
     return f >= desde && f <= hasta;
   });
   return enSemana.length ? enSemana[enSemana.length - 1][campo] : null;
+}
+
+// Objetivo de la semana «w»: la 1 es el punto de partida (sin objetivo) y se baja por igual hasta la meta, que se
+// alcanza justo en la última semana. Antes la semana 1 ya pedía haber bajado (iba una semana adelantada).
+function objetivoDeLaSemana(inicio, meta, semanas, w) {
+  if (inicio == null || meta == null || w <= 1) return null;
+  return inicio - ((inicio - meta) / Math.max(1, semanas - 1)) * (w - 1);
 }
 
 // Objetivo arriba y lo real debajo (verde si llegas al objetivo de esa semana). Sin objetivo, «etiqueta» arriba.

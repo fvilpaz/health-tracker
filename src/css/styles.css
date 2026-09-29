@@ -631,6 +631,12 @@ table.labs td.fuera { color: var(--red); }
   padding: 12px 14px;
 }
 .plan-card.current { border-color: var(--blue); background: var(--blue-light); }
+/* Leyenda del tracker: mismas medidas que las casillas (3 × 32 px + 2 huecos de 6) y que cada medida (58 px) */
+.plan-leyenda { background: transparent; border-color: transparent; padding-top: 0; padding-bottom: 0; }
+.plan-leyenda-checks, .plan-leyenda-medida { display: flex; flex-direction: column; align-items: center; gap: 2px;
+  font-size: 0.58rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.02em; }
+.plan-leyenda-checks { width: 108px; }
+.plan-leyenda-medida { width: 58px; }
 .plan-card.past { opacity: 0.6; }
 .plan-week-header {
   display: flex;
