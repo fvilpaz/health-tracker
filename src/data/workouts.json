@@ -1,6 +1,5 @@
 {
   "warmup": {
-    "duration": 4,
     "exercises": [
       {
         "name": "Marcha en el sitio",
@@ -35,7 +34,6 @@
     ]
   },
   "strength": {
-    "duration": 14,
     "rounds": 3,
     "rest_between_rounds": 60,
     "blocks": {
@@ -69,7 +67,6 @@
     }
   },
   "cooldown": {
-    "duration": 2,
     "exercises": [
       {
         "name": "Estiramiento de gemelos",

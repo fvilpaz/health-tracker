@@ -53,8 +53,7 @@ function armarBloques(perfil, catalogo, hoy = new Date()) {
     }
     blocks[num] = { name: `Bloque ${num}`, exercises };
   });
-  const seg = blocks[1].exercises.reduce((n, e) => n + e.seconds + e.rest, 0) * rounds + restBetween * (rounds - 1);
-  return { duration: Math.round(seg / 60), rounds, rest_between_rounds: restBetween, blocks };
+  return { rounds, rest_between_rounds: restBetween, blocks };   // la duración la calcula workout.js (duracionFase)
 }
 
 /* ===== Bloques del perfil (o los de siempre si no hay perfil) ===== */
