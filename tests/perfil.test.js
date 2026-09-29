@@ -102,3 +102,23 @@ test('cada ficha de index.html apunta a enfermedades y medicamentos que existen 
   const existe = { c: new Set(h.conditions.map(x => x.id)), m: new Set(h.medications.map(x => x.id)) };
   assert.deepEqual(claves.filter(k => { const [t, id] = k.split(':'); return !existe[t]?.has(id); }), []);
 });
+
+test('PAR-Q: suplementos y las tres preguntas de seguridad se guardan; lo que no es sí/no, fuera', () => {
+  const r = crearApp().get('limpiarPerfil')({ supplements: ['omega3'], supplementsOther: 'magnesio', chestPain: false, fainting: true, supervisedOnly: 'sí' });
+  assert.deepEqual(plano(r.perfil), { supplements: ['omega3'], supplementsOther: 'magnesio', chestPain: false, fainting: true });
+  assert.equal(r.descartados, 1);
+});
+
+test('PAR-Q: con un «sí» en cualquiera de las tres, aviso de consultar al médico', () => {
+  const riesgo = crearApp().get('riesgoEjercicio');
+  assert.equal(riesgo(null), false);
+  assert.equal(riesgo({ chestPain: false, fainting: false, supervisedOnly: false }), false);
+  for (const k of ['chestPain', 'fainting', 'supervisedOnly']) assert.equal(riesgo({ [k]: true }), true, k);
+});
+
+test('catálogo: el omega 3 es un suplemento, no medicación recetada', () => {
+  const h = leer('health.json');
+  assert.ok(h.supplements.some(s => s.id === 'omega3'));
+  assert.ok(!h.medications.some(m => m.id === 'omega3'));
+  assert.equal(new Set(h.supplements.map(s => s.id)).size, h.supplements.length);
+});

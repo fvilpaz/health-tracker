@@ -181,6 +181,7 @@ function renderMetas() {
   const higado = !perfil || (perfil.conditions || []).includes('fatty-liver');
   const metas = calcularMetas(current, heightCm, objetivoPeso(), weights[0].weight, higado);
   if (!metas.length) {
+    // eslint-disable-next-line no-unsanitized/property -- texto del código y un número calculado (IMC)
     box.innerHTML = `<div class="meta-aviso">Tu peso está en rango sano (IMC ${(current / m2).toFixed(1)}): el objetivo es <strong>mantenerlo</strong>.</div>`;
     return;
   }

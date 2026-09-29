@@ -40,11 +40,12 @@ function limpiarPerfil(p) {
   const REGLAS = {
     name: v => texto(40)(v) && v.trim().length > 0, birthDate: fechaNac,
     sex: v => ['male', 'female'].includes(v), goal: v => ['lose', 'maintain', 'strength', 'health'].includes(v),
-    conditionsOther: texto(200), medicationsOther: texto(200), dislikes: texto(200),
+    conditionsOther: texto(200), medicationsOther: texto(200), supplementsOther: texto(200), dislikes: texto(200),
+    chestPain: v => typeof v === 'boolean', fainting: v => typeof v === 'boolean', supervisedOnly: v => typeof v === 'boolean',
     level: entero(1, 3), days: entero(1, 7), minutes: entero(5, 120),
     diet: v => ['all', 'no-meat', 'vegetarian', 'vegan'].includes(v),
   };
-  const LISTAS = ['conditions', 'medications', 'avoid', 'allergies'];
+  const LISTAS = ['conditions', 'medications', 'supplements', 'avoid', 'allergies'];
   for (const [k, v] of Object.entries(p)) {
     if (LISTAS.includes(k)) {
       if (!Array.isArray(v)) { descartados++; continue; }
@@ -56,6 +57,9 @@ function limpiarPerfil(p) {
   }
   return { perfil, descartados };
 }
+
+// Tres preguntas del PAR-Q+ (cuestionario estándar antes de hacer ejercicio): con un «sí», al médico antes de empezar
+const riesgoEjercicio = perfil => !!(perfil && (perfil.chestPain || perfil.fainting || perfil.supervisedOnly));
 
 /* ===== FICHAS SEGÚN EL PERFIL (Meds y Nutrición) ===== */
 // Cada ficha de index.html lleva data-si="c:enfermedad m:medicamento …" (ids de data/health.json): se ve si el
@@ -71,6 +75,8 @@ function seVe(claves, perfil) {
 function aplicarPerfilFichas() {
   const perfil = Storage.get('profile');
   document.querySelectorAll('[data-si]').forEach(el => { el.hidden = !seVe(el.dataset.si, perfil); });
+  const aviso = document.getElementById('avisoMedico');
+  if (aviso) aviso.hidden = !riesgoEjercicio(perfil);
   const vacio = document.getElementById('medsVacio');
   if (vacio) vacio.hidden = !perfil || [...document.querySelectorAll('#medicacion [data-si]')].some(el => !el.hidden);
 }
@@ -96,6 +102,11 @@ function opciones(nombre, lista, elegidos, tipo = 'checkbox') {
 }
 const campoTexto = (id, etiqueta, valor, ejemplo, modo = 'text') =>
   `<div class="setup-field"><label for="${id}">${etiqueta}</label><input type="text" id="${id}" inputmode="${modo}" autocomplete="off" placeholder="${esc(ejemplo)}" value="${esc(valor ?? '')}"></div>`;
+// Pregunta de sí/no; «sub» (opcional) es lo que aparece debajo al contestar «sí»
+const siNo = (nombre, pregunta, valor, sub = '') =>
+  `<fieldset class="setup-field setup-grupo pf-sino"><legend>${pregunta}</legend>${opciones(nombre, [{ id: 'si', name: 'Sí' }, { id: 'no', name: 'No' }], valor, 'radio')}` +
+  (sub ? `<div class="pf-sub" hidden>${sub}</div>` : '') + '</fieldset>';
+const siNoDe = v => (v === true ? 'si' : v === false ? 'no' : undefined);
 const grupo = (titulo, html) => `<fieldset class="setup-field setup-grupo"><legend>${titulo}</legend>${html}</fieldset>`;
 
 // nuevo = true: primera vez (con medidas y plan). false: «Mi perfil» (sin medidas: esas van en Progreso).
@@ -129,10 +140,17 @@ async function abrirCuestionario({ nuevo }) {
         (menor ? '<p class="setup-note">Con menos de 18 años la app no pone metas de peso: eso lo lleva el pediatra. Sí ejercicio y hábitos.</p>' : '');
     } },
     { titulo: 'Salud', html: () =>
-      grupo('¿Tienes alguna de estas? (ninguna es obligatoria)', opciones('pfEnfermedades', cat.conditions, p.conditions ?? [])) +
-      campoTexto('pfEnfermedadOtra', 'Otra', p.conditionsOther, 'Escríbela si no está en la lista') +
-      grupo('¿Tomas algo de esto?', opciones('pfMedicacion', cat.medications, p.medications ?? [])) +
-      campoTexto('pfMedicacionOtra', 'Otra medicación', p.medicationsOther, 'Escríbela si no está en la lista') +
+      siNo('pfTieneEnf', '¿Te ha diagnosticado un médico alguna enfermedad?', p.conditions?.length || p.conditionsOther ? 'si' : (p.conditions ? 'no' : undefined),
+        opciones('pfEnfermedades', cat.conditions, p.conditions ?? []) + campoTexto('pfEnfermedadOtra', 'Otra', p.conditionsOther, 'Escríbela si no está en la lista')) +
+      siNo('pfTieneMed', '¿Tomas medicación recetada por un médico?', p.medications?.length || p.medicationsOther ? 'si' : (p.medications ? 'no' : undefined),
+        opciones('pfMedicacion', cat.medications, p.medications ?? []) + campoTexto('pfMedicacionOtra', 'Otra medicación', p.medicationsOther, 'Escríbela si no está en la lista')) +
+      siNo('pfTieneSup', '¿Tomas algún suplemento por tu cuenta? (omega 3, vitaminas, proteína…)', p.supplements?.length || p.supplementsOther ? 'si' : (p.supplements ? 'no' : undefined),
+        opciones('pfSuplementos', cat.supplements, p.supplements ?? []) + campoTexto('pfSuplementoOtro', 'Otro', p.supplementsOther, 'Escríbelo si no está en la lista')) +
+      '<p class="setup-note">Antes de hacer ejercicio (preguntas del cuestionario PAR-Q+):</p>' +
+      siNo('pfPecho', '¿Notas dolor en el pecho en reposo, en el día a día o al hacer esfuerzo?', siNoDe(p.chestPain)) +
+      siNo('pfMareo', '¿Has perdido el equilibrio por un mareo o el conocimiento en el último año?', siNoDe(p.fainting)) +
+      siNo('pfSupervisado', '¿Te ha dicho un médico que solo hagas ejercicio con supervisión médica?', siNoDe(p.supervisedOnly)) +
+      '<p class="setup-note pf-riesgo" hidden><strong>Consulta con tu médico antes de empezar.</strong> La app te lo recordará en Entreno.</p>' +
       '<p class="setup-note">Esto se queda en tu móvil: no se envía a ningún sitio.</p>' },
     { titulo: 'Ejercicio', html: () =>
       grupo('¿Cuánto ejercicio haces ahora?', opciones('pfNivel', cat.levels, p.level, 'radio')) +
@@ -185,8 +203,23 @@ async function abrirCuestionario({ nuevo }) {
     }
     if (t === 'Tu objetivo') { p.goal = elegido('pfObjetivo'); if (!p.goal) return 'Elige un objetivo'; }
     if (t === 'Salud') {
-      p.conditions = elegidos('pfEnfermedades'); p.conditionsOther = $('pfEnfermedadOtra').value.trim().slice(0, 200);
-      p.medications = elegidos('pfMedicacion'); p.medicationsOther = $('pfMedicacionOtra').value.trim().slice(0, 200);
+      // «No» vacía la lista; «Sí» pide marcar algo o escribirlo
+      const lista = (pregunta, casillas, otra, campo, campoOtra, falta) => {
+        const r = elegido(pregunta);
+        if (!r) return 'Contesta sí o no: ' + falta;
+        p[campo] = r === 'si' ? elegidos(casillas) : [];
+        p[campoOtra] = r === 'si' ? $(otra).value.trim().slice(0, 200) : '';
+        return r === 'si' && !p[campo].length && !p[campoOtra] ? 'Marca cuál o escríbela: ' + falta : null;
+      };
+      const aviso = lista('pfTieneEnf', 'pfEnfermedades', 'pfEnfermedadOtra', 'conditions', 'conditionsOther', 'enfermedades') ||
+        lista('pfTieneMed', 'pfMedicacion', 'pfMedicacionOtra', 'medications', 'medicationsOther', 'medicación') ||
+        lista('pfTieneSup', 'pfSuplementos', 'pfSuplementoOtro', 'supplements', 'supplementsOther', 'suplementos');
+      if (aviso) return aviso;
+      for (const [nombre, campo] of [['pfPecho', 'chestPain'], ['pfMareo', 'fainting'], ['pfSupervisado', 'supervisedOnly']]) {
+        const r = elegido(nombre);
+        if (!r) return 'Contesta sí o no a las tres preguntas antes de hacer ejercicio';
+        p[campo] = r === 'si';
+      }
     }
     if (t === 'Ejercicio') {
       p.level = Number(elegido('pfNivel')); p.avoid = elegidos('pfMolestias');
@@ -233,6 +266,18 @@ async function abrirCuestionario({ nuevo }) {
     overlay.remove();
     if (nuevo) initApp(); else { updateDashboard(); aplicarPerfilFichas(); showToast('Perfil guardado ✓'); }
   }
+
+  // Sí/no: la lista de debajo solo con «sí»; con un «sí» en seguridad, el aviso de ir al médico
+  const actualizarSiNo = () => {
+    overlay.querySelectorAll('.pf-sino').forEach(g => {
+      const sub = g.querySelector('.pf-sub');
+      if (sub) sub.hidden = g.querySelector('input:checked')?.value !== 'si';
+    });
+    const riesgo = ['pfPecho', 'pfMareo', 'pfSupervisado'].some(n => elegido(n) === 'si');
+    overlay.querySelectorAll('.pf-riesgo').forEach(el => { el.hidden = !riesgo; });
+  };
+  overlay.addEventListener('change', actualizarSiNo);
+  actualizarSiNo();
 
   $('pfSiguiente').addEventListener('click', () => {
     const aviso = leerPaso(actual);

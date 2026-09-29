@@ -21,11 +21,18 @@
   "medications": [
     { "id": "ebymect", "name": "Ebymect (dapagliflozina + metformina)" },
     { "id": "metformin", "name": "Metformina" },
-    { "id": "omega3", "name": "Omega 3" },
     { "id": "insulin", "name": "Insulina" },
     { "id": "blood-pressure", "name": "Pastillas de la tensión" },
     { "id": "statins", "name": "Pastillas del colesterol (estatinas)" },
     { "id": "thyroid-med", "name": "Pastillas del tiroides" }
+  ],
+  "supplements": [
+    { "id": "omega3", "name": "Omega 3" },
+    { "id": "vitamin-d", "name": "Vitamina D" },
+    { "id": "magnesium", "name": "Magnesio" },
+    { "id": "creatine", "name": "Creatina" },
+    { "id": "protein", "name": "Proteína en polvo" },
+    { "id": "multivitamin", "name": "Multivitamínico" }
   ],
   "levels": [
     { "id": 1, "name": "Nada o casi nada" },

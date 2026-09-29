@@ -723,6 +723,8 @@ table.labs td.fuera { color: var(--red); }
 .chip input:checked + span { background: var(--btn-blue); border-color: var(--btn-blue); color: #fff; font-weight: 600; }
 .chip input:focus-visible + span { outline: 2px solid var(--blue); outline-offset: 2px; }
 .header-botones { display: flex; gap: 8px; }
+.pf-sub { margin-top: 12px; }
+.pf-riesgo { color: var(--red); }
 .setup-note { font-size: 0.7rem; color: var(--text-muted); margin-top: 16px; line-height: 1.4; }
 .setup-cancel {
   margin-top: 8px !important;
