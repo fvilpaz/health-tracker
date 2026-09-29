@@ -39,7 +39,7 @@ function limpiarCopia(entrada) {
   // porque vienen en cualquier copia hecha antes del 28-sep-2026.
   const obsoleta = clave => clave === 'streak' || clave.startsWith('calendar_');
   for (const clave of Object.keys(entrada)) {
-    if (!['settings', 'startDate', 'weights', 'waists', 'bellies', 'sessions', 'labs', 'plan', 'logros', 'theme', 'trainings', 'profile'].includes(clave) && !obsoleta(clave)) descartados++;
+    if (!['settings', 'startDate', 'weights', 'waists', 'bellies', 'sessions', 'labs', 'plan', 'logros', 'theme', 'trainings', 'profile', 'habits'].includes(clave) && !obsoleta(clave)) descartados++;
   }
 
   const s = entrada.settings;
@@ -84,6 +84,21 @@ function limpiarCopia(entrada) {
     const porFecha = new Map(datos.labs.map(l => [l.date, l]));
     descartados += datos.labs.length - porFecha.size;
     datos.labs = [...porFecha.values()];
+  }
+
+  // Hábitos: { fecha: [ids] }. Solo fechas reales y hábitos conocidos (en su orden y sin repetir); lo demás se cuenta
+  const h = entrada.habits;
+  if (h !== undefined) {
+    if (h && typeof h === 'object' && !Array.isArray(h)) {
+      datos.habits = {};
+      const ids = HABITOS.map(x => x.id);
+      for (const [fecha, dia] of Object.entries(h).slice(-MAX_LISTA)) {
+        if (!esFechaIso(fecha) || !Array.isArray(dia)) { descartados++; continue; }
+        const buenos = ids.filter(id => dia.includes(id));
+        descartados += dia.length - buenos.length;
+        datos.habits[fecha] = buenos;
+      }
+    } else descartados++;
   }
 
   const p = entrada.plan;

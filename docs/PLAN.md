@@ -7,7 +7,6 @@
 
 ## 🔲 P1 — Alto impacto / Bajo esfuerzo
 
-- [ ] **Mini hábitos diarios** — Checkboxes diarios: 💧 2L agua · 🚶 6k pasos · 🥗 verduras · 💪 entreno · 😴 7h sueño
 
 ---
 
@@ -47,6 +46,7 @@
 ## ✅ Completado
 
 **29-sep-2026**
+- [x] Hábitos de hoy en el Panel: agua, pasos (30 min andando), verdura (3 raciones) y sueño (7 h), con metas de fuentes (H1–H4). Entran en la copia validados (solo fechas reales y hábitos conocidos). Sin «2 L de agua» ni «6.000 pasos»: no hay cifra oficial. El entreno no va aquí porque ya se cuenta solo
 - [x] Logros intermedios: 3, 7 y 10 kg perdidos; 5 y 10 cm menos de cintura (13 logros en total)
 - [x] Sonidos del entreno (sin archivos, Web Audio): 1 pitido agudo al empezar ejercicio, 2 graves al empezar descanso, 3 notas subiendo en vuelta nueva y un acorde al terminar; cada uno con su vibración en el móvil (en iPhone no vibra: Safari no lo deja)
 - [x] Limpieza de estilos de Meds: 74 estilos escritos en el HTML → 0 (ya estaban en `.med-tips`; nueva `.med-aire`). Medido: 146 elementos, 0 diferencias (con control)
