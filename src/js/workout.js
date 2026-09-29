@@ -104,6 +104,43 @@ document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible' && workoutActive) mantenerPantalla(true);
 });
 
+/* ===== AVISOS: suena y vibra distinto al empezar ejercicio, descanso, nueva vuelta y al terminar ===== */
+// Tonos: frecuencia (Hz), cuándo empieza y cuánto dura (s). Vibración: ms encendida/apagada (solo móvil; iPhone no la permite).
+function patronAviso(tipo) {
+  const t = (f, inicio, dura = 0.15) => ({ f, inicio, dura });
+  return {
+    ejercicio: { tonos: [t(880, 0)], vibracion: [200] },                                  // 1 agudo: ¡a trabajar!
+    descanso: { tonos: [t(440, 0), t(440, 0.25)], vibracion: [100, 80, 100] },             // 2 graves: descansa
+    vuelta: { tonos: [t(523, 0), t(659, 0.2), t(784, 0.4)], vibracion: [100, 60, 100, 60, 100] },   // 3 subiendo: vuelta hecha
+    fin: { tonos: [t(523, 0, 0.6), t(659, 0, 0.6), t(784, 0, 0.6)], vibracion: [400] },    // acorde largo: terminado
+  }[tipo];
+}
+
+let audio = null;   // se crea con el primer toque (al pulsar Empezar): los navegadores no dejan sonar antes
+function avisoCambio(tipo) {
+  const p = patronAviso(tipo);
+  if (!p) return;
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (Ctx) {
+      audio = audio || new Ctx();
+      if (audio.state === 'suspended') audio.resume();
+      const ahora = audio.currentTime;
+      for (const { f, inicio, dura } of p.tonos) {
+        const osc = audio.createOscillator(), vol = audio.createGain();
+        osc.frequency.value = f;
+        vol.gain.setValueAtTime(0.0001, ahora + inicio);
+        vol.gain.exponentialRampToValueAtTime(0.25, ahora + inicio + 0.02);   // sube y baja suave: sin chasquidos
+        vol.gain.exponentialRampToValueAtTime(0.0001, ahora + inicio + dura);
+        osc.connect(vol).connect(audio.destination);
+        osc.start(ahora + inicio);
+        osc.stop(ahora + inicio + dura + 0.05);
+      }
+    }
+    if (navigator.vibrate) navigator.vibrate(p.vibracion);
+  } catch { /* sin sonido ni vibración en este aparato: el entreno sigue igual */ }
+}
+
 // Con un entreno en marcha no se puede cambiar de fase ni de bloque: antes se podía, se mezclaban los ejercicios
 // y hasta se apuntaba como hecho un bloque de fuerza que no se había hecho (revisión del 28-sep).
 function bloquearEleccion(si) {
@@ -144,6 +181,7 @@ function runNextExercise() {
       currentExerciseIdx = 0;
       const restBetween = phaseData.rest_between_rounds || 0;
       if (restBetween) {
+        avisoCambio('vuelta');
         showTimerState(`Vuelta ${currentRound - 1} completada`, 'Descansa', restBetween, true, () => runNextExercise());
         return;
       }
@@ -157,8 +195,10 @@ function runNextExercise() {
   const ex = exercises[currentExerciseIdx];
   highlightExercise(currentExerciseIdx);
 
+  avisoCambio('ejercicio');
   showTimerState(ex.name, phaseData.rounds ? `Vuelta ${currentRound}` : '', ex.seconds, false, () => {
     if (ex.rest) {
+      avisoCambio('descanso');
       showTimerState('Descansa', ex.name, ex.rest, true, () => {
         currentExerciseIdx++;
         runNextExercise();
@@ -202,6 +242,7 @@ function highlightExercise(idx) {
 }
 
 function workoutDone() {
+  avisoCambio('fin');
   workoutActive = false;
   bloquearEleccion(false);
   mantenerPantalla(false);
