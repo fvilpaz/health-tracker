@@ -8,7 +8,6 @@
 ## 🔲 P1 — Alto impacto / Bajo esfuerzo
 
 - [ ] **Mini hábitos diarios** — Checkboxes diarios: 💧 2L agua · 🚶 6k pasos · 🥗 verduras · 💪 entreno · 😴 7h sueño
-- [ ] **Gráfica de cintura y barriga en Progreso** — Igual que la de peso, con Chart.js y línea objetivo
 - [ ] **Sonido al cambiar ejercicio** — Beep suave cuando termina un ejercicio (Web Audio API, sin archivos externos)
 
 ---
@@ -18,7 +17,6 @@
 - [ ] **Fichas por medicamento** — hoy solo Ebymect tiene ficha propia; metformina sola, insulina y pastillas de la tensión se ven a través de la enfermedad. Con fuente oficial
 - [ ] **Pruebas de la interfaz automáticas** — hoy lo visual se comprueba a mano en el navegador; unas pocas pruebas que abran la app y pulsen (cuestionario, entreno, importar)
 - [ ] **Vídeos elegidos y revisados por ejercicio** — hoy el ▶ busca en YouTube; poner un enlace concreto y en castellano por ejercicio del catálogo
-- [ ] **Historial de cintura y barriga en Progreso** — Tabla con entradas, igual que la de peso
 - [ ] **Fotos de progreso** — Opcional: guardar foto semanal (comprimida)
 - [ ] **Notas por semana** — Campo de texto libre en el tracker para anotar cómo te sientes
 - [ ] **Mejorar logros** — Más logros intermedios (3kg, 7kg, 10cm cintura, etc.)
@@ -51,6 +49,7 @@
 ## ✅ Completado
 
 **29-sep-2026**
+- [x] Gráfica e historial de cintura y barriga en Progreso (con borrar el día)
 - [x] Tracker: semana 1 con los mismos números con los que empiezas (iba una semana adelantada); columna «— cm» en la barriga y leyenda como una fila más, alineada con cada columna también cuando las medidas bajan
 - [x] Tracker semanal con la barriga; casillas en la línea del título, las 3 medidas en tercios debajo y cada semana con sus etiquetas (ENTRENOS, PESO, CINTURA, BARRIGA) (nada se descuelga en el móvil; antes, a ~412 px, las medidas saltaban de línea)
 - [x] Aviso al acabar el plan con «Empezar otro plan»: conserva el historial, empieza hoy y el objetivo sale del peso de ahora; la tabla y el objetivo usan las medidas de ESTE plan

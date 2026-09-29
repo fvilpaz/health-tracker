@@ -515,6 +515,7 @@ table.labs td.fuera { color: var(--red); }
 .alert-card .alert-title { font-weight: 700; color: var(--yellow); margin-bottom: 6px; }
 
 /* ===== PROGRESO ===== */
+.chart-wrap.chart-medidas.vacia::after { content: "Aún no hay cintura ni barriga: apúntalas arriba"; }
 .chart-wrap.vacia::after { content: "Aún no hay pesos: apunta el primero arriba"; position: absolute; inset: 0; display: grid; place-items: center; color: var(--text-muted); font-size: 0.85rem; }
 .chart-wrap { position: relative; height: 220px; margin: 10px 0; }
 .weight-log { display: flex; flex-direction: column; gap: 8px; max-height: 260px; overflow-y: auto; }
