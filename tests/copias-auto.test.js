@@ -63,3 +63,11 @@ test('si el almacén no tiene sitio, no se rompe nada: simplemente no hay copia'
   assert.equal(app.get('copiaAutomatica')(dia(0)), false);
   assert.deepEqual(plano(app.get('Storage').get('weights')), [{ date: '1/1/2026', weight: 90 }]);
 });
+
+test('borrar todo: quita lo de Health Tracker (datos y copias) y NO toca lo de otras apps del mismo dominio', async () => {
+  const app = conPeso(90);
+  app.get('copiaAutomatica')(dia(0));
+  app.almacen.set('nplayer_lista', '["cancion"]');                      // otra app en fvilpaz.github.io
+  await app.get('borrarTodosLosDatos')();
+  assert.deepEqual([...app.almacen.keys()], ['nplayer_lista']);
+});
