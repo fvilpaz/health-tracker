@@ -34,10 +34,12 @@
 
 ## 🔲 P3 — Bajo impacto / Alto esfuerzo
 
-- [ ] **Backend con sync** — Firebase/Supabase para no perder datos si borras localStorage
-- [ ] **Multi-usuario** — Perfiles para que más gente pueda usar la app
+- [ ] **Copia fuera del móvil a un toque (capa 2)** — si hace >7 días de la última, aviso al abrir: «Guarda tu copia semanal» → menú Compartir → Google Drive. ~30 líneas. (Capa 1, copias automáticas dentro de la app, HECHA 29-sep-2026)
+- [ ] **Copia automática a Google Drive** — sin tocar nada: permiso con la cuenta de Google, alta en Google Cloud y abrir la CSP a Google. NUNCA a GitHub (repo público; una llave de GitHub en el móvil es un riesgo)
+- [ ] **Sincronizar móvil y PC** — hoy cada aparato tiene sus datos (localStorage) y se pasan con Exportar/Importar. Opciones: un archivo en Drive que lean los dos, o servidor propio (Django + PostgreSQL). Con servidor: datos de salud = categoría especial del RGPD
+- [ ] **Perfiles + cuestionario al crearlo** (29-sep-2026) — catálogo público (enfermedades, medicación, ejercicios con variantes) + perfil en el navegador (datos, enfermedades, medicación, nivel, molestias, días, comida). Meds, nutrición y entreno según el perfil. Menores de 18: sin metas de peso. Pasos: 1 perfiles+cuestionario (tus datos pasan a tu perfil) → 2 Meds → 3 nutrición → 4 entreno
 - [ ] **Gráfica de composición** — Peso + cintura + IMC superpuestos
-- [ ] **Integración con wearables** — Leer pasos de Google Fit / Apple Health
+- [ ] **Datos del reloj** — ver pasos, pulso, sueño… de Google Fit / Amazfit (Zepp) en la app. Ojo: Google Fit está cerrando su API (Health Connect en Android la sustituye) y desde una web no se lee Health Connect directamente: revisar opciones (Zepp → Google Fit/Strava, o app Android)
 - [ ] **Plan de nutrición dinámico** — Generar menú semanal basado en preferencias
 - [ ] **Timer mejorado** — Vibración, modo pantalla completa, countdown audible
 
@@ -74,4 +76,4 @@
 
 ---
 
-_Generado: 2026-08-08 · Actualizado: 2026-09-28_
+_Generado: 2026-08-08 · Actualizado: 2026-09-29_
