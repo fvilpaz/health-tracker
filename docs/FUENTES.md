@@ -39,6 +39,19 @@
 | **A9** | Síndrome de Gilbert | **Guía (NHS):** no necesita tratamiento ni dieta especial; puede desencadenarse por **pasarse con el ejercicio, dormir poco, alcohol o beber poco líquido**; avisar antes de un medicamento nuevo. **StatPearls (NCBI):** también **ayuno**, enfermedades, menstruación y deshidratación. El estrés lo recogía la ficha original de Nando (no aparece en estas dos fuentes; se deja). | Ficha de Meds (completada el 29-sep-2026 con lo de las dos fuentes, sin quitar nada). |
 | **A10** | Diabetes tipo 2: controles | **Guía (ADA):** HbA1c cada 6 meses si está en objetivo, cada 3 si no o si cambia la medicación; objetivo individual (en torno al 7 % para muchos adultos); tensión y peso en cada consulta; fondo de ojo al diagnóstico y cada 1–2 años; riñón (albúmina en orina y filtrado) una vez al año; colesterol anual a partir de 40 años si está estable. | Ficha «Diabetes tipo 2: tus controles» en Meds. |
 
+## Fichas de Meds
+
+| Código | Perfil | Qué dice (guía) | Ficha |
+|---|---|---|---|
+| **M1** | Tensión alta | **NHS:** alta desde 140/90 en consulta o 135/85 en casa; menos sal, poco alcohol (≤14 unidades/semana), no fumar, menos cafeína, perder peso, 150 min/semana de ejercicio; a veces hace falta más de un medicamento; urgencia si dolor de pecho que no cede o se irradia. | «Tensión alta» |
+| **M2** | Colesterol / estatinas | **NHS:** a largo plazo; no dejarlas sin el médico; dolor muscular → médico; evitar pomelo; interacciones (p. ej. hierba de San Juan); no en el embarazo. | «Colesterol alto» |
+| **M3** | Tiroides / levotiroxina | **NHS:** en ayunas, 30–60 min antes del desayuno, misma hora; separar de hierro, calcio, antiácidos y café; análisis periódicos; señales de dosis alta. | «Tiroides (levotiroxina)» |
+| **M4** | Asma | **NHS:** inhalador de rescate; plan de acción por escrito; revisión anual con la técnica del inhalador; urgencia si empeora o no mejora. | «Asma» |
+| **M5** | Corazón | **NHS:** síntomas de infarto → urgencias, sentarse, no conducir; seguir la medicación; rehabilitación cardiaca. **Criterio de la app:** consultar antes de entrenar (como E12). | «Corazón» |
+| **M6** | Embarazo | **NHS:** ácido fólico 400 µg/día hasta la semana 12; vitamina D 10 µg/día (máx. 100); nada de vitamina A, aceite de hígado de bacalao ni hígado; cafeína ≤200 mg/día; alcohol, lo más seguro ninguno; consultar antes de medicamentos o suplementos. | «Embarazo» |
+
+En España el teléfono de urgencias es el **112** (las guías del NHS dicen 999).
+
 ---
 
 ## Fuentes
@@ -56,5 +69,6 @@
 - NHLBI, dieta DASH: [DASH Eating Plan](https://www.nhlbi.nih.gov/health/dash-eating-plan)
 - ESC/EAS 2019, dislipemias: [guía](https://www.escardio.org/guidelines/clinical-practice-guidelines/all-esc-practice-guidelines/dyslipidaemias-management/) · [10 puntos (ACC)](https://www.acc.org/Latest-in-Cardiology/ten-points-to-remember/2019/09/12/15/13/2019-ESC-EAS-Guidelines-for-Dyslipidaemias)
 - Academy of Nutrition and Dietetics, dietas vegetarianas: [posición (PubMed)](https://pubmed.ncbi.nlm.nih.gov/27886704) · [actualización 2025](https://www.jandonline.org/article/S2212-2672(25)00042-5/abstract)
+- NHS, fichas de Meds: [tensión alta](https://www.nhs.uk/conditions/high-blood-pressure/) · [estatinas](https://www.nhs.uk/conditions/statins/) · [levotiroxina](https://www.nhs.uk/medicines/levothyroxine/) · [asma](https://www.nhs.uk/conditions/asthma/) · [enfermedad coronaria](https://www.nhs.uk/conditions/coronary-heart-disease/) · [infarto](https://www.nhs.uk/conditions/heart-attack/) · [vitaminas en el embarazo](https://www.nhs.uk/pregnancy/keeping-well/pregnancy-vitamins-and-supplements/)
 - NHS, síndrome de Gilbert: [NHS](https://www.nhs.uk/conditions/gilberts-syndrome/) · StatPearls: [Gilbert Syndrome (NCBI)](https://www.ncbi.nlm.nih.gov/sites/books/NBK470200/)
 - ADA, controles en diabetes: [Health checks for people with diabetes](https://diabetes.org/living-with-diabetes/newly-diagnosed/health-checks-people-with-diabetes) · [Standards of Care 2026, objetivos glucémicos](https://diabetesjournals.org/care/article/49/Supplement_1/S132/163927/6-Glycemic-Goals-Hypoglycemia-and-Hyperglycemic)

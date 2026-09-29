@@ -122,3 +122,11 @@ test('catálogo: el omega 3 es un suplemento, no medicación recetada', () => {
   assert.ok(!h.medications.some(m => m.id === 'omega3'));
   assert.equal(new Set(h.supplements.map(s => s.id)).size, h.supplements.length);
 });
+
+test('cada enfermedad del cuestionario tiene al menos una ficha en Meds (nadie se queda con «no hay ficha»)', () => {
+  const h = leer('health.json');
+  const html = fs.readFileSync(path.join(__dirname, '..', 'src', 'index.html'), 'utf8');
+  const meds = html.slice(html.indexOf('<section id="medicacion"'), html.indexOf('</section>', html.indexOf('<section id="medicacion"')));
+  const claves = new Set([...meds.matchAll(/data-si="([^"]+)"/g)].flatMap(m => m[1].split(' ')));
+  assert.deepEqual(h.conditions.map(c => c.id).filter(id => !claves.has('c:' + id)), []);
+});
