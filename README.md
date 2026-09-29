@@ -32,7 +32,7 @@ Tracker semanal integrado con:
 - **Stack**: HTML5 · CSS3 · JavaScript ES6 · Chart.js 4 · pdf.js 4 (las dos en `src/vendor/`, verificadas contra el registro npm)
 - **Sin dependencias de build** — archivos estáticos puros
 - **Tema oscuro** por defecto (y claro), responsive (mobile-first); colores con contraste suficiente (WCAG ≥ 4,5) en los dos
-- **En el PC** (900 px o más) usa el ancho de la pantalla (94 %, con tope) y las tarjetas van en columnas de periódico (cada una debajo de la anterior, sin huecos; columnas de al menos 360 px, las que quepan): sin tamaños fijos por pantalla
+- **En el PC** (900 px o más) usa el ancho de la pantalla (94 %, con tope) con cada tarjeta a todo el ancho, una debajo de otra (nada salta de sitio al abrir o cerrar algo), y el contenido de cada tarjeta en columnas automáticas (comidas del día, recomendaciones, alimentos, ejercicios, logros, metas, días de la semana): sin tamaños fijos por pantalla
 - **localStorage** — tus datos no salen de tu navegador
 - **GitHub Pages** — en cada subida pasan las pruebas y, si van bien, se publica `src/` sola
 - **Botón ▶ en ejercicios** — busca vídeos en YouTube al instante

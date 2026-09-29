@@ -296,13 +296,14 @@ a { color: inherit; text-decoration: none; }
 
 /* Metas */
 .metas-list { display: flex; flex-direction: column; gap: 10px; }
-.meta-row { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+/* Dos líneas, como los ejercicios: arriba plazo, peso y explicación; abajo lo que falta (en el móvil se apretaban) */
+.meta-row { display: grid; grid-template-columns: 56px 1fr; grid-template-areas: "plazo info" "plazo falta"; align-items: center; column-gap: 12px; row-gap: 4px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); }
 .meta-row.hecha { border-color: var(--green); background: var(--green-light); }
-.meta-plazo { flex: 0 0 56px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--blue); }
-.meta-info { flex: 1; display: flex; flex-direction: column; }
+.meta-plazo { grid-area: plazo; align-self: start; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--blue); }
+.meta-info { grid-area: info; min-width: 0; display: flex; flex-direction: column; }
 .meta-info strong { font-size: 1.05rem; }
 .meta-info span { font-size: 0.78rem; color: var(--text-muted); }
-.meta-falta { font-size: 0.8rem; text-align: right; white-space: nowrap; }
+.meta-falta { grid-area: falta; font-size: 0.8rem; }
 .meta-aviso { font-size: 0.8rem; color: var(--text-muted); margin-top: 8px; }
 
 /* Análisis */
@@ -763,20 +764,16 @@ table.labs td.fuera { color: var(--red); }
 }
 
 /* PC y tablet apaisada: la app usa el ancho de la pantalla (en %, con un tope para que el texto no quede
-   larguísimo en monitores grandes) y las tarjetas van en columnas «de periódico»: cada una debajo de la
-   anterior de su columna (con una rejilla por filas, una tarjeta alta dejaba huecos enormes al lado).
-   Columnas de al menos 360 px, las que quepan (13": 2-3, monitor grande: 3-4). En el móvil no cambia nada. */
+   larguísimo en monitores grandes). Cada tarjeta a TODO el ancho, una debajo de otra (como en el móvil):
+   así nada salta de sitio al abrir o cerrar algo (con columnas, las tarjetas se recolocaban solas). Lo que se
+   reparte en horizontal es el CONTENIDO de cada tarjeta, en columnas automáticas. En el móvil no cambia nada. */
 @media (min-width: 900px) {
   .app-container, .app-footer { max-width: min(94vw, 1500px); }
-  .section.active { column-width: 360px; column-gap: 16px; }
-  .section.active > * { break-inside: avoid; }                /* una tarjeta nunca se parte entre dos columnas */
-  .section.active > .card { margin-bottom: 16px; }
-  /* A todo el ancho, solo lo imprescindible: cada ancho completo corta las columnas y lo que queda encima
-     no se reparte (una tarjeta sola dejaba un hueco al lado). La gráfica y la tabla de análisis caben en una columna. */
-  .section.active > .stats-grid, .section.active > .phase-tabs,
-  #avisosEntreno, #workoutSetup, #timerView,
-  .section.active > .card:has(#weeksFill), .section.active > .card:has(#planTable),
-  .section.active > .card:has(#exerciseList) { column-span: all; margin-bottom: 16px; }
   .stats-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }   /* las 9 tarjetas en una fila en un portátil */
   #exerciseList { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 10px; }
+  /* Dentro de las tarjetas, en fila: comidas del día, todas las opciones, recomendaciones, alimentos, logros, metas, días */
+  #comidasIdeas, #comidasTodasLista, #comidasConsejos { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; align-items: start; }
+  .food-grid, .logros-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+  .metas-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .semana-dias { display: grid; grid-template-columns: repeat(7, 1fr); }
 }
