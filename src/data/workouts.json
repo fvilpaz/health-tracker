@@ -48,12 +48,6 @@
         "seconds": 30,
         "rest": 10,
         "tip": "Apoyado en la pared, punta del pie en el suelo y círculos con el tobillo; 15 s cada pie"
-      },
-      {
-        "name": "Balanceo de piernas",
-        "seconds": 40,
-        "rest": 20,
-        "tip": "Apoyado en la pared, balancea una pierna adelante y atrás; luego la otra"
       }
     ]
   },
