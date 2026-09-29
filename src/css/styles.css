@@ -763,17 +763,20 @@ table.labs td.fuera { color: var(--red); }
 }
 
 /* PC y tablet apaisada: la app usa el ancho de la pantalla (en %, con un tope para que el texto no quede
-   larguísimo en monitores grandes) y las tarjetas se reparten solas en columnas: cada una mide al menos
-   360 px y caben las que quepan (13": 2-3, monitor grande: 3-4). Sin tamaños por pantalla. En el móvil no cambia nada. */
+   larguísimo en monitores grandes) y las tarjetas van en columnas «de periódico»: cada una debajo de la
+   anterior de su columna (con una rejilla por filas, una tarjeta alta dejaba huecos enormes al lado).
+   Columnas de al menos 360 px, las que quepan (13": 2-3, monitor grande: 3-4). En el móvil no cambia nada. */
 @media (min-width: 900px) {
   .app-container, .app-footer { max-width: min(94vw, 1500px); }
-  .section.active { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 16px; align-items: start; }
-  .section.active > .card { margin-bottom: 0; }
-  /* A todo el ancho: lo que necesita sitio o va en fila */
-  .section.active > .stats-grid, .section.active > .phase-tabs, .section.active > .disclaimer,
+  .section.active { column-width: 360px; column-gap: 16px; }
+  .section.active > * { break-inside: avoid; }                /* una tarjeta nunca se parte entre dos columnas */
+  .section.active > .card { margin-bottom: 16px; }
+  /* A todo el ancho, solo lo imprescindible: cada ancho completo corta las columnas y lo que queda encima
+     no se reparte (una tarjeta sola dejaba un hueco al lado). La gráfica y la tabla de análisis caben en una columna. */
+  .section.active > .stats-grid, .section.active > .phase-tabs,
   #avisosEntreno, #workoutSetup, #timerView,
-  .section.active > .card:has(#planTable), .section.active > .card:has(#exerciseList),
-  .section.active > .card:has(#labsTabla), .section.active > .card:has(#weightChart) { grid-column: 1 / -1; }
+  .section.active > .card:has(#weeksFill), .section.active > .card:has(#planTable),
+  .section.active > .card:has(#exerciseList) { column-span: all; margin-bottom: 16px; }
   .stats-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }   /* las 9 tarjetas en una fila en un portátil */
   #exerciseList { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 10px; }
 }
