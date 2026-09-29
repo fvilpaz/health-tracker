@@ -36,7 +36,8 @@
 | **A6** | Colesterol alto | **Guía (ESC/EAS 2019):** **poca grasa saturada, nada de grasas trans**, más fibra y pescado; patrón mediterráneo. | Consejos de colesterol. |
 | **A7** | Vegetariano / vegano | **Guía (Academy of Nutrition and Dietetics):** bien planificadas son adecuadas en todas las etapas; vigilar **B12, vitamina D, omega 3, calcio, hierro y zinc**; vegano: **B12 siempre** (suplemento o alimentos enriquecidos). | Fuera comidas con carne/pescado (y huevo y lácteos si es vegano); aviso de B12. |
 | **A8** | Alergias, intolerancias y gustos | **Criterio de la app:** fuera toda comida que lleve ese ingrediente; aun así, **leer siempre la etiqueta**. Lo escrito en «Lo que no comes o no te gusta» también se quita, **solo para ese perfil**. | Filtro por ingredientes y por palabras. |
-| **A9** | Síndrome de Gilbert | **Guía (NHS):** no necesita tratamiento ni dieta especial; puede desencadenarse por **pasarse con el ejercicio, dormir poco, alcohol o beber poco líquido**. | Ficha de Meds. ⚠ La ficha actual dice «sube con ayuno, estrés o ejercicio intenso»: el NHS no nombra ayuno ni estrés (pendiente de que Nando decida). |
+| **A9** | Síndrome de Gilbert | **Guía (NHS):** no necesita tratamiento ni dieta especial; puede desencadenarse por **pasarse con el ejercicio, dormir poco, alcohol o beber poco líquido**; avisar antes de un medicamento nuevo. **StatPearls (NCBI):** también **ayuno**, enfermedades, menstruación y deshidratación. El estrés lo recogía la ficha original de Nando (no aparece en estas dos fuentes; se deja). | Ficha de Meds (completada el 29-sep-2026 con lo de las dos fuentes, sin quitar nada). |
+| **A10** | Diabetes tipo 2: controles | **Guía (ADA):** HbA1c cada 6 meses si está en objetivo, cada 3 si no o si cambia la medicación; objetivo individual (en torno al 7 % para muchos adultos); tensión y peso en cada consulta; fondo de ojo al diagnóstico y cada 1–2 años; riñón (albúmina en orina y filtrado) una vez al año; colesterol anual a partir de 40 años si está estable. | Ficha «Diabetes tipo 2: tus controles» en Meds. |
 
 ---
 
@@ -55,4 +56,5 @@
 - NHLBI, dieta DASH: [DASH Eating Plan](https://www.nhlbi.nih.gov/health/dash-eating-plan)
 - ESC/EAS 2019, dislipemias: [guía](https://www.escardio.org/guidelines/clinical-practice-guidelines/all-esc-practice-guidelines/dyslipidaemias-management/) · [10 puntos (ACC)](https://www.acc.org/Latest-in-Cardiology/ten-points-to-remember/2019/09/12/15/13/2019-ESC-EAS-Guidelines-for-Dyslipidaemias)
 - Academy of Nutrition and Dietetics, dietas vegetarianas: [posición (PubMed)](https://pubmed.ncbi.nlm.nih.gov/27886704) · [actualización 2025](https://www.jandonline.org/article/S2212-2672(25)00042-5/abstract)
-- NHS, síndrome de Gilbert: [NHS](https://www.nhs.uk/conditions/gilberts-syndrome/)
+- NHS, síndrome de Gilbert: [NHS](https://www.nhs.uk/conditions/gilberts-syndrome/) · StatPearls: [Gilbert Syndrome (NCBI)](https://www.ncbi.nlm.nih.gov/sites/books/NBK470200/)
+- ADA, controles en diabetes: [Health checks for people with diabetes](https://diabetes.org/living-with-diabetes/newly-diagnosed/health-checks-people-with-diabetes) · [Standards of Care 2026, objetivos glucémicos](https://diabetesjournals.org/care/article/49/Supplement_1/S132/163927/6-Glycemic-Goals-Hypoglycemia-and-Hyperglycemic)
