@@ -102,18 +102,17 @@ function renderPlanTable() {
 
     html += `<div class="${cardClass}" data-week="${w}">`;
 
-    // Arriba: Semana N · fecha, y las 3 casillas de entreno a la derecha
+    // Tres líneas: la semana; los entrenos (1 2 3); y peso, cintura y barriga, cada una en un tercio
     html += `<div class="plan-week-header">`;
     html += `<span class="plan-week-label">Semana ${w}</span>`;
     html += `<span class="plan-date">${dateLabel}</span>`;
-    html += `<div class="plan-checks-caja"><span class="plan-mini">ENTRENOS</span><div class="plan-checks">`;
+    html += `</div>`;
+    html += `<div class="plan-entrenos"><span class="plan-mini">ENTRENOS</span><div class="plan-checks">`;
     [1, 2, 3].forEach((num, i) => {
       html += `<span class="plan-check ${checks[i] ? 'checked' : ''}">${checks[i] ? '✓' : num}</span>`;
     });
     html += `</div></div>`;
-    html += `</div>`;
 
-    // Abajo: peso, cintura y barriga, cada una en un tercio
     html += `<div class="plan-row-bottom">`;
     html += `<div class="plan-inputs">`;
     html += planValor(targetWeight, realWeight, 'kg', 'PESO');
