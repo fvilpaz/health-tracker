@@ -77,10 +77,12 @@ function renderPlanTable() {
 
   const currentWeekNum = Math.min(totalWeeks, Math.max(1, semanaDelPlan(start)));
 
-  // La leyenda es una fila más con las mismas piezas y anchos que cada semana: si en el móvil las medidas bajan a
-  // la línea de abajo, sus nombres bajan igual y siguen justo encima de su columna.
-  let html = '<div class="plan-cards"><div class="plan-card plan-leyenda" aria-hidden="true"><div class="plan-row-bottom">' +
-    `<div class="plan-leyenda-checks">${duo('pesa', 'leyenda-ico')}ENTRENOS</div><div class="plan-inputs">` +
+  // Cada semana: arriba «Semana N · fecha» y las 3 casillas a la derecha; abajo peso, cintura y barriga, cada una en
+  // un tercio. Nunca hay que partir nada (antes, en el móvil, las medidas bajaban y la leyenda se descolgaba).
+  // La leyenda repite esa misma forma, así cada nombre queda encima de lo suyo en cualquier pantalla.
+  let html = '<div class="plan-cards"><div class="plan-card plan-leyenda" aria-hidden="true">' +
+    `<div class="plan-week-header"><div class="plan-leyenda-checks">${duo('pesa', 'leyenda-ico')}ENTRENOS</div></div>` +
+    '<div class="plan-row-bottom"><div class="plan-inputs">' +
     [['balanza', 'PESO'], ['regla', 'CINTURA'], ['regla', 'BARRIGA']].map(([ico, n]) => `<span class="plan-leyenda-medida">${duo(ico, 'leyenda-ico')}${n}</span>`).join('') +
     '</div></div></div>';
 
@@ -105,19 +107,19 @@ function renderPlanTable() {
 
     html += `<div class="${cardClass}" data-week="${w}">`;
 
-    // Título: Semana N · fecha
+    // Arriba: Semana N · fecha, y las 3 casillas de entreno a la derecha
     html += `<div class="plan-week-header">`;
     html += `<span class="plan-week-label">Semana ${w}</span>`;
     html += `<span class="plan-date">${dateLabel}</span>`;
-    html += `</div>`;
-
-    // Fila: LMV izquierda | inputs derecha
-    html += `<div class="plan-row-bottom">`;
     html += `<div class="plan-checks">`;
     [1, 2, 3].forEach((num, i) => {
       html += `<span class="plan-check ${checks[i] ? 'checked' : ''}">${checks[i] ? '✓' : num}</span>`;
     });
     html += `</div>`;
+    html += `</div>`;
+
+    // Abajo: peso, cintura y barriga, cada una en un tercio
+    html += `<div class="plan-row-bottom">`;
     html += `<div class="plan-inputs">`;
     html += planValor(targetWeight, realWeight, 'kg');
     html += planValor(targetWaist, realWaist, 'cm');
