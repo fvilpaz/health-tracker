@@ -47,6 +47,15 @@
 | **S1** | Peso (IMC) | **Guía (OMS, clasificación del IMC en adultos):** < 18,5 bajo peso · 18,5–24,9 normal · 25–29,9 sobrepeso (preobesidad) · 30–34,9 obesidad grado I · ≥ 35 obesidad grado II o más. | Bajo peso 🟡 · normal 🟢 · sobrepeso 🟡 · obesidad I 🟠 · obesidad II+ 🔴 (Panel y tracker). |
 | **S2** | Cintura / altura | **Guía (NICE):** por debajo de 0,5 sano; de 0,5 a 0,59, riesgo aumentado; 0,6 o más, riesgo alto. | 🟢 < 0,5 · 🟠 0,5–0,59 · 🔴 ≥ 0,6. La barriga no tiene corte oficial: sin color. |
 
+## Hábitos diarios
+
+| Código | Hábito | Qué dice | Cómo lo aplica la app |
+|---|---|---|---|
+| **H1** | Agua | **Guía (AESAN 2022, ver A1):** **agua** como bebida. No da litros al día (depende del calor, del ejercicio y de lo que se come). | «Agua como bebida, a lo largo del día», sin cifra. |
+| **H2** | Pasos | **Guía (OMS 2020):** adultos, **150 minutos o más a la semana** de actividad moderada (o 75 de intensa). No hay una cifra oficial de pasos. | «30 min andando» (7 días × 30 = 210 min, dentro de lo recomendado). |
+| **H3** | Verdura | **Guía (AESAN 2022, ver A1):** **3 raciones o más** de verdura al día. | «3 raciones o más». |
+| **H4** | Sueño | **CDC** (consenso de la AASM y la SRS): **7 horas o más** de 18 a 60 años; 7–9 de 61 a 64; 7–8 desde 65; **8–10 de 13 a 17**. | «7 h o más (de 13 a 17 años: 8–10 h)». |
+
 ## Fichas de Meds
 
 | Código | Perfil | Qué dice (guía) | Ficha |
@@ -83,5 +92,6 @@ En España el teléfono de urgencias es el **112** (las guías del NHS dicen 999
 - OMS, IMC en adultos: [WHO, obesity and overweight](https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight) · NICE, cintura/altura: [CG189 (actualización 2022)](https://www.nice.org.uk/guidance/cg189)
 - NHS, fichas de Meds: [tensión alta](https://www.nhs.uk/conditions/high-blood-pressure/) · [estatinas](https://www.nhs.uk/conditions/statins/) · [levotiroxina](https://www.nhs.uk/medicines/levothyroxine/) · [asma](https://www.nhs.uk/conditions/asthma/) · [enfermedad coronaria](https://www.nhs.uk/conditions/coronary-heart-disease/) · [infarto](https://www.nhs.uk/conditions/heart-attack/) · [vitaminas en el embarazo](https://www.nhs.uk/pregnancy/keeping-well/pregnancy-vitamins-and-supplements/)
 - EMA, Ebymect: [ficha y prospecto](https://www.ema.europa.eu/es/documents/product-information/ebymect-epar-product-information_es.pdf) · AHA 2019, omega 3 y triglicéridos: [Circulation](https://www.ahajournals.org/doi/abs/10.1161/CIR.0000000000000709) · Creatina y riñón: [NKF, creatinina](https://www.kidney.org/kidney-topics/creatinine) · [metaanálisis (PubMed)](https://pubmed.ncbi.nlm.nih.gov/41199218/)
+- OMS, actividad física (150 min a la semana): [WHO, physical activity](https://www.who.int/news-room/fact-sheets/detail/physical-activity) · CDC, horas de sueño por edad: [About Sleep](https://www.cdc.gov/sleep/about/index.html)
 - NHS, síndrome de Gilbert: [NHS](https://www.nhs.uk/conditions/gilberts-syndrome/) · StatPearls: [Gilbert Syndrome (NCBI)](https://www.ncbi.nlm.nih.gov/sites/books/NBK470200/)
 - ADA, controles en diabetes: [Health checks for people with diabetes](https://diabetes.org/living-with-diabetes/newly-diagnosed/health-checks-people-with-diabetes) · [Standards of Care 2026, objetivos glucémicos](https://diabetesjournals.org/care/article/49/Supplement_1/S132/163927/6-Glycemic-Goals-Hypoglycemia-and-Hyperglycemic)
