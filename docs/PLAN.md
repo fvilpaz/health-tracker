@@ -52,7 +52,7 @@
 ## ✅ Completado
 
 **29-sep-2026**
-- [x] P0 del 28-sep: aviso de **cetoacidosis** en Ebymect (prospecto de la EMA), sin la dosis de nadie; fuera «omega 3 y vitamina E» del hígado; suplementos: fichas de omega 3 (AHA) y creatina (avisar al médico) y «Evitar"; fuera D3, magnesio, whey y B12 (reglas M7-M9)
+- [x] P0 del 28-sep: aviso de **cetoacidosis** en Ebymect (prospecto de la EMA), sin la dosis de nadie; fuera «omega 3 y vitamina E» del hígado; suplementos: fichas de omega 3 (AHA) y creatina (avisar al médico) y «Evitar»; fuera D3, magnesio, whey y B12 (reglas M7-M9)
 - [x] Barriga (por el ombligo) aparte de la cintura (donde va el cinturón)
 - [x] La app en `src/` y solo eso se publica; `CLAUDE.md` del proyecto
 - [x] Copias automáticas semanales dentro del navegador (las 5 últimas) con «Recuperar»
