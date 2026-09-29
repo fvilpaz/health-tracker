@@ -640,7 +640,7 @@ table.labs td.fuera { color: var(--red); }
 }
 .plan-week-label { font-size: 0.85rem; font-weight: 700; }
 .plan-date { font-size: 0.7rem; color: var(--text-muted); }
-.plan-inputs { display: flex; gap: 10px; }
+.plan-inputs { display: flex; gap: 10px; margin-left: auto; }   /* peso, cintura y barriga siempre juntas */
 .plan-input-group { display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .plan-target { font-size: 0.6rem; color: var(--text-muted); }
 .plan-target span { color: var(--blue); font-weight: 700; }
@@ -649,7 +649,9 @@ table.labs td.fuera { color: var(--red); }
 .plan-real.con-dato { color: var(--text); }
 .plan-real.cumple { border-color: var(--green); color: var(--green); }   /* llegaste al objetivo de esa semana */
 .plan-row-bottom {
+  /* Si las tres medidas no caben al lado de las casillas (móviles pequeños), bajan JUNTAS a la línea de abajo */
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 12px;

@@ -149,3 +149,10 @@ test('empezar otro plan: conserva el historial, empieza hoy y el objetivo sale d
   assert.equal(app.get('objetivoPeso')(), 83);          // el objetivo mira el peso al empezar ESTE plan
   assert.equal(app.get('medidasDelPlan')(S.get('weights'))[0].weight, 90);
 });
+
+test('tracker semanal: la barriga sale con su nombre arriba (no tiene objetivo semanal) y su valor real', () => {
+  const html = crearApp().get('planValor')(null, 108.5, 'cm', 'barriga');
+  assert.match(html, /barriga/);
+  assert.match(html, /108\.5/);
+  assert.doesNotMatch(html, /cumple/);
+});
