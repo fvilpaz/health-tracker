@@ -25,7 +25,7 @@ Tracker semanal integrado con:
 - **Al terminar, aviso «¿empiezas otro?»**: el plan nuevo empieza hoy, conserva todo tu historial y su objetivo sale de tu peso de ese día
 - **Semana 1 = los mismos números con los que empiezas** (objetivo y real, tal cual); los objetivos bajan por igual desde la semana 2 y llegan a tu meta justo en la última. La leyenda (entrenos, peso, cintura, barriga) va encima de cada columna también en el móvil
 - **Objetivos a partir de tus datos**: con sobrepeso, peso inicial − 7 kg (nunca por debajo de IMC 25) y cintura inicial − 9 cm; con peso sano, «Mantenerme» o menores de 18, sin objetivos (nada escrito en el código)
-- **Peso, cintura y barriga reales de cada semana**: salen solos de lo que registras en Progreso (la última medida de esa semana; en verde si llegas al objetivo; la barriga, sin objetivo). Cada semana: arriba el título y las 3 casillas de entreno; abajo peso, cintura y barriga en tercios. La leyenda tiene la misma forma, así cada nombre queda encima de lo suyo en cualquier pantalla (medido de 300 a 430 px y en PC)
+- **Peso, cintura y barriga reales de cada semana**: salen solos de lo que registras en Progreso (la última medida de esa semana; en verde si llegas al objetivo; la barriga, sin objetivo). Cada semana lleva sus etiquetas: arriba el título y «ENTRENOS» encima de sus 3 casillas; abajo PESO, CINTURA y BARRIGA, cada una encima de su recuadro (medido de 300 a 430 px y en PC: nada se descuadra)
 - **Casillas de entrenos** que se rellenan solas con los bloques hechos cada semana
 - **Sincronización automática** con el historial de peso y cintura
 

@@ -77,14 +77,9 @@ function renderPlanTable() {
 
   const currentWeekNum = Math.min(totalWeeks, Math.max(1, semanaDelPlan(start)));
 
-  // Cada semana: arriba «Semana N · fecha» y las 3 casillas a la derecha; abajo peso, cintura y barriga, cada una en
-  // un tercio. Nunca hay que partir nada (antes, en el móvil, las medidas bajaban y la leyenda se descolgaba).
-  // La leyenda repite esa misma forma, así cada nombre queda encima de lo suyo en cualquier pantalla.
-  let html = '<div class="plan-cards"><div class="plan-card plan-leyenda" aria-hidden="true">' +
-    `<div class="plan-week-header"><div class="plan-leyenda-checks">${duo('pesa', 'leyenda-ico')}ENTRENOS</div></div>` +
-    '<div class="plan-row-bottom"><div class="plan-inputs">' +
-    [['balanza', 'PESO'], ['regla', 'CINTURA'], ['regla', 'BARRIGA']].map(([ico, n]) => `<span class="plan-leyenda-medida">${duo(ico, 'leyenda-ico')}${n}</span>`).join('') +
-    '</div></div></div>';
+  // Cada semana lleva sus propias etiquetas: «ENTRENOS» justo encima del 1 2 3 y «PESO», «CINTURA», «BARRIGA» encima
+  // de su recuadro. Así nunca se descuadran (una leyenda aparte se descolgaba en el móvil al partirse la fila).
+  let html = '<div class="plan-cards">';
 
   for (let w = 1; w <= totalWeeks; w++) {
     const weekDate = new Date(start);
@@ -111,20 +106,20 @@ function renderPlanTable() {
     html += `<div class="plan-week-header">`;
     html += `<span class="plan-week-label">Semana ${w}</span>`;
     html += `<span class="plan-date">${dateLabel}</span>`;
-    html += `<div class="plan-checks">`;
+    html += `<div class="plan-checks-caja"><span class="plan-mini">ENTRENOS</span><div class="plan-checks">`;
     [1, 2, 3].forEach((num, i) => {
       html += `<span class="plan-check ${checks[i] ? 'checked' : ''}">${checks[i] ? '✓' : num}</span>`;
     });
-    html += `</div>`;
+    html += `</div></div>`;
     html += `</div>`;
 
     // Abajo: peso, cintura y barriga, cada una en un tercio
     html += `<div class="plan-row-bottom">`;
     html += `<div class="plan-inputs">`;
-    html += planValor(targetWeight, realWeight, 'kg');
-    html += planValor(targetWaist, realWaist, 'cm');
+    html += planValor(targetWeight, realWeight, 'kg', 'PESO');
+    html += planValor(targetWaist, realWaist, 'cm', 'CINTURA');
     // Barriga: sin meta (no hay regla con fuente); solo la semana 1 enseña su valor de partida
-    html += planValor(objetivoDeLaSemana(startBelly, null, totalWeeks, w), realBelly, 'cm');
+    html += planValor(objetivoDeLaSemana(startBelly, null, totalWeeks, w), realBelly, 'cm', 'BARRIGA');
     html += `</div>`;
     html += `</div>`;
 
@@ -158,10 +153,10 @@ function objetivoDeLaSemana(inicio, meta, semanas, w) {
   return inicio - ((inicio - meta) / Math.max(1, semanas - 1)) * (w - 1);
 }
 
-// Objetivo arriba y lo real debajo (verde si llegas al objetivo de esa semana)
-function planValor(objetivo, real, unidad) {
+// Nombre (PESO…), objetivo y lo real debajo (verde si llegas al objetivo de esa semana)
+function planValor(objetivo, real, unidad, nombre) {
   const cumple = real != null && objetivo != null && real <= objetivo;
-  return `<div class="plan-input-group"><span class="plan-target"><span>${objetivo != null ? objetivo.toFixed(1) : '—'}</span> ${unidad}</span>` +
+  return `<div class="plan-input-group">${nombre ? `<span class="plan-mini">${nombre}</span>` : ''}<span class="plan-target"><span>${objetivo != null ? objetivo.toFixed(1) : '—'}</span> ${unidad}</span>` +
     `<span class="plan-real${real != null ? ' con-dato' : ''}${cumple ? ' cumple' : ''}">${real != null ? esc(real) : '—'}</span></div>`;
 }
 

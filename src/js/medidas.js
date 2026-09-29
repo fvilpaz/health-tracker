@@ -87,6 +87,14 @@ document.getElementById('saveBellyBtn').addEventListener('click', () => {
   showToast('Barriga guardada ✓');
 });
 
+// Cintura y barriga juntas por fecha, de la más antigua a la más reciente; null si ese día falta una de las dos
+function medidasPorFecha(waists, bellies) {
+  const dias = new Map();
+  waists.forEach(m => dias.set(m.date, { date: m.date, waist: m.waist, belly: null }));
+  bellies.forEach(m => dias.set(m.date, { ...(dias.get(m.date) || { date: m.date, waist: null }), belly: m.belly }));
+  return [...dias.values()].sort((a, b) => esAIso(a.date).localeCompare(esAIso(b.date)));
+}
+
 function renderWeightLog() {
   const entries = Storage.get('weights', []);
   const container = document.getElementById('weightLog');

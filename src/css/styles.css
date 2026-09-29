@@ -178,7 +178,6 @@ a { color: inherit; text-decoration: none; }
 .ico, .duo { width: 1.15em; height: 1.15em; vertical-align: -0.2em; flex: none; }
 .estado.ok { color: var(--green); } .estado.alerta { color: var(--orange); } .estado.mal { color: var(--red); }
 .estado.info { color: var(--blue); } .estado.racha { color: var(--orange); } .estado.idea, .estado.fiesta { color: var(--yellow); }
-.leyenda-ico { color: var(--blue); }
 .setup-duo { width: 56px; height: 56px; color: var(--blue); }
 .vacio-ico { width: 44px; height: 44px; color: var(--blue); margin-bottom: 8px; }
 .logro-icon .duo { width: 28px; height: 28px; color: var(--blue); }
@@ -631,12 +630,9 @@ table.labs td.fuera { color: var(--red); }
   padding: 12px 14px;
 }
 .plan-card.current { border-color: var(--blue); background: var(--blue-light); }
-/* Leyenda del tracker: la misma forma que cada semana (casillas arriba a la derecha, medidas en tercios abajo) */
-.plan-leyenda { background: transparent; border-color: transparent; padding-top: 0; padding-bottom: 0; }
-.plan-leyenda-checks, .plan-leyenda-medida { display: flex; flex-direction: column; align-items: center; gap: 2px;
-  font-size: 0.58rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.02em; }
-.plan-leyenda-checks { width: 108px; margin-left: auto; }   /* 3 casillas de 32 px + 2 huecos de 6 */
-.plan-leyenda-medida { flex: 1; }
+/* Etiquetas dentro de cada semana: ENTRENOS encima del 1 2 3; PESO, CINTURA y BARRIGA encima de su recuadro */
+.plan-mini { font-size: 0.55rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.04em; }
+.plan-checks-caja { margin-left: auto; display: flex; flex-direction: column; align-items: center; gap: 3px; }   /* a la derecha del título */
 .plan-card.past { opacity: 0.6; }
 .plan-week-header {
   display: flex;
@@ -644,7 +640,6 @@ table.labs td.fuera { color: var(--red); }
   gap: 8px;
   margin-bottom: 10px;
 }
-.plan-week-header .plan-checks { margin-left: auto; }   /* las casillas, a la derecha del título */
 .plan-week-label { font-size: 0.85rem; font-weight: 700; }
 .plan-date { font-size: 0.7rem; color: var(--text-muted); }
 .plan-inputs { display: flex; gap: 10px; width: 100%; }   /* peso, cintura y barriga: un tercio cada una */
