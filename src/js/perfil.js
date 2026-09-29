@@ -204,7 +204,7 @@ async function abrirCuestionario({ nuevo }) {
       const hoy = isoDate(new Date());
       guardarConfiguracion({
         date: $('pfInicio').value || hoy, weeks: $('pfSemanas').value.trim() === '' ? 12 : numero($('pfSemanas').value),
-        weight: numero($('pfPeso').value), waist: numero($('pfCintura').value), height: altura, menor,
+        weight: numero($('pfPeso').value), waist: numero($('pfCintura').value), height: altura, menor, objetivo: perfil.goal,
         belly: $('pfBarriga').value.trim() ? numero($('pfBarriga').value) : undefined,
       });
     } else {

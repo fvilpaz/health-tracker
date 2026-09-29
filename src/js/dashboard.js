@@ -133,16 +133,30 @@ function semaforo(el, valor, naranjaDesde, rojoDesde) {
 }
 
 /* ===== METAS (corto, medio y largo plazo) ===== */
+// El objetivo de peso guardado, solo si tiene sentido: nunca para menores ni si al empezar el peso ya era sano
+// (IMC < 25). Esto último también corrige objetivos ya guardados con la regla vieja («tu peso − 7» para todos).
+function objetivoPeso() {
+  if (esMenor()) return null;
+  const g = Storage.get('settings', {}).goalWeight;
+  if (!g) return null;
+  const w = Storage.get('weights', []), h = getHeightCm();
+  if (w.length && h && w[0].weight / (h / 100) ** 2 < 25) return null;
+  return g;
+}
+
 // Se calculan con el último peso, la altura y el objetivo que pone el usuario: ningún dato escrito en el código.
 // Metas de peso a partir del peso actual, la altura y el objetivo (si lo hay), de la más alta a la más baja.
-// Corto: salir de la obesidad (IMC < 30) · Medio: tu objetivo · Largo: IMC 27. «falta» en kg; «hecho» si ya llegaste.
-function calcularMetas(pesoActual, alturaCm, objetivo) {
+// Corto: salir de la obesidad (IMC < 30) · Medio: tu objetivo · Largo: IMC 27 si hay hígado graso (o no hay perfil,
+// como hasta ahora), IMC 25 si no. Solo las que estaban POR ENCIMA de tu peso al empezar: antes, a alguien con
+// peso sano le salía «sales de la obesidad: conseguido». «falta» en kg; «hecho» si ya llegaste.
+function calcularMetas(pesoActual, alturaCm, objetivo, pesoInicio = pesoActual, higado = true) {
   const m2 = (alturaCm / 100) ** 2;
   return [
     { plazo: 'Corto', peso: 30 * m2, texto: 'Sales de la franja de obesidad (IMC por debajo de 30)' },
     objetivo ? { plazo: 'Medio', peso: objetivo, texto: 'Tu peso objetivo' } : null,
-    { plazo: 'Largo', peso: 27 * m2, texto: 'IMC 27: mucha menos grasa en el hígado y menos riesgo' },
-  ].filter(Boolean).sort((a, b) => b.peso - a.peso).map(mt => {
+    higado ? { plazo: 'Largo', peso: 27 * m2, texto: 'IMC 27: mucha menos grasa en el hígado y menos riesgo' }
+           : { plazo: 'Largo', peso: 25 * m2, texto: 'Peso sano (IMC por debajo de 25)' },
+  ].filter(mt => mt && mt.peso < pesoInicio).sort((a, b) => b.peso - a.peso).map(mt => {
     const falta = pesoActual - mt.peso;
     return { ...mt, falta, hecho: falta < 0 || (mt.plazo === 'Medio' && falta <= 0) };
   });
@@ -163,7 +177,13 @@ function renderMetas() {
     return;
   }
   const m2 = (heightCm / 100) ** 2;
-  const metas = calcularMetas(current, heightCm, Storage.get('settings', {}).goalWeight);
+  const perfil = Storage.get('profile');
+  const higado = !perfil || (perfil.conditions || []).includes('fatty-liver');
+  const metas = calcularMetas(current, heightCm, objetivoPeso(), weights[0].weight, higado);
+  if (!metas.length) {
+    box.innerHTML = `<div class="meta-aviso">Tu peso está en rango sano (IMC ${(current / m2).toFixed(1)}): el objetivo es <strong>mantenerlo</strong>.</div>`;
+    return;
+  }
 
   // eslint-disable-next-line no-unsanitized/property -- textos de las metas del código y números
   box.innerHTML = metas.map(({ falta, hecho, ...mt }) => {

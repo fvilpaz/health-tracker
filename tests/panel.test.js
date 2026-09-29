@@ -25,9 +25,9 @@ test('calcularMetas: corto (IMC 30), medio (objetivo) y largo (IMC 27), de mayor
 });
 
 test('calcularMetas: sin objetivo no hay meta media; lo que ya se ha pasado sale conseguido', () => {
-  const metas = crearApp().get('calcularMetas')(80, 170, null);
+  const metas = crearApp().get('calcularMetas')(80, 170, null, 92);   // empezó en 92: la de IMC 30 sí la ha pasado
   assert.deepEqual(plano(metas.map(m => [m.plazo, m.hecho])), [['Corto', true], ['Largo', false]]);
-  const justo = crearApp().get('calcularMetas')(80, 170, 80);   // el objetivo cuenta al llegar justo
+  const justo = crearApp().get('calcularMetas')(80, 170, 80, 92);   // el objetivo cuenta al llegar justo
   assert.equal(justo.find(m => m.plazo === 'Medio').hecho, true);
 });
 
@@ -93,4 +93,38 @@ test('diferencia (tarjetas «Perdido»): menos si bajas, más si subes, y «--»
   assert.equal(dif(90, 90.5), '+0.5');   // antes salía «-0.5», que se lee como pérdida
   assert.equal(dif(90, 90), '0.0');
   assert.equal(dif(null, 90), '--');
+});
+
+test('metas: solo las que estaban por encima de tu peso al empezar; con peso sano, ninguna', () => {
+  const metas = crearApp().get('calcularMetas');
+  // 65 kg y 1,74 m (IMC 21,5): antes salía «sales de la obesidad: conseguido» y «te faltan 7 kg»
+  assert.deepEqual(plano(metas(65, 174, null, 65)), []);
+  // Empezó en 88 (IMC 29): la de obesidad no aplica; la larga sí
+  assert.deepEqual(plano(metas(88, 174, null, 88).map(m => m.plazo)), ['Largo']);
+});
+
+test('metas: la larga es IMC 27 (hígado) si tiene hígado graso o no hay perfil; si no, IMC 25 (peso sano)', () => {
+  const metas = crearApp().get('calcularMetas');
+  assert.equal(+metas(100, 170, null, 100, true).find(m => m.plazo === 'Largo').peso.toFixed(1), 78);
+  const sano = metas(100, 170, null, 100, false).find(m => m.plazo === 'Largo');
+  assert.ok(Math.abs(sano.peso - 72.25) < 0.01);   // 25 × 1,7²
+  assert.match(sano.texto, /IMC por debajo de 25/);
+});
+
+test('objetivo de peso: solo con sobrepeso al empezar y nunca para menores (vale también para datos ya guardados)', () => {
+  const app = crearApp(), S = app.get('Storage'), obj = app.get('objetivoPeso');
+  S.set('settings', { height: 174, goalWeight: 58 }); S.set('weights', [{ date: '1/9/2026', weight: 65 }]);
+  assert.equal(obj(), null);                                   // IMC 21,5: no se propone bajar
+  S.set('settings', { height: 177, goalWeight: 88.6 }); S.set('weights', [{ date: '1/9/2026', weight: 95.6 }]);
+  assert.equal(obj(), 88.6);                                   // IMC 30,5: sí
+  S.set('profile', { birthDate: '2012-01-01' });
+  assert.equal(obj(), null);                                   // menor
+});
+
+test('configurar: el objetivo nunca baja de IMC 25, y con peso sano o «mantenerme» no hay objetivo', () => {
+  const conf = (datos) => { const app = crearApp(); app.get('guardarConfiguracion')({ date: '2026-09-29', weeks: 12, waist: 80, ...datos }); return app.get('Storage').get('settings').goalWeight; };
+  assert.equal(conf({ weight: 95.6, height: 177 }), 88.6);                       // como hasta ahora
+  assert.equal(+conf({ weight: 80, height: 175 }).toFixed(1), 76.6);             // 80-7=73 bajaría de IMC 25: se queda en 76,6
+  assert.equal(conf({ weight: 65, height: 174 }), undefined);                    // IMC 21,5
+  assert.equal(conf({ weight: 95.6, height: 177, objetivo: 'maintain' }), undefined);
 });
