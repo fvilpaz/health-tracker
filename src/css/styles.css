@@ -631,37 +631,31 @@ table.labs td.fuera { color: var(--red); }
   padding: 12px 14px;
 }
 .plan-card.current { border-color: var(--blue); background: var(--blue-light); }
-/* Leyenda del tracker: mismas medidas que las casillas (3 × 32 px + 2 huecos de 6) y que cada medida (58 px) */
+/* Leyenda del tracker: la misma forma que cada semana (casillas arriba a la derecha, medidas en tercios abajo) */
 .plan-leyenda { background: transparent; border-color: transparent; padding-top: 0; padding-bottom: 0; }
 .plan-leyenda-checks, .plan-leyenda-medida { display: flex; flex-direction: column; align-items: center; gap: 2px;
   font-size: 0.58rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.02em; }
-.plan-leyenda-checks { width: 108px; }
-.plan-leyenda-medida { width: 58px; }
+.plan-leyenda-checks { width: 108px; margin-left: auto; }   /* 3 casillas de 32 px + 2 huecos de 6 */
+.plan-leyenda-medida { flex: 1; }
 .plan-card.past { opacity: 0.6; }
 .plan-week-header {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 8px;
   margin-bottom: 10px;
 }
+.plan-week-header .plan-checks { margin-left: auto; }   /* las casillas, a la derecha del título */
 .plan-week-label { font-size: 0.85rem; font-weight: 700; }
 .plan-date { font-size: 0.7rem; color: var(--text-muted); }
-.plan-inputs { display: flex; gap: 10px; margin-left: auto; }   /* peso, cintura y barriga siempre juntas */
-.plan-input-group { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.plan-inputs { display: flex; gap: 10px; width: 100%; }   /* peso, cintura y barriga: un tercio cada una */
+.plan-input-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .plan-target { font-size: 0.6rem; color: var(--text-muted); }
 .plan-target span { color: var(--blue); font-weight: 700; }
 .plan-real { width: 58px; padding: 6px 4px; border: 1px solid var(--border); border-radius: 8px; text-align: center;
   font-size: 0.8rem; font-weight: 700; color: var(--text-muted); background: var(--surface2); font-variant-numeric: tabular-nums; }
 .plan-real.con-dato { color: var(--text); }
 .plan-real.cumple { border-color: var(--green); color: var(--green); }   /* llegaste al objetivo de esa semana */
-.plan-row-bottom {
-  /* Si las tres medidas no caben al lado de las casillas (móviles pequeños), bajan JUNTAS a la línea de abajo */
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
+.plan-row-bottom { display: flex; }
 .plan-checks { display: flex; gap: 6px; }
 .plan-check {
   width: 32px; height: 32px; border-radius: 50%;
