@@ -324,7 +324,7 @@ table.labs td.fuera { color: var(--red); }
   border-bottom: 2px solid var(--text-muted); transform: translateY(-3px) rotate(45deg); transition: transform .25s; }
 .lab-sec[open] .lab-flecha:before { transform: translateY(2px) rotate(225deg); border-color: var(--blue); }
 .lab-cuerpo { padding: 4px 12px 12px; border-top: 1px solid var(--border); }
-.lab-cuerpo .lab-pdf, .lab-pdf-quitar { display: inline-flex; align-items: center; justify-content: center; margin: 8px 6px 4px 0; padding: 8px 14px; }
+.lab-cuerpo .lab-pdf { display: inline-flex; align-items: center; justify-content: center; margin: 8px 6px 4px 0; padding: 8px 14px; }
 .lab-cuerpo .btn .ico { margin: 0; }
 .lab-fila { padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
 .lab-fila:last-child { border-bottom: none; }

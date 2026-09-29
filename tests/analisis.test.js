@@ -131,3 +131,12 @@ test('leerInforme: laboratorios con punto decimal, con «>» delante y densidad 
   assert.equal(r.valores.filtrado, 90);
   assert.equal(r.valores.densidad_orina, 1035);
 });
+
+test('borrar un análisis quita su fecha y sus valores (y no toca los demás)', async () => {
+  const app = crearApp(), S = app.get('Storage');
+  S.set('labs', [{ date: '2026-01-10', values: { hba1c: 6.1 } }, { date: '2026-09-01', values: { hba1c: 5.9 } }]);
+  assert.equal(await app.get('borrarAnalisis')('2026-01-10'), true);
+  assert.deepEqual(JSON.parse(JSON.stringify(S.get('labs'))), [{ date: '2026-09-01', values: { hba1c: 5.9 } }]);
+  assert.equal(await app.get('borrarAnalisis')('2030-01-01'), false);   // una fecha que no existe no borra nada
+  assert.equal(S.get('labs').length, 1);
+});

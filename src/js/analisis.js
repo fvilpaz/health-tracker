@@ -106,19 +106,19 @@ function renderAnalisis() {
     return `<details class="lab-sec" data-fecha="${esc(l.date)}"${abiertos.has(l.date) ? ' open' : ''}><summary><div class="lab-tit">${duo('semana', 'tit-ico')} ${esc(labFechaLarga(l.date))}` +
       `<small>${pruebas.length} pruebas · ${fuera ? `${estado('alerta')} ${fuera} fuera de rango` : `${estado('ok')} todo en rango`}</small></div><span class="lab-flecha"></span></summary>` +
       `<div class="lab-cuerpo"><button class="btn btn-primary lab-pdf" data-fecha="${esc(l.date)}" title="Adjuntar PDF" aria-label="Adjuntar PDF">${ICONO.adjuntar}</button>` +
-      `<button class="btn btn-red lab-pdf-quitar" data-fecha="${esc(l.date)}" title="Borrar PDF" aria-label="Borrar PDF" hidden>${ICONO.papelera}</button>` +
       pruebas.map(t => {
         const v = l.values[t.k], mal = t.mejor !== 'info' && labFuera(t, v);
         return `<div class="lab-fila ${mal ? 'fuera' : ''}"><div class="lab-fila-top"><span>${estado(t.mejor === 'info' ? 'info' : mal ? 'alerta' : 'ok')} ${t.n}</span>` +
           `<strong>${labNum(v)} <small>${t.u}</small></strong></div>` +
           `<div class="lab-fila-ref">Debería: ${labDebe(t)} ${t.u}</div><div class="lab-fila-que">${LAB_INFO[t.k][0]}</div></div>`;
-      }).join('') + '</div></details>';
+      }).join('') +
+      `<button class="btn btn-full setup-cancel lab-borrar" data-fecha="${esc(l.date)}">${ICONO.papelera} Borrar este análisis</button>` +
+      '</div></details>';
   }).join('');
   pdfFechas().then(fechas => tabla.querySelectorAll('.lab-pdf').forEach(b => {
     if (!fechas.includes(b.dataset.fecha)) return;
     // eslint-disable-next-line no-unsanitized/property -- solo constantes e iconos del propio código
     b.innerHTML = ICONO.pdf; b.title = b.ariaLabel = 'Ver PDF';
-    b.nextElementSibling.hidden = false;   // el botón de quitar solo aparece si hay PDF
   })).catch(() => {});
 
   // Comparativa entre dos análisis (se eligen con los desplegables) y sugerencias
@@ -304,14 +304,27 @@ async function guardarPdfSeguro(fecha, archivo) {
   } catch { return false; }
 }
 
+// Borra un análisis entero: su fecha, sus valores y su PDF. Devuelve si había algo que borrar.
+// Es el único borrado: antes había un «Borrar PDF» que dejaba los valores y no había forma de quitarlos.
+async function borrarAnalisis(fecha) {
+  const labs = Storage.get('labs', []);
+  const quedan = labs.filter(l => l.date !== fecha);
+  if (quedan.length === labs.length) return false;
+  Storage.set('labs', quedan);
+  try { await pdfBorrar(fecha); } catch { /* sin IndexedDB no hay PDF */ }
+  return true;
+}
+
 // Un clic en el botón de una fecha: si tiene PDF lo abre; si no, pide uno para adjuntarlo
 document.getElementById('labsTabla').addEventListener('click', async e => {
-  const quitar = e.target.closest('.lab-pdf-quitar');
-  if (quitar) {
-    if (!confirm(`¿Borrar el PDF del análisis del ${labFecha(quitar.dataset.fecha)}?\n\nLos valores se quedan; solo se borra el archivo.`)) return;
-    await pdfBorrar(quitar.dataset.fecha);
+  const borrar = e.target.closest('.lab-borrar');
+  if (borrar) {
+    if (!confirm(`¿Borrar el análisis del ${labFecha(borrar.dataset.fecha)} entero (valores y PDF)?
+
+Si te equivocas, en Progreso → Copias automáticas puedes volver a una copia anterior.`)) return;
+    await borrarAnalisis(borrar.dataset.fecha);
     renderAnalisis();
-    return showToast('PDF borrado');
+    return showToast('Análisis borrado');
   }
   const btn = e.target.closest('.lab-pdf');
   if (!btn) return;
