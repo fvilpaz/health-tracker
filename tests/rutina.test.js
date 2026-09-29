@@ -55,8 +55,9 @@ test('vueltas según los minutos: 15 → 2, 20 → 3, 30 o más → 4; y la dura
 test('duración de cada fase: se calcula de los ejercicios tal como corre el temporizador (antes, a mano y mal)', () => {
   const app = crearApp(), dur = app.get('duracionFase'), texto = app.get('textoDuracion');
   const w = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'src', 'data', 'workouts.json'), 'utf8'));
-  // Calentamiento: 6 × (40 + 20) = 360 s. Ponía «4 min».
-  assert.equal(dur(w.warmup, w.warmup.exercises), 360);
+  // Calentamiento: 5 × (40 + 20) = 300 s (sin la sentadilla parcial desde el 29-sep). Antes ponía «4 min» a mano.
+  assert.equal(dur(w.warmup, w.warmup.exercises), 300);
+  assert.ok(!w.warmup.exercises.some(e => e.name === 'Sentadilla parcial'));
   // Fuerza: 3 vueltas × 4 × (40 + 20) + 2 descansos de 60 s = 840 s
   assert.equal(dur(w.strength, w.strength.blocks['1'].exercises), 840);
   // Vuelta a la calma: 25 × 4 + 30 = 130 s. Ponía «2 min».
