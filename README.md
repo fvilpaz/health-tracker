@@ -15,7 +15,7 @@ App web personal de salud y seguimiento de progreso. Sin servidor, sin backend, 
 | **Entrenamiento** | Calentamiento → fuerza → calma, con temporizador SVG. La fuerza va en **bloques 1 / 2 / 3** (sin cardio) que rotan solos. Solo cuenta como entreno el bloque de fuerza **completo**; se apunta solo con fecha, minutos y ejercicios |
 | **Nutrición** | Esquema del plato, ideas de comidas, alimentos OK y a evitar |
 | **Meds** | Ebymect, hígado graso, Gilbert, señales de alerta y suplementos (seguros, con precaución y a evitar) |
-| **Progreso** | Registro de peso, cintura, barriga y altura; gráfica de peso; historial editable; exportar e importar copia; **copias automáticas** (una por semana al abrir, las 5 últimas, con «Recuperar») |
+| **Progreso** | Registro de peso, cintura, barriga y altura; gráfica de peso; historial editable; exportar e importar copia; **borrar todos mis datos** (solo los de esta app); **copias automáticas** (una por semana al abrir, las 5 últimas, con «Recuperar») |
 | **Semana** | Objetivo de **3 bloques por semana** (lunes a domingo, los días que quieras): aviso 🟢 vas bien · 🟠 vas justo · 🔴 no llegas o domingo con pendientes; los días con su bloque, qué bloque toca con botón para entrenar, y semanas anteriores en desplegables |
 
 ## Plan de 12 semanas

@@ -182,6 +182,20 @@ function renderCopiasAutomaticas() {
   });
 }
 
+// Borra TODO lo de Health Tracker en este navegador: datos ('ht_…'), copias automáticas y PDF de análisis.
+// Solo lo suyo: en fvilpaz.github.io viven otras apps (nplayer…) que comparten el almacén.
+async function borrarTodosLosDatos() {
+  Object.keys(localStorage).filter(k => k.startsWith('ht_') || k === COPIAS_AUTO).forEach(k => localStorage.removeItem(k));
+  try { for (const fecha of await pdfFechas()) await pdfBorrar(fecha); } catch { /* sin IndexedDB no hay PDF */ }
+}
+
+document.getElementById('borrarTodoBtn')?.addEventListener('click', async () => {
+  if (!confirm('¿Borrar TODOS tus datos de este aparato?\n\nPesos, medidas, entrenos, análisis con sus PDF, logros y copias automáticas.\n\nSi quieres conservarlos, cancela y usa antes «Exportar».')) return;
+  if (!confirm('Última pregunta: esto NO se puede deshacer. ¿Borrar todo?')) return;
+  await borrarTodosLosDatos();
+  location.reload();
+});
+
 /* ===== COPIA DE SEGURIDAD (exportar / importar) ===== */
 // Los datos viven en localStorage de ESTE navegador: la copia permite llevarlos a otro aparato.
 // Formato: cabecera (app, versión, fecha) + todas las claves 'ht_' tal cual (patrón de Crypto_Portafolio).
