@@ -724,6 +724,7 @@ table.labs td.fuera { color: var(--red); }
 .chip input:focus-visible + span { outline: 2px solid var(--blue); outline-offset: 2px; }
 .header-botones { display: flex; gap: 8px; }
 .pf-sub { margin-top: 12px; }
+.meal-todas summary { cursor: pointer; font-size: 0.8rem; font-weight: 600; color: var(--blue); padding: 8px 0; min-height: 44px; display: flex; align-items: center; }
 .pf-riesgo { color: var(--red); }
 .setup-note { font-size: 0.7rem; color: var(--text-muted); margin-top: 16px; line-height: 1.4; }
 .setup-cancel {

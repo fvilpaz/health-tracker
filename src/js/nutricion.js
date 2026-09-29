@@ -12,14 +12,15 @@ function menuDelPerfil(perfil, cat, hoy = new Date()) {
   const noGusta = sinTildes(perfil?.dislikes || '').split(/,|\sy\s/).map(p => p.trim()).filter(p => p.length >= 3);
   const vale = m => !m.contains.some(c => fuera.has(c)) && !noGusta.some(p => sinTildes(m.name).includes(p));
   const dia = Math.floor(hoy.getTime() / 864e5);
-  const comidas = {};
+  const comidas = {}, todas = {};
   for (const momento of Object.keys(cat.slots)) {
     const lista = cat.meals.filter(m => m.slot === momento && vale(m));
+    todas[momento] = lista.map(m => m.name);   // «Ver todas»
     comidas[momento] = [...new Set([0, 1, 2].map(k => lista[(dia + k) % lista.length]?.name).filter(Boolean))];
   }
   const aplica = a => (!a.when && !a.diets) || (a.when && seVe(a.when, perfil)) || (a.diets && (!perfil || a.diets.includes(perfil.diet)));
   return {
-    comidas,
+    comidas, todas,
     ok: cat.good.filter(vale).map(g => g.name),
     limitar: cat.limit.filter(l => !l.when || seVe(l.when, perfil)).map(l => l.name),
     consejos: cat.advice.filter(aplica),
@@ -45,6 +46,15 @@ async function renderNutricion() {
     const ul = el('ul', 'meal-items');
     ul.append(...lista.map(n => el('li', '', n)));
     tarjeta.append(el('div', 'meal-title', catalogoComida.slots[momento]), ul);
+    // «Ver todas»: todas las que valen para este perfil, no solo las 3 de hoy
+    const todas = menu.todas[momento];
+    if (todas.length > lista.length) {
+      const mas = el('details', 'meal-todas');
+      const lista2 = el('ul', 'meal-items');
+      lista2.append(...todas.map(n => el('li', '', n)));
+      mas.append(el('summary', '', `Ver todas (${todas.length})`), lista2);
+      tarjeta.append(mas);
+    }
     return tarjeta;
   }));
   document.getElementById('comidasOk')?.replaceChildren(...menu.ok.map(n => el('div', 'food-tag good', n)));
