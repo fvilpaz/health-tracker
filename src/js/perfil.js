@@ -45,7 +45,7 @@ function limpiarPerfil(p) {
     level: entero(1, 3), days: entero(1, 7), minutes: entero(5, 120),
     diet: v => ['all', 'no-meat', 'vegetarian', 'vegan'].includes(v),
   };
-  const LISTAS = ['conditions', 'medications', 'supplements', 'avoid', 'allergies'];
+  const LISTAS = ['conditions', 'medications', 'supplements', 'avoid', 'focus', 'allergies'];
   for (const [k, v] of Object.entries(p)) {
     if (LISTAS.includes(k)) {
       if (!Array.isArray(v)) { descartados++; continue; }
@@ -155,6 +155,7 @@ async function abrirCuestionario({ nuevo }) {
     { titulo: 'Ejercicio', html: () =>
       grupo('¿Cuánto ejercicio haces ahora?', opciones('pfNivel', cat.levels, p.level, 'radio')) +
       grupo('¿Te molesta algo? (si no, déjalo vacío)', opciones('pfMolestias', cat.pains, p.avoid ?? [])) +
+      grupo('¿Qué quieres trabajar más? (opcional)', opciones('pfZonas', cat.focus, p.focus ?? [])) +
       grupo('¿Cuántos días a la semana puedes?', opciones('pfDias', cat.days, p.days, 'radio')) +
       grupo('¿Cuántos minutos cada día?', opciones('pfMinutos', cat.minutes, p.minutes, 'radio')) },
     { titulo: 'Comida', html: () =>
@@ -222,7 +223,7 @@ async function abrirCuestionario({ nuevo }) {
       }
     }
     if (t === 'Ejercicio') {
-      p.level = Number(elegido('pfNivel')); p.avoid = elegidos('pfMolestias');
+      p.level = Number(elegido('pfNivel')); p.avoid = elegidos('pfMolestias'); p.focus = elegidos('pfZonas');
       p.days = Number(elegido('pfDias')); p.minutes = Number(elegido('pfMinutos'));
       if (!p.level) return 'Elige cuánto ejercicio haces ahora';
       if (!p.days || !p.minutes) return 'Elige días y minutos';
@@ -265,6 +266,8 @@ async function abrirCuestionario({ nuevo }) {
     }
     overlay.remove();
     if (nuevo) initApp(); else { updateDashboard(); aplicarPerfilFichas(); showToast('Perfil guardado ✓'); }
+    // Los bloques salen del perfil: si ya estaban cargados, se rehacen (nivel, molestias, minutos…)
+    if (workoutData) aplicarRutina().then(() => { currentBlock = nextBlock(); renderWorkoutPhase(currentPhase); });
   }
 
   // Sí/no: la lista de debajo solo con «sí»; con un «sí» en seguridad, el aviso de ir al médico

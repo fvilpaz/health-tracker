@@ -2,7 +2,7 @@
 /* ===== SESIONES: bloques de fuerza completados =====
    Storage 'sessions': [{ date: 'AAAA-MM-DD', block: '1' | '2' | '3', minutes, exercises: [nombres] }]
    Solo se guarda un bloque COMPLETO (todas las vueltas). Caminar no se registra (va en consejos). */
-const WEEK_GOAL = 3;   // bloques por semana, de lunes a domingo
+// Bloques por semana (lunes a domingo): objetivoSemana() en rutina.js (los días del perfil; sin perfil, 3)
 
 // Fechas de medidas: «d/m/aaaa» escrito a mano (toLocaleDateString depende del idioma del navegador)
 const fechaEs = d => `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
@@ -47,7 +47,7 @@ const plural = (n, una, varias) => `${n} ${n === 1 ? una : varias}`;
 
 // 🟢 cumplida o vas bien · 🟠 vas justo · 🔴 ya no llegas, o es domingo con bloques pendientes
 function weekStatus(ref = new Date()) {
-  const hechos = sessionsInWeek(ref).length, faltan = Math.max(0, WEEK_GOAL - hechos);
+  const hechos = sessionsInWeek(ref).length, faltan = Math.max(0, objetivoSemana() - hechos);
   const hoyHecho = getSessions().some(s => s.date === isoDate(ref));
   const dias = 7 - (ref.getDay() + 6) % 7 - (hoyHecho ? 1 : 0);   // días que quedan para entrenar (hoy cuenta si aún no has entrenado)
   const b = n => plural(n, 'bloque', 'bloques'), d = n => plural(n, 'día', 'días');
@@ -69,7 +69,7 @@ function renderSemana() {
 
   // eslint-disable-next-line no-unsanitized/property -- lo del almacén o del PDF va por esc()/labNum() o son números; probado con una copia manipulada
   actual.innerHTML =
-    `<div class="semana-cab"><span>${corta(lunes)} – ${corta(dia(lunes, 6))}</span><strong class="semana-cuenta ${est.color}">${est.hechos} / ${WEEK_GOAL}</strong></div>` +
+    `<div class="semana-cab"><span>${corta(lunes)} – ${corta(dia(lunes, 6))}</span><strong class="semana-cuenta ${est.color}">${est.hechos} / ${objetivoSemana()}</strong></div>` +
     `<div class="semana-aviso ${est.color}">${est.texto}</div>` +
     '<div class="semana-dias">' + [0, 1, 2, 3, 4, 5, 6].map(n => {
       const f = isoDate(dia(lunes, n)), delDia = sesiones.filter(s => s.date === f), esHoy = f === isoDate(hoy);
@@ -77,7 +77,7 @@ function renderSemana() {
         `<span class="semana-letra">${'LMXJVSD'[n]}<small>${dia(lunes, n).getDate()}</small></span>` +
         `<span>${delDia.length ? delDia.map(s => estado('ok') + ' ' + etiqueta(s)).join('<br>') : esHoy ? 'hoy' : ''}</span></div>`;
     }).join('') + '</div>' +
-    (est.hechos < WEEK_GOAL ? `<button class="btn btn-green btn-full" id="semanaEntrenar">${ICONO.jugar}Entrenar · toca el Bloque ${nextBlock()}</button>` : '') +
+    (est.hechos < objetivoSemana() ? `<button class="btn btn-green btn-full" id="semanaEntrenar">${ICONO.jugar}Entrenar · toca el Bloque ${nextBlock()}</button>` : '') +
     '<div class="meta-aviso">Consejo: deja un día de descanso entre bloques. Caminar no se apunta aquí (va en los consejos).</div>';
 
   // Semanas anteriores: desde la del primer entreno hasta la pasada, también las que quedaron a cero
@@ -90,9 +90,9 @@ function renderSemana() {
   // eslint-disable-next-line no-unsanitized/property -- lo del almacén o del PDF va por esc()/labNum() o son números; probado con una copia manipulada
   historial.innerHTML = semanas.map(l => {
     const desde = isoDate(l), hasta = isoDate(dia(l, 6)), suyas = pasadas.filter(s => s.date >= desde && s.date <= hasta);
-    const ok = suyas.length >= WEEK_GOAL;
+    const ok = suyas.length >= objetivoSemana();
     return `<details class="lab-sec"><summary><div class="lab-tit">${corta(l)} – ${corta(dia(l, 6))}` +
-      `<small>${suyas.length} / ${WEEK_GOAL} ${ok ? `${estado('ok')} cumplida` : '· no cumplida'}</small></div><span class="lab-flecha"></span></summary>` +
+      `<small>${suyas.length} / ${objetivoSemana()} ${ok ? `${estado('ok')} cumplida` : '· no cumplida'}</small></div><span class="lab-flecha"></span></summary>` +
       '<div class="lab-cuerpo">' + (suyas.length ? suyas.map(s =>
         `<div class="lab-fila"><div class="lab-fila-top"><span>${new Date(s.date + 'T12:00').toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric' })}</span><strong>${etiqueta(s)}</strong></div>` +
         (s.exercises ? `<div class="lab-fila-que">${s.exercises.map(esc).join(' · ')}</div>` : '') + '</div>').join('')
@@ -113,16 +113,16 @@ document.getElementById('semanaActual')?.addEventListener('click', e => {
 function completedWeeks() {
   const porSemana = {};
   getSessions().forEach(s => { const k = isoDate(getWeekStart(new Date(s.date + 'T12:00'))); porSemana[k] = (porSemana[k] || 0) + 1; });
-  return Object.values(porSemana).filter(n => n >= WEEK_GOAL).length;
+  return Object.values(porSemana).filter(n => n >= objetivoSemana()).length;
 }
 
 // Semanas seguidas cumplidas. La actual suma si ya está cumplida; si no, no rompe la racha (aún puedes cumplirla).
 function weekStreak(ref = new Date()) {
   const lunes = getWeekStart(ref), sesiones = getSessions();   // se leen una vez (antes, una por semana: 4 s con 2.000)
-  let racha = sessionsInWeek(lunes, sesiones).length >= WEEK_GOAL ? 1 : 0;
+  let racha = sessionsInWeek(lunes, sesiones).length >= objetivoSemana() ? 1 : 0;
   for (let l = new Date(lunes); ; ) {
     l.setDate(l.getDate() - 7);
-    if (sessionsInWeek(l, sesiones).length < WEEK_GOAL) return racha;
+    if (sessionsInWeek(l, sesiones).length < objetivoSemana()) return racha;
     racha++;
   }
 }

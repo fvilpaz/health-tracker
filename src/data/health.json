@@ -45,6 +45,13 @@
     { "id": "shoulders", "name": "Hombros" },
     { "id": "wrists", "name": "Muñecas" }
   ],
+  "focus": [
+    { "id": "legs", "name": "Piernas y glúteos" },
+    { "id": "core", "name": "Abdomen" },
+    { "id": "push", "name": "Pecho y brazos" },
+    { "id": "pull", "name": "Espalda" },
+    { "id": "cardio", "name": "Cardio" }
+  ],
   "days": [2, 3, 4, 5, 6],
   "minutes": [15, 20, 30, 45],
   "diets": [
