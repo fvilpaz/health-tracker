@@ -502,6 +502,7 @@ table.labs td.fuera { color: var(--red); }
 .med-components { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 8px; }
 .med-tips { list-style: none; display: flex; flex-direction: column; gap: 5px; }
 .med-tips li { font-size: 0.83rem; }
+.med-aire { margin-top: 8px; }   /* separación sobre listas y fuentes dentro de una ficha */
 .med-tips li::before { content: "✓ "; color: var(--green); font-weight: 700; }
 
 .alert-card {
