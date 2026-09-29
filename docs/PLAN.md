@@ -7,8 +7,6 @@
 
 ## 🔲 P1 — Alto impacto / Bajo esfuerzo
 
-- [ ] **Limpieza de estilos de Meds** (29-sep-2026) — 51 `style="font-size:0.83rem"` y 12 listas con el mismo estilo escritos dentro del HTML: pasarlos a clases (`.med-lista`, `.med-fuente`) en `styles.css`. Se ve igual; medir antes y después
-
 - [ ] **Mini hábitos diarios** — Checkboxes diarios: 💧 2L agua · 🚶 6k pasos · 🥗 verduras · 💪 entreno · 😴 7h sueño
 - [ ] **Sonido al cambiar ejercicio** — Beep suave cuando termina un ejercicio (Web Audio API, sin archivos externos)
 
@@ -51,6 +49,7 @@
 ## ✅ Completado
 
 **29-sep-2026**
+- [x] Limpieza de estilos de Meds: 74 estilos escritos en el HTML → 0 (ya estaban en `.med-tips`; nueva `.med-aire`). Medido: 146 elementos, 0 diferencias (con control)
 - [x] Tracker: icono encima del nombre en las 4 etiquetas; todas caben sobre su recuadro (ENTRENOS sobresalía 5 px por lado)
 - [x] Colores por salud (S1, S2): el peso por el IMC de la OMS en 4 colores y la cintura por cintura/altura, en el Panel y en el tracker (antes el tracker ponía verde «llegaste al objetivo» con un IMC de obesidad); ENTRENOS encima de la casilla 1, a la par de PESO
 - [x] Tracker: «ENTRENOS» a la izquierda, casillas tan anchas como los recuadros y cada una encima del suyo, iconos en las etiquetas y más espacio
