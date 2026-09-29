@@ -32,4 +32,4 @@ Estática: HTML + CSS + JS sin compilar, datos en el `localStorage` del navegado
   Comprobar el informe real (`docs/audit-*.txt`): un filtro que no ve la auditoría también diría «verde».
 
 ## Pendiente
-Ver `docs/PLAN.md` y el informe `Desktop\INFORME-health-tracker.md` (decisiones A, B y F; probar el Wake Lock en el móvil).
+Ver `docs/PLAN.md`. Del informe `Desktop\INFORME-health-tracker.md` quedan: decisiones A y B (F hecha el 29-sep) y probar el Wake Lock en el móvil.

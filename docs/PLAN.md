@@ -1,49 +1,43 @@
 # Plan de Mejoras — Health Tracker
 
 > Priorizado por impacto vs esfuerzo. Estado: 🔲 pendiente · ✅ completado
-
----
-
-## 🔲 P0 — Crítico / Inmediato
-
-- [ ] **Verificar todo en local** — Probar todas las secciones, setup, reset, temporizador
-- [ ] **Verificar GitHub Pages** — https://fvilpaz.github.io/health-tracker/ despliega correctamente
+> Las reglas de salud que use cualquier mejora salen de `docs/FUENTES.md` (guía oficial con enlace).
 
 ---
 
 ## 🔲 P1 — Alto impacto / Bajo esfuerzo
 
 - [ ] **Mini hábitos diarios** — Checkboxes diarios: 💧 2L agua · 🚶 6k pasos · 🥗 verduras · 💪 entreno · 😴 7h sueño
-- [ ] **Gráfica de cintura en Progreso** — Igual que la de peso, con Chart.js y línea objetivo
+- [ ] **Gráfica de cintura y barriga en Progreso** — Igual que la de peso, con Chart.js y línea objetivo
 - [ ] **Sonido al cambiar ejercicio** — Beep suave cuando termina un ejercicio (Web Audio API, sin archivos externos)
 - [ ] **Mejorar el tracker semanal** — Scroll horizontal en móvil, mejor legibilidad
+- [ ] **Aviso al acabar el plan** — al terminar las semanas del plan: «¿empiezas otro plan?» (hoy no avisa)
 
 ---
 
 ## 🔲 P2 — Medio impacto / Medio esfuerzo
 
-- [ ] **Historial de cintura en Progreso** — Tabla con entradas de cintura igual que peso
-- [ ] **Fotos de progreso** — Opcional: guardar foto semanal (localStorage con base64, comprimida)
+- [ ] **Fichas de Meds para el resto de enfermedades** — tensión, colesterol, tiroides, asma, corazón y embarazo (hoy solo tienen ficha diabetes, hígado graso, Gilbert y Ebymect). Cada una desde una guía oficial en `docs/FUENTES.md`
+- [ ] **Vídeos elegidos y revisados por ejercicio** — hoy el ▶ busca en YouTube; poner un enlace concreto y en castellano por ejercicio del catálogo
+- [ ] **Historial de cintura y barriga en Progreso** — Tabla con entradas, igual que la de peso
+- [ ] **Fotos de progreso** — Opcional: guardar foto semanal (comprimida)
 - [ ] **Notas por semana** — Campo de texto libre en el tracker para anotar cómo te sientes
-- [ ] **Recordatorio medicación** — Notificación del navegador para tomar Ebymect
 - [ ] **Mejorar logros** — Más logros intermedios (3kg, 7kg, 10cm cintura, etc.)
 - [ ] **Estadísticas** — Media semanal, mejor racha, tendencia (línea de regresión)
-- [ ] **Sección "Mi salud"** — Info personalizada: medicación, hidratación, señales de alerta, consejos pre-entreno
+- [ ] **Copia fuera del móvil a un toque (capa 2)** — si hace >7 días de la última, aviso al abrir: «Guarda tu copia semanal» → menú Compartir → Google Drive. ~30 líneas
 
 ---
 
 ## 🔲 P3 — Bajo impacto / Alto esfuerzo
 
-- [ ] **Copia fuera del móvil a un toque (capa 2)** — si hace >7 días de la última, aviso al abrir: «Guarda tu copia semanal» → menú Compartir → Google Drive. ~30 líneas. (Capa 1, copias automáticas dentro de la app, HECHA 29-sep-2026)
+- [ ] **Progresión del entreno** — cuando vayas suelto, la app sube la dificultad: más segundos o repeticiones, menos descanso, o pasa al ejercicio «harder» del catálogo (y baja al «easier» si cuesta). Por ejemplo, tras X semanas cumplidas o si marcas «me ha resultado fácil» al acabar el bloque
+- [ ] **Dosis y recordatorios de tomas** — como la app Salud de Apple: por cada medicamento, dosis, forma (pastilla, inyección…) y cuándo; aviso a la hora de la toma
+- [ ] **Menú semanal** — hoy hay «Sugerencias del día» según el perfil; generar la semana completa respetando las raciones de la AESAN (legumbres ≥4, pescado ≥3, carne ≤3…)
 - [ ] **Copia automática a Google Drive** — sin tocar nada: permiso con la cuenta de Google, alta en Google Cloud y abrir la CSP a Google. NUNCA a GitHub (repo público; una llave de GitHub en el móvil es un riesgo)
 - [ ] **Sincronizar móvil y PC** — hoy cada aparato tiene sus datos (localStorage) y se pasan con Exportar/Importar. Opciones: un archivo en Drive que lean los dos, o servidor propio (Django + PostgreSQL). Con servidor: datos de salud = categoría especial del RGPD
-- [ ] **Perfiles + cuestionario al crearlo** (29-sep-2026) — catálogo público (enfermedades, medicación, ejercicios con variantes) + perfil en el navegador (datos, enfermedades, medicación, nivel, molestias, días, comida). Meds, nutrición y entreno según el perfil. Menores de 18: sin metas de peso. Inicio: entras con tu perfil directo a la app (hoy «Cancelar» en la configuración no guarda nada y vuelve a salir cada vez); el cuestionario solo al CREAR perfil y al acabar el ciclo, aviso «¿empiezas otro plan?». Pasos: 1a cuestionario + «Mi perfil», un perfil por aparato (HECHO 29-sep-2026) → 2 Meds (fichas según el perfil) y 3 nutrición generada del perfil con docs/FUENTES.md (HECHO 29-sep-2026; falta escribir fichas para tensión, colesterol, tiroides, asma, corazón, embarazo…) → 4 entreno según el perfil (HECHO 29-sep-2026: rutina.js: con perfil, bloques del formulario; sin perfil, los de siempre; catálogo: src/data/exercises.json; se elige de la lista, no texto libre; +50 o principiante: nivel 1 sin saltos; vídeos elegidos y revisados, como enlace; hoy, búsqueda de YouTube)
-- [ ] **Progresión del entreno** (29-sep-2026) — cuando vayas suelto, la app sube la dificultad: más segundos o repeticiones, menos descanso, o pasa al ejercicio «harder» del catálogo (y baja al «easier» si cuesta). Por ejemplo, tras X semanas cumplidas o si marcas «me ha resultado fácil» al acabar el bloque
-- [ ] **Dosis y recordatorios de tomas** (29-sep-2026) — como la app Salud de Apple: por cada medicamento, dosis, forma (pastilla, inyección…) y cuándo; aviso a la hora de la toma
-- [ ] **Idioma inglés** (29-sep-2026) — selector de idioma en «Mi perfil»; todos los textos a diccionarios (es/en), catálogos (ejercicios, comidas, consejos, fichas de Meds, avisos) con su versión en inglés **revisada** (un aviso médico mal traducido es peligroso), fechas y decimales según el idioma. Grande: varios cientos de líneas, por pasos. Hacerlo cuando alguien lo vaya a usar en inglés
-- [ ] **Gráfica de composición** — Peso + cintura + IMC superpuestos
+- [ ] **Idioma inglés** — selector de idioma en «Mi perfil»; todos los textos a diccionarios (es/en), catálogos (ejercicios, comidas, consejos, fichas de Meds, avisos) con su versión en inglés **revisada** (un aviso médico mal traducido es peligroso), fechas y decimales según el idioma. Grande: varios cientos de líneas, por pasos. Hacerlo cuando alguien lo vaya a usar en inglés
 - [ ] **Datos del reloj** — ver pasos, pulso, sueño… de Google Fit / Amazfit (Zepp) en la app. Ojo: Google Fit está cerrando su API (Health Connect en Android la sustituye) y desde una web no se lee Health Connect directamente: revisar opciones (Zepp → Google Fit/Strava, o app Android)
-- [ ] **Plan de nutrición dinámico** — Generar menú semanal basado en preferencias
+- [ ] **Gráfica de composición** — Peso + cintura + IMC superpuestos
 - [ ] **Timer mejorado** — Vibración, modo pantalla completa, countdown audible
 
 ---
@@ -56,32 +50,38 @@
 
 ## ✅ Completado
 
-- [x] index.html con 7 secciones
-- [x] CSS completo con dark mode por defecto
-- [x] JavaScript: storage, timer, charts, workout, app
-- [x] Bottom nav con 7 iconos
-- [x] Dashboard con stats (peso, perdido, entrenos, IMC, cintura, WHtR, racha, logros)
-- [x] Entrenamiento con 4 fases + temporizador SVG
-- [x] Nutrición con esquema del plato e ideas
-- [x] Medicación con señales de alerta
-- [x] Progreso con gráfica Chart.js + historial editable
-- [x] Calendario semanal con checkboxes
-- [x] Suplementos (seguros, precaución, evitar)
+**29-sep-2026**
+- [x] Barriga (por el ombligo) aparte de la cintura (donde va el cinturón)
+- [x] La app en `src/` y solo eso se publica; `CLAUDE.md` del proyecto
+- [x] Copias automáticas semanales dentro del navegador (las 5 últimas) con «Recuperar»
+- [x] Bienvenida: «Soy nuevo» o «Ya tengo mis datos: cargar mi copia»; botón «Borrar todos mis datos»
+- [x] Perfil: cuestionario de 6 pasos y «Mi perfil»; salud al estilo PAR-Q+ (sí/no, suplementos aparte, tres preguntas de seguridad); menores de 18 sin metas de peso
+- [x] Metas y objetivo de peso solo con sobrepeso (nunca por debajo de IMC 25); con peso sano, «mantenerlo»
+- [x] **Fuente de verdad `docs/FUENTES.md`**: reglas de ejercicio (OMS, ACOG, ADA, ACSM, ATS, NICE, PAR-Q+) y comida (AESAN, ADA, EASL, DASH, ESC/EAS, AND, NHS, StatPearls) con enlaces
+- [x] Entreno según el perfil (`rutina.js` + catálogo de 59 ejercicios): nivel, molestias, minutos, zonas; equilibrio a partir de 65; embarazo sin tumbarse; avisos por perfil; objetivo semanal = días del perfil
+- [x] Duración de cada fase calculada de los ejercicios (antes, a mano y mal) y descanso entre vueltas a la vista
+- [x] Meds según el perfil (fichas con `data-si`); Gilbert completado; ficha «Diabetes tipo 2: tus controles»
+- [x] Nutrición según el perfil (`nutricion.js` + `nutrition.json`): dieta, alergias, «lo que no comes», enfermedades; «Sugerencias del día» y «Ver todas las opciones»; «Recomendaciones» con su guía
+
+**28-sep-2026**
+- [x] Auditoría de seguridad, 3 revisores, pruebas automáticas y reorganización del código (informe en el Escritorio)
+- [x] «Mi semana»: 3 bloques por semana con aviso de color, racha de semanas cumplidas, historial
+- [x] Fuerza en bloques 1 / 2 / 3, sin cardio
+- [x] Altura la pone el usuario; fuera los datos personales del código
+- [x] Exportar e importar copia JSON; importar solo análisis los añade sin borrar
+- [x] Pestaña 🎯 Metas: corto / medio / largo plazo calculadas con peso y altura
+- [x] Historial de análisis, lector del PDF del laboratorio, comparativa y PDF adjunto
+- [x] Semáforo 🟢/🟠/🔴 en peso, cintura y cintura/altura
+- [x] Suplementos dentro de Meds (una pestaña menos)
+- [x] PWA: manifest, iconos y service worker; instalable y funciona sin conexión
+
+**8-ago-2026 (primera versión)**
+- [x] index.html con 7 secciones, CSS con tema oscuro por defecto
+- [x] Dashboard, entrenamiento con temporizador SVG, nutrición, medicación, progreso con gráfica e historial
 - [x] Búsqueda de vídeos en YouTube por ejercicio (botón ▶)
-- [x] Registro de cintura + ratio WHtR
-- [x] Tracker semanal de 12 semanas con objetivos dinámicos
-- [x] Setup inicial configurable (fecha, duración, peso, cintura)
-- [x] Botón de reiniciar plan (borra todo y vuelve al setup)
-- [x] Git init + repo público en GitHub
-- [x] Workflow de GitHub Pages (deploy automático)
-- [x] Fuerza en bloques 1 / 2 / 3, sin cardio (28-sep-2026)
-- [x] Altura la pone el usuario; fuera los datos personales del código (28-sep-2026)
-- [x] Exportar e importar copia JSON; importar solo análisis los añade sin borrar (28-sep-2026)
-- [x] Pestaña 🎯 Metas: corto / medio / largo plazo calculadas con peso y altura (28-sep-2026)
-- [x] Historial de análisis, formulario, resumen último vs anterior y PDF oficial adjunto (28-sep-2026)
-- [x] Semáforo 🟢/🟠/🔴 en peso, cintura y cintura/altura (28-sep-2026)
-- [x] Suplementos dentro de Meds (una pestaña menos) (28-sep-2026)
-- [x] PWA: manifest, iconos y service worker; instalable y funciona sin conexión (28-sep-2026)
+- [x] Registro de cintura + ratio cintura/altura; tracker de 12 semanas; setup inicial; reiniciar plan
+- [x] Repo en GitHub y publicación automática en GitHub Pages
+- [x] Verificado en local y en GitHub Pages (se comprueba en cada subida)
 
 ---
 
