@@ -60,8 +60,16 @@ function showSetup() {
       <button class="setup-close" id="setupCloseBtn" aria-label="Cerrar">${ICONO.cerrar}</button>
       <div class="setup-icon">${duo('correr', 'setup-duo')}</div>
       <h2 class="setup-title" id="setupTitulo">Health Tracker</h2>
-      <p class="setup-subtitle">Configura tu plan</p>
+      <p class="setup-subtitle" id="setupSubtitulo">Bienvenido</p>
 
+      <!-- Primero: ¿nuevo o con datos? (antes salía directo el formulario, aunque ya tuvieras tu copia) -->
+      <div id="setupBienvenida">
+        <button class="btn btn-green btn-full" id="setupNuevoBtn">Soy nuevo: configurar mi plan</button>
+        <button class="btn btn-primary btn-full" id="setupCargarBtn" style="margin-top:10px;">Ya tengo mis datos: cargar mi copia</button>
+        <p class="setup-note">La copia es el archivo <strong>.json</strong> que sacaste con «Exportar» en Progreso.</p>
+      </div>
+
+      <div id="setupFormulario" hidden>
       <div class="setup-field">
         <label for="setupDate">¿Cuándo empiezas?</label>
         <input type="date" id="setupDate" value="${dateStr}">
@@ -89,11 +97,21 @@ function showSetup() {
 
       <button class="btn btn-green btn-full" id="setupStartBtn">${ICONO.jugar}Empezar</button>
       <button class="btn btn-full setup-cancel" id="setupCancelBtn">Cancelar, ya lo configuro luego</button>
+      </div>
       <p class="setup-note">Todo se guarda en tu navegador. Nada se envía a ningún servidor.</p>
     </div>
   `;
   document.body.appendChild(overlay);
-  document.getElementById('setupHeight').focus({ preventScroll: true });
+  document.getElementById('setupNuevoBtn').focus({ preventScroll: true });
+
+  document.getElementById('setupNuevoBtn').addEventListener('click', () => {
+    document.getElementById('setupBienvenida').hidden = true;
+    document.getElementById('setupFormulario').hidden = false;
+    document.getElementById('setupSubtitulo').textContent = 'Configura tu plan';
+    document.getElementById('setupHeight').focus({ preventScroll: true });
+  });
+  // Cargar la copia = lo mismo que «Importar» de Progreso (valida el archivo, pregunta y recarga la app)
+  document.getElementById('setupCargarBtn').addEventListener('click', () => document.getElementById('importFile').click());
 
   const closeSetup = () => { overlay.remove(); initApp(); };
 

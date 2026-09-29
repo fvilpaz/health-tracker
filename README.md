@@ -62,7 +62,7 @@ health-tracker/
 │   │   ├── plan.js             ← Plan de 12 semanas (objetivos, lo real de cada semana y casillas)
 │   │   ├── medidas.js          ← Guardar peso, cintura, barriga y altura; historial de peso
 │   │   ├── logros.js           ← Logros
-│   │   └── app.js              ← Arranque, configuración inicial, tema, navegación, avisos e instalación
+│   │   └── app.js              ← Arranque, bienvenida (nuevo o cargar tu copia), configuración inicial, tema, navegación, avisos e instalación
 │   └── data/
 │       ├── workouts.json       ← Los bloques de hoy (calentamiento, Bloque 1/2/3, vuelta a la calma)
 │       └── exercises.json      ← Catálogo de calistenia (58, 24 de preparación militar): zona, nivel 1-3, impacto, molestias, material, versión fácil/difícil. Lo usarán los perfiles
