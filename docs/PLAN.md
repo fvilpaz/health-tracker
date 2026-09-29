@@ -52,7 +52,7 @@
 
 **29-sep-2026**
 - [x] Tracker: semana 1 con los mismos números con los que empiezas (iba una semana adelantada); columna «— cm» en la barriga y leyenda como una fila más, alineada con cada columna también cuando las medidas bajan
-- [x] Tracker semanal con la barriga; casillas en la línea del título y las 3 medidas en tercios debajo (nada se descuelga en el móvil; antes, a ~412 px, las medidas saltaban de línea)
+- [x] Tracker semanal con la barriga; casillas en la línea del título, las 3 medidas en tercios debajo y cada semana con sus etiquetas (ENTRENOS, PESO, CINTURA, BARRIGA) (nada se descuelga en el móvil; antes, a ~412 px, las medidas saltaban de línea)
 - [x] Aviso al acabar el plan con «Empezar otro plan»: conserva el historial, empieza hoy y el objetivo sale del peso de ahora; la tabla y el objetivo usan las medidas de ESTE plan
 - [x] Calentamiento de articulaciones (E13; 8 ejercicios, 5 min 40 s) sin fuerza ni balanceo; en los bloques, el principal de cada zona por orden del catálogo (antes salía «Elevación de talones» como piernas)
 - [x] P0 del 28-sep: aviso de **cetoacidosis** en Ebymect (prospecto de la EMA), sin la dosis de nadie; fuera «omega 3 y vitamina E» del hígado; suplementos: fichas de omega 3 (AHA) y creatina (avisar al médico) y «Evitar»; fuera D3, magnesio, whey y B12 (reglas M7-M9)

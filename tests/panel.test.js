@@ -166,3 +166,15 @@ test('objetivo de cada semana: la 1 es el valor con el que empiezas (tal cual) y
   assert.equal(+obj(95.6, 88.6, 12, 12).toFixed(2), 88.6);    // última semana = meta
   assert.equal(obj(95.6, null, 12, 5), null);                  // sin meta, sin objetivos
 });
+
+test('cintura y barriga por fecha: juntas en un día, ordenadas aunque se apunten desordenadas, y huecos si falta una', () => {
+  const juntar = crearApp().get('medidasPorFecha');
+  const r = JSON.parse(JSON.stringify(juntar(
+    [{ date: '8/10/2026', waist: 99 }, { date: '29/9/2026', waist: 100 }],
+    [{ date: '29/9/2026', belly: 110 }, { date: '1/10/2026', belly: 109 }])));
+  assert.deepEqual(r, [
+    { date: '29/9/2026', waist: 100, belly: 110 },
+    { date: '1/10/2026', waist: null, belly: 109 },
+    { date: '8/10/2026', waist: 99, belly: null },
+  ]);
+});
