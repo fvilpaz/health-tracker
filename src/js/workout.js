@@ -214,7 +214,6 @@ document.querySelectorAll('.phase-tab').forEach(tab => {
   tab.addEventListener('click', () => { if (!workoutActive) renderWorkoutPhase(tab.dataset.phase); });
 });
 
-// Solo los de Bloque 1/2/3: el interruptor «Recomendados / Los de siempre» también usa .block-btn
 document.querySelectorAll('#blockPicker .block-btn').forEach(btn => {
   btn.addEventListener('click', () => { if (workoutActive) return; currentBlock = btn.dataset.block; renderWorkoutPhase('strength'); });
 });
