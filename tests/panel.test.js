@@ -150,11 +150,13 @@ test('empezar otro plan: conserva el historial, empieza hoy y el objetivo sale d
   assert.equal(app.get('medidasDelPlan')(S.get('weights'))[0].weight, 90);
 });
 
-test('tracker semanal: la barriga sale con su nombre arriba (no tiene objetivo semanal) y su valor real', () => {
-  const html = crearApp().get('planValor')(null, 108.5, 'cm', 'barriga');
-  assert.match(html, /barriga/);
-  assert.match(html, /108\.5/);
-  assert.doesNotMatch(html, /cumple/);
+test('tracker semanal: sin objetivo sale «— cm» (la leyenda ya dice qué es) y la semana 1, «inicio» con su unidad', () => {
+  const valor = crearApp().get('planValor');
+  const barriga = valor(null, 108.5, 'cm');
+  assert.match(barriga, /<span>—<\/span> cm/);
+  assert.doesNotMatch(barriga, /barriga|cumple/);
+  assert.match(barriga, /108\.5/);
+  assert.match(valor(null, 95.6, 'kg', 'inicio'), /inicio kg/);
 });
 
 test('objetivo de cada semana: la 1 es el punto de partida (sin objetivo) y la última llega justo a la meta', () => {
