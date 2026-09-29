@@ -1,4 +1,5 @@
 /* eslint-disable security/detect-non-literal-fs-filename -- las pruebas leen archivos del propio repositorio (revisado 29-sep-2026) */
+/* eslint-disable security/detect-object-injection -- claves del propio catálogo (momentos, dietas, alergias) (revisado 29-sep-2026) */
 // Tests de la comida según el perfil (js/nutricion.js + data/nutrition.json). Perfiles inventados.
 const test = require('node:test');
 const assert = require('node:assert/strict');

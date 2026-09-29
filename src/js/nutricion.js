@@ -46,15 +46,14 @@ async function renderNutricion() {
     const ul = el('ul', 'meal-items');
     ul.append(...lista.map(n => el('li', '', n)));
     tarjeta.append(el('div', 'meal-title', catalogoComida.slots[momento]), ul);
-    // «Ver todas»: todas las que valen para este perfil, no solo las 3 de hoy
-    const todas = menu.todas[momento];
-    if (todas.length > lista.length) {
-      const mas = el('details', 'meal-todas');
-      const lista2 = el('ul', 'meal-items');
-      lista2.append(...todas.map(n => el('li', '', n)));
-      mas.append(el('summary', '', `Ver todas (${todas.length})`), lista2);
-      tarjeta.append(mas);
-    }
+    return tarjeta;
+  }));
+  // «Ver todas las opciones»: un solo desplegable debajo, con todas las que valen para este perfil
+  document.getElementById('comidasTodasLista')?.replaceChildren(...Object.entries(menu.todas).map(([momento, lista]) => {
+    const tarjeta = el('div', 'meal-card');
+    const ul = el('ul', 'meal-items');
+    ul.append(...lista.map(n => el('li', '', n)));
+    tarjeta.append(el('div', 'meal-title', `${catalogoComida.slots[momento]} (${lista.length})`), ul);
     return tarjeta;
   }));
   document.getElementById('comidasOk')?.replaceChildren(...menu.ok.map(n => el('div', 'food-tag good', n)));
