@@ -202,7 +202,7 @@
       <div class="card">
         <div class="card-title" role="heading" aria-level="2">Esquema del plato</div>
         <div class="disclaimer">
-          Plato equilibrado<span data-si="c:diabetes2 c:prediabetes m:ebymect m:metformin m:insulin">, pensado para controlar el azúcar</span><span data-si="c:fatty-liver"> y cuidar el hígado</span>. Prioriza alimentos de bajo índice glucémico y grasas saludables.
+          Método del plato (ADA): la mitad verdura, un cuarto proteína y un cuarto hidratos de calidad. Aceite de oliva para cocinar y aliñar.
         </div>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
           <div class="food-tag good">½ verduras y hortalizas</div>
@@ -214,64 +214,24 @@
 
       <div class="card">
         <div class="card-title" role="heading" aria-level="2">Ideas de comidas</div>
-        <div class="meal-card">
-          <div class="meal-title">Desayuno</div>
-          <ul class="meal-items">
-            <li>Tortilla de 2 huevos con espinacas + café sin azúcar</li>
-            <li>Yogur griego natural con nueces y canela</li>
-            <li>Tostada integral con aguacate y tomate</li>
-          </ul>
-        </div>
-        <div class="meal-card">
-          <div class="meal-title">Comida</div>
-          <ul class="meal-items">
-            <li>Pollo a la plancha + ensalada mixta + quinoa</li>
-            <li>Salmón al horno + brócoli + batata</li>
-            <li>Lentejas con verduras (sin chorizo)</li>
-          </ul>
-        </div>
-        <div class="meal-card">
-          <div class="meal-title">Cena</div>
-          <ul class="meal-items">
-            <li>Merluza en papillote + espárragos</li>
-            <li>Crema de calabacín + tortilla francesa</li>
-            <li>Ensalada de atún + huevo duro + aceitunas</li>
-          </ul>
-        </div>
-        <div class="meal-card">
-          <div class="meal-title">Merienda</div>
-          <ul class="meal-items">
-            <li>Puñado de almendras (15-20 unidades)</li>
-            <li>Manzana verde con canela</li>
-            <li>Kéfir natural sin azúcar</li>
-          </ul>
-        </div>
+        <div id="comidasIdeas"></div>
+        <div class="disclaimer">Cambian cada día. Salen según tu dieta y tus alergias (en «Mi perfil»); lee siempre las etiquetas.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" role="heading" aria-level="2">Consejos para ti</div>
+        <div id="comidasConsejos"></div>
+        <div class="disclaimer">De guías oficiales (AESAN, ADA, EASL, DASH, ESC/EAS…). Orientativo: tu médico o dietista manda.</div>
       </div>
 
       <div class="card">
         <div class="card-title" role="heading" aria-level="2">Alimentos OK</div>
-        <div class="food-grid">
-          <div class="food-tag good">Verduras verdes</div>
-          <div class="food-tag good">Pescado azul</div>
-          <div class="food-tag good">Huevos</div>
-          <div class="food-tag good">Legumbres</div>
-          <div class="food-tag good">Frutos secos</div>
-          <div class="food-tag good">Aguacate</div>
-          <div class="food-tag good">Avena integral</div>
-          <div class="food-tag good">Aceite de oliva</div>
-        </div>
+        <div class="food-grid" id="comidasOk"></div>
       </div>
 
       <div class="card">
         <div class="card-title" role="heading" aria-level="2">Limitar / Evitar</div>
-        <div class="food-grid">
-          <div class="food-tag limit">Azúcar refinada</div>
-          <div class="food-tag limit">Harinas blancas</div>
-          <div class="food-tag limit">Refrescos / zumos</div>
-          <div class="food-tag limit">Alcohol</div>
-          <div class="food-tag limit">Ultraprocesados</div>
-          <div class="food-tag limit">Fritos rebozados</div>
-        </div>
+        <div class="food-grid" id="comidasLimitar"></div>
       </div>
     </section>
 
@@ -566,6 +526,7 @@
   <script src="js/logros.js"></script>
   <script src="js/perfil.js"></script>
   <script src="js/rutina.js"></script>
+  <script src="js/nutricion.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

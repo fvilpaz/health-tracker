@@ -9,7 +9,7 @@ const CACHE = PREFIJO + '__VERSION__';
 const ESENCIAL = [
   './', 'index.html', 'manifest.webmanifest', 'css/styles.css', 'data/workouts.json',
   'js/iconos.js', 'js/storage.js', 'js/copia.js', 'js/timer.js', 'js/charts.js', 'js/workout.js', 'js/semana.js',
-  'js/analisis.js', 'js/dashboard.js', 'js/plan.js', 'js/medidas.js', 'js/logros.js', 'js/perfil.js', 'js/rutina.js', 'js/app.js', 'data/health.json', 'data/exercises.json',
+  'js/analisis.js', 'js/dashboard.js', 'js/plan.js', 'js/medidas.js', 'js/logros.js', 'js/perfil.js', 'js/rutina.js', 'js/nutricion.js', 'js/app.js', 'data/health.json', 'data/exercises.json', 'data/nutrition.json',
   'js/tema.js', 'vendor/chart.umd.js', 'vendor/inter/inter-latin-wght-normal.woff2', 'icons/icon-192.png', 'icons/icon-512.png',
 ];
 

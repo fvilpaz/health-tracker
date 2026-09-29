@@ -1,0 +1,105 @@
+{
+  "version": 1,
+  "contains": { "meat": "Carne", "fish": "Pescado", "shellfish": "Marisco", "egg": "Huevo", "dairy": "Lácteos", "gluten": "Gluten", "nuts": "Frutos secos" },
+  "diets": {
+    "all": [],
+    "no-meat": ["meat"],
+    "vegetarian": ["meat", "fish", "shellfish"],
+    "vegan": ["meat", "fish", "shellfish", "egg", "dairy"]
+  },
+  "allergies": { "gluten": ["gluten"], "lactose": ["dairy"], "nuts": ["nuts"], "shellfish": ["shellfish"], "fish": ["fish"], "egg": ["egg"] },
+  "slots": { "breakfast": "Desayuno", "lunch": "Comida", "dinner": "Cena", "snack": "Merienda" },
+  "meals": [
+    { "slot": "breakfast", "name": "Tortilla de 2 huevos con espinacas + café sin azúcar", "contains": ["egg"] },
+    { "slot": "breakfast", "name": "Yogur natural con nueces y canela", "contains": ["dairy", "nuts"] },
+    { "slot": "breakfast", "name": "Tostada integral con aguacate y tomate", "contains": ["gluten"] },
+    { "slot": "breakfast", "name": "Tostada integral con tomate, aceite de oliva y pavo", "contains": ["gluten", "meat"] },
+    { "slot": "breakfast", "name": "Avena con bebida de soja, fresas y semillas de chía", "contains": ["gluten"] },
+    { "slot": "breakfast", "name": "Tostada integral con hummus y tomate", "contains": ["gluten"] },
+    { "slot": "breakfast", "name": "Queso fresco con tomate y aceite de oliva + una pieza de fruta", "contains": ["dairy"] },
+    { "slot": "breakfast", "name": "Revuelto de tofu con espinacas + una pieza de fruta", "contains": [] },
+    { "slot": "breakfast", "name": "Tortitas de maíz con aguacate y tomate", "contains": [] },
+    { "slot": "breakfast", "name": "Una pieza de fruta + un puñado de almendras", "contains": ["nuts"] },
+
+    { "slot": "lunch", "name": "Pollo a la plancha + ensalada mixta + quinoa", "contains": ["meat"] },
+    { "slot": "lunch", "name": "Salmón al horno + brócoli + batata", "contains": ["fish"] },
+    { "slot": "lunch", "name": "Lentejas con verduras", "contains": [] },
+    { "slot": "lunch", "name": "Garbanzos con espinacas", "contains": [] },
+    { "slot": "lunch", "name": "Merluza al horno con patata cocida y ensalada", "contains": ["fish"] },
+    { "slot": "lunch", "name": "Arroz integral salteado con verduras y tofu", "contains": [] },
+    { "slot": "lunch", "name": "Alubias blancas estofadas con verduras", "contains": [] },
+    { "slot": "lunch", "name": "Pavo al horno con verduras asadas + arroz integral", "contains": ["meat"] },
+    { "slot": "lunch", "name": "Pasta integral con tomate, atún y aceitunas", "contains": ["gluten", "fish"] },
+    { "slot": "lunch", "name": "Gambas a la plancha + ensalada + patata cocida", "contains": ["shellfish"] },
+
+    { "slot": "dinner", "name": "Merluza en papillote + espárragos", "contains": ["fish"] },
+    { "slot": "dinner", "name": "Crema de calabacín + tortilla francesa", "contains": ["egg"] },
+    { "slot": "dinner", "name": "Ensalada de atún + huevo duro + aceitunas", "contains": ["fish", "egg"] },
+    { "slot": "dinner", "name": "Crema de verduras + hummus con palitos de zanahoria", "contains": [] },
+    { "slot": "dinner", "name": "Tofu a la plancha + verduras salteadas", "contains": [] },
+    { "slot": "dinner", "name": "Ensalada de lentejas con tomate, pepino y cebolla", "contains": [] },
+    { "slot": "dinner", "name": "Revuelto de champiñones y ajetes + ensalada", "contains": ["egg"] },
+    { "slot": "dinner", "name": "Sardinas a la plancha + pimientos asados", "contains": ["fish"] },
+    { "slot": "dinner", "name": "Pechuga de pollo + calabacín a la plancha", "contains": ["meat"] },
+    { "slot": "dinner", "name": "Queso fresco + ensalada de tomate + pan integral", "contains": ["dairy", "gluten"] },
+
+    { "slot": "snack", "name": "Un puñado de almendras (15-20)", "contains": ["nuts"] },
+    { "slot": "snack", "name": "Manzana con canela", "contains": [] },
+    { "slot": "snack", "name": "Kéfir natural sin azúcar", "contains": ["dairy"] },
+    { "slot": "snack", "name": "Yogur natural sin azúcar", "contains": ["dairy"] },
+    { "slot": "snack", "name": "Palitos de zanahoria con hummus", "contains": [] },
+    { "slot": "snack", "name": "Una pieza de fruta de temporada", "contains": [] },
+    { "slot": "snack", "name": "Yogur de soja natural sin azúcar", "contains": [] },
+    { "slot": "snack", "name": "Tortitas de arroz con crema de cacahuete", "contains": ["nuts"] }
+  ],
+  "good": [
+    { "name": "Verduras y hortalizas", "contains": [] },
+    { "name": "Fruta entera", "contains": [] },
+    { "name": "Legumbres", "contains": [] },
+    { "name": "Cereales integrales", "contains": ["gluten"] },
+    { "name": "Pescado azul", "contains": ["fish"] },
+    { "name": "Huevos", "contains": ["egg"] },
+    { "name": "Aves y conejo", "contains": ["meat"] },
+    { "name": "Yogur y queso fresco sin azúcar", "contains": ["dairy"] },
+    { "name": "Frutos secos sin sal", "contains": ["nuts"] },
+    { "name": "Tofu y tempeh", "contains": [] },
+    { "name": "Bebidas vegetales enriquecidas en calcio", "contains": [] },
+    { "name": "Aceite de oliva", "contains": [] },
+    { "name": "Agua", "contains": [] }
+  ],
+  "limit": [
+    { "name": "Carne roja y procesada (embutidos)", "rule": "A1" },
+    { "name": "Azúcar y bollería", "rule": "A1" },
+    { "name": "Zumos y refrescos", "rule": "A1" },
+    { "name": "Ultraprocesados", "rule": "A1" },
+    { "name": "Alcohol", "rule": "A4", "when": "c:fatty-liver" },
+    { "name": "Sal (sodio por debajo de 2.300 mg al día)", "rule": "A5", "when": "c:hypertension" },
+    { "name": "Grasas trans y saturadas (bollería industrial, manteca)", "rule": "A6", "when": "c:cholesterol" }
+  ],
+  "advice": [
+    { "rule": "A1", "title": "Para todo el mundo (AESAN)", "lines": [
+      "Al día: 3 o más raciones de verdura y 2 o 3 de fruta entera (el zumo no la sustituye).",
+      "A la semana: legumbres 4 o más veces, pescado 3 o más (sobre todo azul), huevos hasta 4 y carne como mucho 3 (mejor ave o conejo).",
+      "Cereales mejor integrales, aceite de oliva para cocinar y aliñar, y agua como bebida." ] },
+    { "rule": "A3", "title": "Diabetes o prediabetes (ADA)", "when": "c:diabetes2 c:prediabetes m:ebymect m:metformin m:insulin", "lines": [
+      "No hay un reparto ideal de hidratos, proteína y grasa: lo que cuenta es la calidad.",
+      "Hidratos con fibra y poco procesados: verdura, fruta entera, legumbres, integrales y lácteos sin azúcar.",
+      "Fuera zumos, refrescos y bollería." ] },
+    { "rule": "A4", "title": "Hígado graso (EASL-EASD-EASO)", "when": "c:fatty-liver", "lines": [
+      "Dieta mediterránea.",
+      "Si hay sobrepeso: perder el 5 % del peso ya baja la grasa del hígado; el 7-10 %, la inflamación; el 10 % o más, la fibrosis.",
+      "Lo mínimo de azúcar añadido y bebidas azucaradas; fruta, 1 a 3 piezas al día.",
+      "Nada de alcohol." ] },
+    { "rule": "A5", "title": "Tensión alta (dieta DASH)", "when": "c:hypertension", "lines": [
+      "Sal: menos de 2.300 mg de sodio al día, y mejor 1.500 (unos 4 g de sal).",
+      "Mucha verdura, fruta, lácteos desnatados e integrales.",
+      "Menos carne roja, dulces, bebidas azucaradas y grasa saturada." ] },
+    { "rule": "A6", "title": "Colesterol alto (ESC/EAS)", "when": "c:cholesterol", "lines": [
+      "Poca grasa saturada y nada de grasas trans.",
+      "Más fibra y más pescado; patrón mediterráneo." ] },
+    { "rule": "A7", "title": "Vegetariano o vegano (Academy of Nutrition and Dietetics)", "diets": ["vegetarian", "vegan"], "lines": [
+      "Bien planificada, es adecuada en todas las etapas de la vida.",
+      "Vigila vitamina B12, vitamina D, omega 3, calcio, hierro y zinc.",
+      "Si eres vegano, la B12 siempre: suplemento o alimentos enriquecidos. Coméntalo con tu médico." ] }
+  ]
+}

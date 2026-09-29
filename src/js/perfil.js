@@ -76,6 +76,7 @@ function aplicarPerfilFichas() {
   const perfil = Storage.get('profile');
   document.querySelectorAll('[data-si]').forEach(el => { el.hidden = !seVe(el.dataset.si, perfil); });
   renderAvisosEntreno();   // rutina.js
+  renderNutricion();       // nutricion.js
   const vacio = document.getElementById('medsVacio');
   if (vacio) vacio.hidden = !perfil || [...document.querySelectorAll('#medicacion [data-si]')].some(el => !el.hidden);
 }
@@ -160,7 +161,7 @@ async function abrirCuestionario({ nuevo }) {
     { titulo: 'Comida', html: () =>
       grupo('¿Cómo comes?', opciones('pfDieta', cat.diets, p.diet, 'radio')) +
       grupo('Alergias o intolerancias', opciones('pfAlergias', cat.allergies, p.allergies ?? [])) +
-      campoTexto('pfNoMeGusta', 'Lo que no te gusta', p.dislikes, 'Ej: brócoli, hígado') },
+      campoTexto('pfNoMeGusta', 'Lo que no comes o no te gusta (se quita de tus ideas)', p.dislikes, 'Ej: queso, chorizo, brócoli') },
   ].filter(paso => nuevo || !paso.soloNuevo);
 
   // eslint-disable-next-line no-unsanitized/property -- constantes del código y del catálogo propio; lo del usuario va con esc()
