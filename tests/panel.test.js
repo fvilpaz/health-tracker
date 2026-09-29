@@ -40,10 +40,20 @@ test('logros: cada uno se desbloquea con su condición y no antes', () => {
           { weights: [{ date: '1/1/2026', weight: 90 }, { date: '8/1/2026', weight: 89 }] }],
     kg5: [{ weights: [{ date: '1/1/2026', weight: 90 }, { date: '8/1/2026', weight: 85.5 }] },
           { weights: [{ date: '1/1/2026', weight: 90 }, { date: '8/1/2026', weight: 85 }] }],
+    kg3: [{ weights: [{ date: '1/1/2026', weight: 90 }, { date: '8/1/2026', weight: 87.5 }] },
+          { weights: [{ date: '1/1/2026', weight: 90 }, { date: '8/1/2026', weight: 87 }] }],
+    kg7: [{ weights: [{ date: '1/1/2026', weight: 90 }, { date: '8/1/2026', weight: 83.5 }] },
+          { weights: [{ date: '1/1/2026', weight: 90 }, { date: '8/1/2026', weight: 83 }] }],
+    kg10: [{ weights: [{ date: '1/1/2026', weight: 90 }, { date: '8/1/2026', weight: 80.5 }] },
+          { weights: [{ date: '1/1/2026', weight: 90 }, { date: '8/1/2026', weight: 80 }] }],
     goal: [{ settings: { goalWeight: 80 }, weights: [{ date: '1/1/2026', weight: 80.5 }] },
            { settings: { goalWeight: 80 }, weights: [{ date: '1/1/2026', weight: 80 }] }],
     waist1: [{ waists: [{ date: '1/1/2026', waist: 100 }, { date: '8/1/2026', waist: 99.5 }] },
              { waists: [{ date: '1/1/2026', waist: 100 }, { date: '8/1/2026', waist: 99 }] }],
+    waist5: [{ waists: [{ date: '1/1/2026', waist: 100 }, { date: '8/1/2026', waist: 95.5 }] },
+             { waists: [{ date: '1/1/2026', waist: 100 }, { date: '8/1/2026', waist: 95 }] }],
+    waist10: [{ waists: [{ date: '1/1/2026', waist: 100 }, { date: '8/1/2026', waist: 90.5 }] },
+             { waists: [{ date: '1/1/2026', waist: 100 }, { date: '8/1/2026', waist: 90 }] }],
     whtr: [{ settings: { height: 170 }, waists: [{ date: '1/1/2026', waist: 85 }] },          // 0,50: todavía no
            { settings: { height: 170 }, waists: [{ date: '1/1/2026', waist: 84 }] }],         // 0,49
   };
