@@ -28,6 +28,8 @@ Estática: HTML + CSS + JS sin compilar, datos en el `localStorage` del navegado
   Nando da permiso para subir en este proyecto. No hacer dos subidas seguidas sin esperar a que acabe la publicación.
 - Cambio de funcionalidad → README al día en el mismo cambio. Una prueba nueva debe fallar con el código viejo (control).
 - Auditoría de seguridad: `audit` (nando-toolkit, en WSL); sus informes `docs/audit-*` no se suben.
+  **Se pasa antes de CADA subida y, si no sale todo ✅, no se sube** (el 29-sep se subió dos veces sin mirarla).
+  Comprobar el informe real (`docs/audit-*.txt`): un filtro que no ve la auditoría también diría «verde».
 
 ## Pendiente
 Ver `docs/PLAN.md` y el informe `Desktop\INFORME-health-tracker.md` (decisiones A, B y F; probar el Wake Lock en el móvil).
