@@ -71,3 +71,12 @@ test('«Lo que no te gusta» quita de TUS ideas lo que lleve esas palabras (sin 
   assert.ok(Object.values(plano(todas).comidas).flat().some(conQueso), 'sin «no me gusta», el queso sigue saliendo');
   assert.ok(Object.values(yo.comidas).every(l => l.length >= 2));
 });
+
+test('«Ver todas»: por cada comida, todas las que valen (con las 3 de hoy dentro) y respetando el perfil', () => {
+  const m = menu({ diet: 'vegan', allergies: ['nuts'] });
+  for (const [momento, hoyLista] of Object.entries(m.comidas)) {
+    const validas = cat.meals.filter(x => x.slot === momento && !x.contains.some(c => ['meat', 'fish', 'shellfish', 'egg', 'dairy', 'nuts'].includes(c))).map(x => x.name);
+    assert.deepEqual(m.todas[momento], validas, momento);
+    assert.ok(hoyLista.every(n => m.todas[momento].includes(n)), momento);
+  }
+});
