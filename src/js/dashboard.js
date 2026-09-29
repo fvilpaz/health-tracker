@@ -115,6 +115,9 @@ function updateDashboard() {
   }
   semaforo(whtrEl, whtrNum, 0.5, 0.6);   // la raya de la tarjeta, del mismo color que el número
 
+  // Plan terminado: aviso con «Empezar otro plan»
+  const aviso = document.getElementById('avisoPlan');
+  if (aviso) aviso.hidden = !planTerminado();
   renderMetas();
   renderAnalisis();
   renderSemana();
@@ -140,7 +143,8 @@ function objetivoPeso() {
   const g = Storage.get('settings', {}).goalWeight;
   if (!g) return null;
   const w = Storage.get('weights', []), h = getHeightCm();
-  if (w.length && h && w[0].weight / (h / 100) ** 2 < 25) return null;
+  const w0 = medidasDelPlan(w)[0];   // el peso al empezar ESTE plan
+  if (w0 && h && w0.weight / (h / 100) ** 2 < 25) return null;
   return g;
 }
 

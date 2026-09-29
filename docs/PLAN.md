@@ -11,7 +11,6 @@
 - [ ] **Gráfica de cintura y barriga en Progreso** — Igual que la de peso, con Chart.js y línea objetivo
 - [ ] **Sonido al cambiar ejercicio** — Beep suave cuando termina un ejercicio (Web Audio API, sin archivos externos)
 - [ ] **Mejorar el tracker semanal** — Scroll horizontal en móvil, mejor legibilidad
-- [ ] **Aviso al acabar el plan** — al terminar las semanas del plan: «¿empiezas otro plan?» (hoy no avisa)
 
 ---
 
@@ -25,7 +24,7 @@
 - [ ] **Notas por semana** — Campo de texto libre en el tracker para anotar cómo te sientes
 - [ ] **Mejorar logros** — Más logros intermedios (3kg, 7kg, 10cm cintura, etc.)
 - [ ] **Estadísticas** — Media semanal, mejor racha, tendencia (línea de regresión)
-- [ ] **Copia fuera del móvil a un toque (capa 2)** — si hace >7 días de la última, aviso al abrir: «Guarda tu copia semanal» → menú Compartir → Google Drive. ~30 líneas
+- [ ] **Copia fuera del móvil a un toque (capa 2)** (Nando, 29-sep: de momento no, le gusta como funciona) — si hace >7 días de la última, aviso al abrir: «Guarda tu copia semanal» → menú Compartir → Google Drive. ~30 líneas
 
 ---
 
@@ -53,6 +52,7 @@
 ## ✅ Completado
 
 **29-sep-2026**
+- [x] Aviso al acabar el plan con «Empezar otro plan»: conserva el historial, empieza hoy y el objetivo sale del peso de ahora; la tabla y el objetivo usan las medidas de ESTE plan
 - [x] Calentamiento de articulaciones (E13) y fuera la fuerza del calentamiento; en los bloques, el principal de cada zona por orden del catálogo (antes salía «Elevación de talones» como piernas)
 - [x] P0 del 28-sep: aviso de **cetoacidosis** en Ebymect (prospecto de la EMA), sin la dosis de nadie; fuera «omega 3 y vitamina E» del hígado; suplementos: fichas de omega 3 (AHA) y creatina (avisar al médico) y «Evitar»; fuera D3, magnesio, whey y B12 (reglas M7-M9)
 - [x] Barriga (por el ombligo) aparte de la cintura (donde va el cinturón)

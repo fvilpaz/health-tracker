@@ -42,11 +42,16 @@ function initApp() {
 // si habías apuntado pesos sin configurar el plan, al configurarlo se perdían todos menos uno.
 // Objetivo de peso: 7 kg menos, pero nunca por debajo de IMC 25; y solo con sobrepeso (IMC ≥ 25), si no se ha
 // elegido «mantenerme» y si no es menor de 18 (eso lo lleva el pediatra). La barriga, solo si se da.
+function objetivoInicial(weight, height, { menor = false, objetivo } = {}) {
+  const m2 = (height / 100) ** 2;
+  if (menor || objetivo === 'maintain' || weight / m2 < 25) return null;
+  return Math.max(50, weight - 7, +(25 * m2).toFixed(1));
+}
+
 function guardarConfiguracion({ date, weeks, weight, waist, height, belly, menor = false, objetivo }) {
   const dia = new Date(date + 'T00:00:00'), fecha = fechaEs(dia);
-  const m2 = (height / 100) ** 2;
-  const settings = { ...Storage.get('settings', {}), startDate: date, totalWeeks: weeks, goalWeight: Math.max(50, weight - 7, +(25 * m2).toFixed(1)), height };
-  if (menor || objetivo === 'maintain' || weight / m2 < 25) delete settings.goalWeight;
+  const settings = { ...Storage.get('settings', {}), startDate: date, totalWeeks: weeks, goalWeight: objetivoInicial(weight, height, { menor, objetivo }), height };
+  if (settings.goalWeight == null) delete settings.goalWeight;
   Storage.set('settings', settings);
   Storage.set('weights', anotarMedida(Storage.get('weights', []), 'weight', weight, fecha));
   Storage.set('waists', anotarMedida(Storage.get('waists', []), 'waist', waist, fecha));
