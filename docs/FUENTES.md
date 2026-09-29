@@ -40,6 +40,13 @@
 | **A9** | Síndrome de Gilbert | **Guía (NHS):** no necesita tratamiento ni dieta especial; puede desencadenarse por **pasarse con el ejercicio, dormir poco, alcohol o beber poco líquido**; avisar antes de un medicamento nuevo. **StatPearls (NCBI):** también **ayuno**, enfermedades, menstruación y deshidratación. El estrés lo recogía la ficha original de Nando (no aparece en estas dos fuentes; se deja). | Ficha de Meds (completada el 29-sep-2026 con lo de las dos fuentes, sin quitar nada). |
 | **A10** | Diabetes tipo 2: controles | **Guía (ADA):** HbA1c cada 6 meses si está en objetivo, cada 3 si no o si cambia la medicación; objetivo individual (en torno al 7 % para muchos adultos); tensión y peso en cada consulta; fondo de ojo al diagnóstico y cada 1–2 años; riñón (albúmina en orina y filtrado) una vez al año; colesterol anual a partir de 40 años si está estable. | Ficha «Diabetes tipo 2: tus controles» en Meds. |
 
+## Colores (semáforo)
+
+| Código | Medida | Qué dice | Cómo lo aplica la app |
+|---|---|---|---|
+| **S1** | Peso (IMC) | **Guía (OMS, clasificación del IMC en adultos):** < 18,5 bajo peso · 18,5–24,9 normal · 25–29,9 sobrepeso (preobesidad) · 30–34,9 obesidad grado I · ≥ 35 obesidad grado II o más. | Bajo peso 🟡 · normal 🟢 · sobrepeso 🟡 · obesidad I 🟠 · obesidad II+ 🔴 (Panel y tracker). |
+| **S2** | Cintura / altura | **Guía (NICE):** por debajo de 0,5 sano; de 0,5 a 0,59, riesgo aumentado; 0,6 o más, riesgo alto. | 🟢 < 0,5 · 🟠 0,5–0,59 · 🔴 ≥ 0,6. La barriga no tiene corte oficial: sin color. |
+
 ## Fichas de Meds
 
 | Código | Perfil | Qué dice (guía) | Ficha |
@@ -73,6 +80,7 @@ En España el teléfono de urgencias es el **112** (las guías del NHS dicen 999
 - NHLBI, dieta DASH: [DASH Eating Plan](https://www.nhlbi.nih.gov/health/dash-eating-plan)
 - ESC/EAS 2019, dislipemias: [guía](https://www.escardio.org/guidelines/clinical-practice-guidelines/all-esc-practice-guidelines/dyslipidaemias-management/) · [10 puntos (ACC)](https://www.acc.org/Latest-in-Cardiology/ten-points-to-remember/2019/09/12/15/13/2019-ESC-EAS-Guidelines-for-Dyslipidaemias)
 - Academy of Nutrition and Dietetics, dietas vegetarianas: [posición (PubMed)](https://pubmed.ncbi.nlm.nih.gov/27886704) · [actualización 2025](https://www.jandonline.org/article/S2212-2672(25)00042-5/abstract)
+- OMS, IMC en adultos: [WHO, obesity and overweight](https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight) · NICE, cintura/altura: [CG189 (actualización 2022)](https://www.nice.org.uk/guidance/cg189)
 - NHS, fichas de Meds: [tensión alta](https://www.nhs.uk/conditions/high-blood-pressure/) · [estatinas](https://www.nhs.uk/conditions/statins/) · [levotiroxina](https://www.nhs.uk/medicines/levothyroxine/) · [asma](https://www.nhs.uk/conditions/asthma/) · [enfermedad coronaria](https://www.nhs.uk/conditions/coronary-heart-disease/) · [infarto](https://www.nhs.uk/conditions/heart-attack/) · [vitaminas en el embarazo](https://www.nhs.uk/pregnancy/keeping-well/pregnancy-vitamins-and-supplements/)
 - EMA, Ebymect: [ficha y prospecto](https://www.ema.europa.eu/es/documents/product-information/ebymect-epar-product-information_es.pdf) · AHA 2019, omega 3 y triglicéridos: [Circulation](https://www.ahajournals.org/doi/abs/10.1161/CIR.0000000000000709) · Creatina y riñón: [NKF, creatinina](https://www.kidney.org/kidney-topics/creatinine) · [metaanálisis (PubMed)](https://pubmed.ncbi.nlm.nih.gov/41199218/)
 - NHS, síndrome de Gilbert: [NHS](https://www.nhs.uk/conditions/gilberts-syndrome/) · StatPearls: [Gilbert Syndrome (NCBI)](https://www.ncbi.nlm.nih.gov/sites/books/NBK470200/)

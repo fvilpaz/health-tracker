@@ -635,7 +635,8 @@ table.labs td.fuera { color: var(--red); }
 .plan-mini { display: inline-flex; align-items: center; gap: 4px; font-size: 0.55rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.04em; }
 .mini-ico { width: 12px; height: 12px; color: var(--blue); }
 /* Entrenos: la etiqueta y debajo las 3 casillas, cada una en su tercio (alineadas con los recuadros de abajo) */
-.plan-entrenos { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; margin-bottom: 14px; }   /* etiqueta a la izquierda */
+.plan-entrenos { margin-bottom: 14px; }
+.plan-mini-hueco { visibility: hidden; }   /* mismo alto que «ENTRENOS» en las casillas 2 y 3: todo queda en línea */
 .plan-entrenos .plan-check { width: 58px; border-radius: 8px; }   /* tan anchas como los recuadros de peso, cintura y barriga */
 .plan-card.past { opacity: 0.6; }
 .plan-week-header {
@@ -653,7 +654,11 @@ table.labs td.fuera { color: var(--red); }
 .plan-real { width: 58px; padding: 6px 4px; border: 1px solid var(--border); border-radius: 8px; text-align: center;
   font-size: 0.8rem; font-weight: 700; color: var(--text-muted); background: var(--surface2); font-variant-numeric: tabular-nums; }
 .plan-real.con-dato { color: var(--text); }
-.plan-real.cumple { border-color: var(--green); color: var(--green); }   /* llegaste al objetivo de esa semana */
+/* Cómo estás: peso por el IMC (OMS) y cintura por cintura/altura (docs/FUENTES.md, S1) */
+.plan-real.sem-verde { border-color: var(--green); color: var(--green); }
+.plan-real.sem-amarillo { border-color: var(--yellow); color: var(--yellow); }
+.plan-real.sem-naranja { border-color: var(--orange); color: var(--orange); }
+.plan-real.sem-rojo { border-color: var(--red); color: var(--red); }
 .plan-row-bottom { display: flex; }
 .plan-checks { display: flex; gap: 6px; }
 .plan-check {

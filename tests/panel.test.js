@@ -178,3 +178,21 @@ test('cintura y barriga por fecha: juntas en un día, ordenadas aunque se apunte
     { date: '8/10/2026', waist: 99, belly: null },
   ]);
 });
+
+test('color del peso por el IMC (OMS): bajo peso amarillo, normal verde, sobrepeso amarillo, obesidad I naranja, II+ rojo', () => {
+  const c = crearApp().get('colorImc');
+  assert.equal(c(17), 'var(--yellow)');     // bajo peso (< 18,5)
+  assert.equal(c(22), 'var(--green)');
+  assert.equal(c(27), 'var(--yellow)');     // sobrepeso
+  assert.equal(c(30.5), 'var(--orange)');   // obesidad grado 1: NO verde
+  assert.equal(c(36), 'var(--red)');
+  assert.equal(c(null), '');
+});
+
+test('tracker: el color de cada caja dice cómo estás (no si llegaste al objetivo de la semana)', () => {
+  const valor = crearApp().get('planValor');
+  const peso = valor(95.6, 95.6, 'kg', 'PESO', 'balanza', 'var(--orange)');
+  assert.match(peso, /sem-naranja/);
+  assert.doesNotMatch(peso, /cumple/);
+  assert.doesNotMatch(valor(null, 110, 'cm', 'BARRIGA', 'regla', ''), /sem-/);   // barriga: sin color
+});
