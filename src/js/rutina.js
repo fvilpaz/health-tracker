@@ -1,6 +1,6 @@
 /* eslint-disable security/detect-object-injection -- las claves son nombres del propio código (zonas, bloques) (revisado 29-sep-2026) */
 /* Rutina según el perfil: arma los 3 bloques de fuerza con el catálogo data/exercises.json y el objetivo de
-   bloques por semana. Sin perfil, o con «Los de siempre», se usan los bloques de data/workouts.json. */
+   bloques por semana. Sin perfil se usan los bloques de data/workouts.json. */
 
 // Bloques por semana: los días que la persona dijo en su perfil; sin perfil, 3 (lo de siempre)
 function objetivoSemana() {
@@ -57,7 +57,7 @@ function armarBloques(perfil, catalogo, hoy = new Date()) {
   return { duration: Math.round(seg / 60), rounds, rest_between_rounds: restBetween, blocks };
 }
 
-/* ===== «Recomendados» o «Los de siempre» ===== */
+/* ===== Bloques del perfil (o los de siempre si no hay perfil) ===== */
 let catalogoEjercicios = null;
 async function cargarCatalogoEjercicios() {
   if (!catalogoEjercicios) {
@@ -74,22 +74,9 @@ async function aplicarRutina() {
   if (!workoutData || workoutActive) return;
   if (!workoutData.strengthClassic) workoutData.strengthClassic = workoutData.strength;
   const perfil = Storage.get('profile');
-  const recomendados = perfil && Storage.get('trainingMode', 'recommended') !== 'classic';
   try {
-    workoutData.strength = recomendados ? armarBloques(perfil, await cargarCatalogoEjercicios()) : workoutData.strengthClassic;
+    workoutData.strength = perfil ? armarBloques(perfil, await cargarCatalogoEjercicios()) : workoutData.strengthClassic;
   } catch {
     workoutData.strength = workoutData.strengthClassic;   // sin catálogo (sin conexión la primera vez): los de siempre
   }
-  const selector = document.getElementById('rutinaModo');
-  if (selector) {
-    selector.hidden = !perfil;
-    selector.querySelectorAll('button').forEach(b => b.classList.toggle('active', (b.dataset.modo === 'classic') !== !!recomendados));
-  }
 }
-
-document.querySelectorAll('#rutinaModo button').forEach(b => b.addEventListener('click', async () => {
-  if (workoutActive) return showToast('Termina o para el entreno antes de cambiar los bloques');
-  Storage.set('trainingMode', b.dataset.modo);
-  await aplicarRutina();
-  renderWorkoutPhase(currentPhase);
-}));

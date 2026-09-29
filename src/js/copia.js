@@ -39,7 +39,7 @@ function limpiarCopia(entrada) {
   // porque vienen en cualquier copia hecha antes del 28-sep-2026.
   const obsoleta = clave => clave === 'streak' || clave.startsWith('calendar_');
   for (const clave of Object.keys(entrada)) {
-    if (!['settings', 'startDate', 'weights', 'waists', 'bellies', 'sessions', 'labs', 'plan', 'logros', 'theme', 'trainings', 'profile', 'trainingMode'].includes(clave) && !obsoleta(clave)) descartados++;
+    if (!['settings', 'startDate', 'weights', 'waists', 'bellies', 'sessions', 'labs', 'plan', 'logros', 'theme', 'trainings', 'profile'].includes(clave) && !obsoleta(clave)) descartados++;
   }
 
   const s = entrada.settings;
@@ -59,7 +59,6 @@ function limpiarCopia(entrada) {
     datos.profile = r.perfil;
     descartados += r.descartados;
   }
-  if (entrada.trainingMode !== undefined) { if (['recommended', 'classic'].includes(entrada.trainingMode)) datos.trainingMode = entrada.trainingMode; else descartados++; }
   if (entrada.theme !== undefined) { if (['dark', 'light'].includes(entrada.theme)) datos.theme = entrada.theme; else descartados++; }
 
   lista('weights', e => e && esFechaEs(e.date) && enRango('weight', e.weight) ? { date: e.date, weight: e.weight } : null);
