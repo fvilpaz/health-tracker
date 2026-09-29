@@ -23,6 +23,7 @@ function initApp() {
   aplicarPerfilFichas();   // Meds y Nutrición según el perfil (perfil.js)
   updateDashboard();   // ya pinta también el plan (antes se pintaba dos veces al abrir)
   renderWeightLog();
+  renderMedidasLog();
   checkLogros();
   copiaAutomatica();   // una por semana, al abrir (ver copia.js)
   renderCopiasAutomaticas();
@@ -108,6 +109,7 @@ function applyTheme(theme) {
     const entries = Storage.get('weights', []);
     if (entries.length) renderWeightChart(entries);
   }
+  if (typeof medidasChart !== 'undefined' && medidasChart) renderMedidasChart();   // colores del tema nuevo
 }
 
 document.getElementById('themeBtn').addEventListener('click', () => {
@@ -130,6 +132,8 @@ function initNav() {
         const entries = Storage.get('weights', []);
         renderWeightChart(entries);
         renderWeightLog();
+        renderMedidasChart();   // la gráfica solo se dibuja bien con la pestaña a la vista
+        renderMedidasLog();
       }
     });
   });

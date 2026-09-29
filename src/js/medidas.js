@@ -72,6 +72,8 @@ document.getElementById('saveWaistBtn').addEventListener('click', () => {
   Storage.set('waists', waists);
   input.value = '';
   updateDashboard();
+  renderMedidasLog();           // el historial y la gráfica de cintura y barriga también
+  renderMedidasChart();
   checkLogros();
   showToast('Cintura guardada ✓');
 });
@@ -84,6 +86,8 @@ document.getElementById('saveBellyBtn').addEventListener('click', () => {
   Storage.set('bellies', anotarMedida(Storage.get('bellies', []), 'belly', val, fechaEs(new Date())));
   input.value = '';
   updateDashboard();
+  renderMedidasLog();
+  renderMedidasChart();
   showToast('Barriga guardada ✓');
 });
 
@@ -93,6 +97,38 @@ function medidasPorFecha(waists, bellies) {
   waists.forEach(m => dias.set(m.date, { date: m.date, waist: m.waist, belly: null }));
   bellies.forEach(m => dias.set(m.date, { ...(dias.get(m.date) || { date: m.date, waist: null }), belly: m.belly }));
   return [...dias.values()].sort((a, b) => esAIso(a.date).localeCompare(esAIso(b.date)));
+}
+
+// Historial de cintura y barriga: una fila por día, la más reciente arriba; borrar quita las dos medidas de ese día
+function renderMedidasLog() {
+  const caja = document.getElementById('medidasLog');
+  if (!caja) return;
+  const filas = medidasPorFecha(Storage.get('waists', []), Storage.get('bellies', [])).reverse();
+  if (!filas.length) {
+    // eslint-disable-next-line no-unsanitized/property -- solo constantes e iconos del propio código
+    caja.innerHTML = '<div class="empty-state">' + duo('regla', 'vacio-ico') + '<div>Aún no hay registros de cintura ni barriga</div></div>';
+    return;
+  }
+  const el = (tag, clase, texto) => { const e = document.createElement(tag); e.className = clase; e.textContent = texto; return e; };
+  caja.replaceChildren(...filas.map(f => {
+    const fila = el('div', 'weight-entry', '');
+    const borrar = el('button', 'w-del', '');
+    // eslint-disable-next-line no-unsanitized/property -- solo el icono del propio código
+    borrar.innerHTML = ICONO.cerrar;
+    borrar.title = borrar.ariaLabel = 'Eliminar';
+    borrar.addEventListener('click', () => {
+      if (!confirm(`¿Borrar la cintura y la barriga del ${f.date}?`)) return;
+      Storage.set('waists', Storage.get('waists', []).filter(m => m.date !== f.date));
+      Storage.set('bellies', Storage.get('bellies', []).filter(m => m.date !== f.date));
+      renderMedidasLog();
+      renderMedidasChart();
+      updateDashboard();
+    });
+    fila.append(el('span', 'w-date', f.date),
+      el('span', 'w-value', f.waist != null ? `cintura ${f.waist} cm` : 'cintura —'),
+      el('span', 'w-value', f.belly != null ? `barriga ${f.belly} cm` : 'barriga —'), borrar);
+    return fila;
+  }));
 }
 
 function renderWeightLog() {
