@@ -10,6 +10,7 @@
 }
 
 /* ===== VARIABLES ===== */
+[hidden] { display: none !important; }   /* fichas ocultas por el perfil (y el resto de «hidden») */
 /* Los controles del sistema (calendario, desplegables, barras) siguen el tema */
 :root { color-scheme: light; }
 [data-theme="dark"] { color-scheme: dark; }

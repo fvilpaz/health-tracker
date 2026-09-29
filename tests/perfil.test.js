@@ -84,3 +84,21 @@ test('catálogo de salud: ids únicos y las molestias son las mismas que usa el 
   }
   assert.deepEqual(h.pains.map(p => p.id).sort(), Object.keys(ex.avoid).sort());
 });
+
+test('fichas de Meds y Nutrición: sin perfil se ve todo (como antes); con perfil, solo lo que casa', () => {
+  const seVe = crearApp().get('seVe');
+  assert.equal(seVe('m:ebymect', null), true);
+  assert.equal(seVe('m:ebymect', { conditions: [], medications: [] }), false);
+  assert.equal(seVe('m:ebymect', { medications: ['ebymect'] }), true);
+  assert.equal(seVe('c:diabetes2 m:insulin', { conditions: ['diabetes2'] }), true);
+  assert.equal(seVe('c:fatty-liver', { conditions: ['asthma'], medications: ['ebymect'] }), false);
+});
+
+test('cada ficha de index.html apunta a enfermedades y medicamentos que existen en el catálogo', () => {
+  const h = leer('health.json');
+  const html = fs.readFileSync(path.join(__dirname, '..', 'src', 'index.html'), 'utf8');
+  const claves = [...html.matchAll(/data-si="([^"]+)"/g)].flatMap(m => m[1].split(' '));
+  assert.ok(claves.length >= 10, 'hay fichas marcadas');
+  const existe = { c: new Set(h.conditions.map(x => x.id)), m: new Set(h.medications.map(x => x.id)) };
+  assert.deepEqual(claves.filter(k => { const [t, id] = k.split(':'); return !existe[t]?.has(id); }), []);
+});

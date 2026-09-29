@@ -22,3 +22,12 @@ test('ningún nombre global está definido en dos archivos', () => {
   assert.deepEqual(repetidos, []);
   assert.ok(donde.size > 50, `solo ha encontrado ${donde.size} nombres: el patrón no está leyendo bien`);   // control
 });
+
+test('index.html: comentarios bien cerrados y ninguna sección dentro de otra (un «-->» roto se tragó medio HTML)', () => {
+  const html = fs.readFileSync(path.join(__dirname, '..', 'src', 'index.html'), 'utf8');
+  const sinComentarios = html.replace(/<!--[\s\S]*?-->/g, '');
+  assert.equal(sinComentarios.includes('<!--'), false, 'comentario sin cerrar');
+  const orden = [...sinComentarios.matchAll(/<(\/?)section\b/g)].map(m => m[1] ? 'cierra' : 'abre');
+  assert.ok(orden.length > 0);
+  orden.forEach((t, i) => assert.equal(t, i % 2 ? 'cierra' : 'abre', `sección mal anidada en la posición ${i}`));
+});

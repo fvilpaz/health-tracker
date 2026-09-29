@@ -13,6 +13,7 @@
     { "id": "hypertension", "name": "Tensión alta" },
     { "id": "cholesterol", "name": "Colesterol alto" },
     { "id": "thyroid", "name": "Tiroides" },
+    { "id": "gilbert", "name": "Síndrome de Gilbert" },
     { "id": "asthma", "name": "Asma" },
     { "id": "heart", "name": "Problemas de corazón" },
     { "id": "pregnancy", "name": "Embarazo" }
