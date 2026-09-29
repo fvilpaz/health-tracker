@@ -296,14 +296,15 @@ a { color: inherit; text-decoration: none; }
 
 /* Metas */
 .metas-list { display: flex; flex-direction: column; gap: 10px; }
-/* Dos líneas, como los ejercicios: arriba plazo, peso y explicación; abajo lo que falta (en el móvil se apretaban) */
-.meta-row { display: grid; grid-template-columns: 56px 1fr; grid-template-areas: "plazo info" "plazo falta"; align-items: center; column-gap: 12px; row-gap: 4px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+/* El plazo (Corto, Medio, Largo) como título arriba; debajo, en fila, el peso con su explicación y lo que falta.
+   Si no cabe (móvil), lo que falta baja solo a la línea siguiente. */
+.meta-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 4px 12px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); }
 .meta-row.hecha { border-color: var(--green); background: var(--green-light); }
-.meta-plazo { grid-area: plazo; align-self: start; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--blue); }
-.meta-info { grid-area: info; min-width: 0; display: flex; flex-direction: column; }
+.meta-plazo { flex: 0 0 100%; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--blue); }
+.meta-info { flex: 0 0 100%; min-width: 0; display: flex; flex-direction: column; }   /* título, debajo el peso y su explicación, debajo lo que falta */
 .meta-info strong { font-size: 1.05rem; }
 .meta-info span { font-size: 0.78rem; color: var(--text-muted); }
-.meta-falta { grid-area: falta; font-size: 0.8rem; }
+.meta-falta { flex: 0 0 auto; font-size: 0.8rem; }
 .meta-aviso { font-size: 0.8rem; color: var(--text-muted); margin-top: 8px; }
 
 /* Análisis */
@@ -368,15 +369,9 @@ table.labs td.fuera { color: var(--red); }
 .phase-tab.active { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
 
 .exercise-list { display: flex; flex-direction: column; gap: 10px; }
+/* Cada ejercicio es un desplegable: cerrado, «1 Nombre ▾»; abierto, la explicación, los tiempos y el vídeo */
 .exercise-item {
-  /* Dos líneas: arriba nombre y explicación a todo el ancho; abajo tiempos y ▶ (en el móvil se pisaban) */
-  display: grid;
-  grid-template-columns: 32px 1fr auto;
-  grid-template-areas: "num info info" "num time video";
-  align-items: center;
-  column-gap: 14px;
-  row-gap: 6px;
-  padding: 14px;
+  padding: 12px 14px;
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -392,13 +387,15 @@ table.labs td.fuera { color: var(--red); }
   display: flex; align-items: center; justify-content: center;
   font-weight: 700; font-size: 0.85rem;
   flex-shrink: 0;
-  grid-area: num; align-self: start;
 }
-.exercise-info { grid-area: info; min-width: 0; }
-.exercise-name { font-weight: 600; font-size: 0.9rem; }
-.exercise-tip { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+.exercise-item summary { list-style: none; display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; }
+.exercise-item summary::-webkit-details-marker { display: none; }
+.exercise-item[open] .lab-flecha:before { transform: translateY(2px) rotate(225deg); border-color: var(--blue); }
+.exercise-name { flex: 1; min-width: 0; font-weight: 600; font-size: 0.9rem; }
+.exercise-cuerpo { margin: 10px 0 0 44px; }
+.exercise-tip { font-size: 0.8rem; color: var(--text-muted); }
+.exercise-pie { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; }
 .exercise-time {
-  grid-area: time;
   font-size: 0.8rem;
   font-weight: 700;
   color: var(--blue);
@@ -415,7 +412,6 @@ table.labs td.fuera { color: var(--red); }
   text-decoration: none;
   transition: all var(--transition);
   flex-shrink: 0;
-  grid-area: video; justify-self: end;
 }
 .exercise-video:hover { background: var(--red); color: white; transform: scale(1.1); }
 
@@ -768,7 +764,7 @@ table.labs td.fuera { color: var(--red); }
    así nada salta de sitio al abrir o cerrar algo (con columnas, las tarjetas se recolocaban solas). Lo que se
    reparte en horizontal es el CONTENIDO de cada tarjeta, en columnas automáticas. En el móvil no cambia nada. */
 @media (min-width: 900px) {
-  .app-container, .app-footer { max-width: max(60vw, 860px); }   /* 20 % de margen a cada lado; nunca más estrecha de 860 px */
+  .app-container, .app-footer { max-width: max(50vw, 680px); }   /* 25 % de margen a cada lado; nunca más estrecha de 680 px */
   .stats-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }   /* las 9 tarjetas en una fila en un portátil */
   #exerciseList { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 10px; }
   /* Dentro de las tarjetas, en fila: comidas del día, todas las opciones, recomendaciones, alimentos, logros, metas, días */

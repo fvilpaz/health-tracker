@@ -51,7 +51,8 @@ async function renderWorkoutPhase(phase) {
   list.innerHTML = '';
 
   phaseExercises(phaseData).forEach((ex, i) => {
-    const div = document.createElement('div');
+    // Desplegable: cerrado se ve «1 Nombre ▾»; abierto, la explicación, los tiempos y el vídeo
+    const div = document.createElement('details');
     div.className = 'exercise-item';
     div.id = `ex-${i}`;
     const timeLabel = phase === 'cooldown'
@@ -61,13 +62,18 @@ async function renderWorkoutPhase(phase) {
 
     // eslint-disable-next-line no-unsanitized/property -- ejercicios de data/workouts.json o data/exercises.json, archivos propios de la app
     div.innerHTML = `
-      <div class="exercise-num">${i + 1}</div>
-      <div class="exercise-info">
-        <div class="exercise-name">${ex.name}</div>
+      <summary>
+        <span class="exercise-num">${i + 1}</span>
+        <span class="exercise-name">${ex.name}</span>
+        <span class="lab-flecha"></span>
+      </summary>
+      <div class="exercise-cuerpo">
         ${ex.tip ? `<div class="exercise-tip">${ex.tip}</div>` : ''}
+        <div class="exercise-pie">
+          <span class="exercise-time">${timeLabel}</span>
+          <a class="exercise-video" href="${ytUrl}" target="_blank" rel="noopener" title="Ver cómo se hace" aria-label="Vídeo: cómo se hace ${ex.name}">▶</a>
+        </div>
       </div>
-      <div class="exercise-time">${timeLabel}</div>
-      <a class="exercise-video" href="${ytUrl}" target="_blank" rel="noopener" title="Ver cómo se hace" aria-label="Vídeo: cómo se hace ${ex.name}">▶</a>
     `;
     list.appendChild(div);
   });
