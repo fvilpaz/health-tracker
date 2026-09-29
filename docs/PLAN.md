@@ -18,7 +18,6 @@
 - [ ] **Vídeos elegidos y revisados por ejercicio** — hoy el ▶ busca en YouTube; poner un enlace concreto y en castellano por ejercicio del catálogo
 - [ ] **Fotos de progreso** — Opcional: guardar foto semanal (comprimida)
 - [ ] **Notas por semana** — Campo de texto libre en el tracker para anotar cómo te sientes
-- [ ] **Mejorar logros** — Más logros intermedios (3kg, 7kg, 10cm cintura, etc.)
 - [ ] **Estadísticas** — Media semanal, mejor racha, tendencia (línea de regresión)
 - [ ] **Copia fuera del móvil a un toque (capa 2)** (Nando, 29-sep: de momento no, le gusta como funciona) — si hace >7 días de la última, aviso al abrir: «Guarda tu copia semanal» → menú Compartir → Google Drive. ~30 líneas
 
@@ -48,6 +47,7 @@
 ## ✅ Completado
 
 **29-sep-2026**
+- [x] Logros intermedios: 3, 7 y 10 kg perdidos; 5 y 10 cm menos de cintura (13 logros en total)
 - [x] Sonidos del entreno (sin archivos, Web Audio): 1 pitido agudo al empezar ejercicio, 2 graves al empezar descanso, 3 notas subiendo en vuelta nueva y un acorde al terminar; cada uno con su vibración en el móvil (en iPhone no vibra: Safari no lo deja)
 - [x] Limpieza de estilos de Meds: 74 estilos escritos en el HTML → 0 (ya estaban en `.med-tips`; nueva `.med-aire`). Medido: 146 elementos, 0 diferencias (con control)
 - [x] Tracker: icono encima del nombre en las 4 etiquetas; todas caben sobre su recuadro (ENTRENOS sobresalía 5 px por lado)
