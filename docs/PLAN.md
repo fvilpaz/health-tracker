@@ -8,7 +8,6 @@
 ## 🔲 P1 — Alto impacto / Bajo esfuerzo
 
 - [ ] **Mini hábitos diarios** — Checkboxes diarios: 💧 2L agua · 🚶 6k pasos · 🥗 verduras · 💪 entreno · 😴 7h sueño
-- [ ] **Sonido al cambiar ejercicio** — Beep suave cuando termina un ejercicio (Web Audio API, sin archivos externos)
 
 ---
 
@@ -36,7 +35,7 @@
 - [ ] **Idioma inglés** — selector de idioma en «Mi perfil»; todos los textos a diccionarios (es/en), catálogos (ejercicios, comidas, consejos, fichas de Meds, avisos) con su versión en inglés **revisada** (un aviso médico mal traducido es peligroso), fechas y decimales según el idioma. Grande: varios cientos de líneas, por pasos. Hacerlo cuando alguien lo vaya a usar en inglés
 - [ ] **Datos del reloj** — ver pasos, pulso, sueño… de Google Fit / Amazfit (Zepp) en la app. Ojo: Google Fit está cerrando su API (Health Connect en Android la sustituye) y desde una web no se lee Health Connect directamente: revisar opciones (Zepp → Google Fit/Strava, o app Android)
 - [ ] **Gráfica de composición** — Peso + cintura + IMC superpuestos
-- [ ] **Timer mejorado** — Vibración, modo pantalla completa, countdown audible
+- [ ] **Timer mejorado** — modo pantalla completa, cuenta atrás hablada (el sonido y la vibración ya están)
 
 ---
 
@@ -49,6 +48,7 @@
 ## ✅ Completado
 
 **29-sep-2026**
+- [x] Sonidos del entreno (sin archivos, Web Audio): 1 pitido agudo al empezar ejercicio, 2 graves al empezar descanso, 3 notas subiendo en vuelta nueva y un acorde al terminar; cada uno con su vibración en el móvil (en iPhone no vibra: Safari no lo deja)
 - [x] Limpieza de estilos de Meds: 74 estilos escritos en el HTML → 0 (ya estaban en `.med-tips`; nueva `.med-aire`). Medido: 146 elementos, 0 diferencias (con control)
 - [x] Tracker: icono encima del nombre en las 4 etiquetas; todas caben sobre su recuadro (ENTRENOS sobresalía 5 px por lado)
 - [x] Colores por salud (S1, S2): el peso por el IMC de la OMS en 4 colores y la cintura por cintura/altura, en el Panel y en el tracker (antes el tracker ponía verde «llegaste al objetivo» con un IMC de obesidad); ENTRENOS encima de la casilla 1, a la par de PESO

@@ -84,3 +84,17 @@ test('pausar cuando ya tenía que haber acabado (pantalla apagada mucho rato) no
   reloj.pasar(2000);
   assert.equal(fin.veces, 1);               // tenía que dar el ejercicio por terminado, no quedarse parado
 });
+
+test('avisos del entreno: ejercicio, descanso, nueva vuelta y fin suenan y vibran distinto', () => {
+  const { crearApp } = require('./entorno.js');
+  const patron = crearApp().get('patronAviso');
+  const tipos = ['ejercicio', 'descanso', 'vuelta', 'fin'];
+  const firmas = tipos.map(t => JSON.stringify(patron(t)));
+  assert.equal(new Set(firmas).size, 4, 'cada momento con su propio aviso');
+  assert.equal(patron('ejercicio').tonos.length, 1);
+  assert.equal(patron('descanso').tonos.length, 2);
+  assert.equal(patron('vuelta').tonos.length, 3);
+  for (const t of tipos) assert.ok(patron(t).vibracion.length >= 1, t);
+  // Sin sonido ni vibración en el aparato (o en las pruebas): no rompe nada
+  assert.doesNotThrow(() => crearApp().get('avisoCambio')('ejercicio'));
+});
