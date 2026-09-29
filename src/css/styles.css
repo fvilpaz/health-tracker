@@ -623,28 +623,31 @@ table.labs td.fuera { color: var(--red); }
   font-size: 0.85rem;
 }
 /* ===== PLAN CARDS ===== */
-.plan-cards { display: flex; flex-direction: column; gap: 8px; }
+.plan-cards { display: flex; flex-direction: column; gap: 10px; }
 .plan-card {
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 12px 14px;
+  padding: 14px 16px;
 }
 .plan-card.current { border-color: var(--blue); background: var(--blue-light); }
 /* Etiquetas dentro de cada semana: ENTRENOS encima del 1 2 3; PESO, CINTURA y BARRIGA encima de su recuadro */
-.plan-mini { font-size: 0.55rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.04em; }
-.plan-entrenos { display: flex; flex-direction: column; align-items: center; gap: 3px; margin-bottom: 10px; }   /* su propia línea, centrada */
+.plan-mini { display: inline-flex; align-items: center; gap: 4px; font-size: 0.55rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.04em; }
+.mini-ico { width: 12px; height: 12px; color: var(--blue); }
+/* Entrenos: la etiqueta y debajo las 3 casillas, cada una en su tercio (alineadas con los recuadros de abajo) */
+.plan-entrenos { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; margin-bottom: 14px; }   /* etiqueta a la izquierda */
+.plan-entrenos .plan-check { width: 58px; border-radius: 8px; }   /* tan anchas como los recuadros de peso, cintura y barriga */
 .plan-card.past { opacity: 0.6; }
 .plan-week-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 14px;
 }
 .plan-week-label { font-size: 0.85rem; font-weight: 700; }
 .plan-date { font-size: 0.7rem; color: var(--text-muted); }
 .plan-inputs { display: flex; gap: 10px; width: 100%; }   /* peso, cintura y barriga: un tercio cada una */
-.plan-input-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.plan-input-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .plan-target { font-size: 0.6rem; color: var(--text-muted); }
 .plan-target span { color: var(--blue); font-weight: 700; }
 .plan-real { width: 58px; padding: 6px 4px; border: 1px solid var(--border); border-radius: 8px; text-align: center;

@@ -7,6 +7,8 @@
 
 ## 🔲 P1 — Alto impacto / Bajo esfuerzo
 
+- [ ] **Limpieza de estilos de Meds** (29-sep-2026) — 51 `style="font-size:0.83rem"` y 12 listas con el mismo estilo escritos dentro del HTML: pasarlos a clases (`.med-lista`, `.med-fuente`) en `styles.css`. Se ve igual; medir antes y después
+
 - [ ] **Mini hábitos diarios** — Checkboxes diarios: 💧 2L agua · 🚶 6k pasos · 🥗 verduras · 💪 entreno · 😴 7h sueño
 - [ ] **Sonido al cambiar ejercicio** — Beep suave cuando termina un ejercicio (Web Audio API, sin archivos externos)
 
@@ -49,6 +51,7 @@
 ## ✅ Completado
 
 **29-sep-2026**
+- [x] Tracker: «ENTRENOS» a la izquierda, casillas tan anchas como los recuadros y cada una encima del suyo, iconos en las etiquetas y más espacio
 - [x] Gráfica e historial de cintura y barriga en Progreso (con borrar el día)
 - [x] Tracker: semana 1 con los mismos números con los que empiezas (iba una semana adelantada); columna «— cm» en la barriga y leyenda como una fila más, alineada con cada columna también cuando las medidas bajan
 - [x] Tracker semanal con la barriga; cada semana en tres líneas (semana / ENTRENOS 1 2 3 / PESO, CINTURA, BARRIGA) con sus etiquetas (nada se descuelga en el móvil; antes, a ~412 px, las medidas saltaban de línea)
