@@ -131,15 +131,9 @@
       </div>
 
       <div class="card" style="padding:14px; overflow-x:auto;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-          <div class="card-title" role="heading" aria-level="2" style="margin-bottom:0;">Tracker semanal</div>
-          <div style="display:flex; gap:12px; font-size:0.65rem; font-weight:600; color:var(--text-muted);">
-            <span><span data-duo="pesa" class="leyenda-ico"></span> ENTRENOS</span>
-            <span><span data-duo="balanza" class="leyenda-ico"></span> PESO</span>
-            <span><span data-duo="regla" class="leyenda-ico"></span> CINTURA</span>
-            <span><span data-duo="regla" class="leyenda-ico"></span> BARRIGA</span>
-          </div>
-        </div>
+        <div class="card-title" role="heading" aria-level="2" style="margin-bottom:12px;">Tracker semanal</div>
+        <!-- La leyenda (entrenos, peso, cintura, barriga) la pinta plan.js como una fila más, con los mismos anchos -->
+
         <div id="planTable"></div>
         <div style="text-align:center; margin-top:16px;">
           <button class="btn" id="newPlanBtn" style="font-size:0.75rem; padding:8px 16px; background:var(--surface2); color:var(--text-muted); border:1px solid var(--border); border-radius:99px;"><span data-duo="portapapeles"></span> Finalizar plan y empezar uno nuevo</button>
