@@ -368,9 +368,13 @@ table.labs td.fuera { color: var(--red); }
 
 .exercise-list { display: flex; flex-direction: column; gap: 10px; }
 .exercise-item {
-  display: flex;
+  /* Dos líneas: arriba nombre y explicación a todo el ancho; abajo tiempos y ▶ (en el móvil se pisaban) */
+  display: grid;
+  grid-template-columns: 32px 1fr auto;
+  grid-template-areas: "num info info" "num time video";
   align-items: center;
-  gap: 14px;
+  column-gap: 14px;
+  row-gap: 6px;
   padding: 14px;
   background: var(--surface2);
   border: 1px solid var(--border);
@@ -387,11 +391,13 @@ table.labs td.fuera { color: var(--red); }
   display: flex; align-items: center; justify-content: center;
   font-weight: 700; font-size: 0.85rem;
   flex-shrink: 0;
+  grid-area: num; align-self: start;
 }
-.exercise-info { flex: 1; }
+.exercise-info { grid-area: info; min-width: 0; }
 .exercise-name { font-weight: 600; font-size: 0.9rem; }
 .exercise-tip { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
 .exercise-time {
+  grid-area: time;
   font-size: 0.8rem;
   font-weight: 700;
   color: var(--blue);
@@ -408,6 +414,7 @@ table.labs td.fuera { color: var(--red); }
   text-decoration: none;
   transition: all var(--transition);
   flex-shrink: 0;
+  grid-area: video; justify-self: end;
 }
 .exercise-video:hover { background: var(--red); color: white; transform: scale(1.1); }
 
