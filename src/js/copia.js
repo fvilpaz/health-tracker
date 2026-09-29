@@ -115,17 +115,80 @@ function aplicarCopiaCompleta(d) {
   }
 }
 
+// Todos los datos de la app ('ht_…'), sin el prefijo: lo que va en una copia.
+function datosActuales() {
+  const data = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k.startsWith('ht_')) data[k.slice(3)] = Storage.get(k.slice(3));
+  }
+  return data;
+}
+
+/* ===== COPIAS AUTOMÁTICAS (las 5 últimas, una por semana, dentro del navegador) ===== */
+// Protegen de un fallo de la app, de una importación mala o de un borrado sin querer. NO de que se borren los
+// datos del navegador (se irían con ellas): para eso está «Exportar». Van en 'ht-copias' (guion, no '_'):
+// así no entran en la exportación ni las borra una importación o una recuperación.
+const COPIAS_AUTO = 'ht-copias', MAX_COPIAS_AUTO = 5, DIAS_ENTRE_COPIAS = 7;
+
+function copiasAutomaticas() {
+  try { const l = JSON.parse(localStorage.getItem(COPIAS_AUTO)); return Array.isArray(l) ? l : []; } catch { return []; }
+}
+
+// Guarda una copia si hay datos y la última tiene 7 días o más (o si «siempre»). Devuelve si la ha guardado.
+function copiaAutomatica(ahora = new Date(), siempre = false) {
+  const data = datosActuales();
+  if (!Object.keys(data).some(k => k !== 'theme')) return false;
+  const copias = copiasAutomaticas();
+  const ultima = copias.length ? new Date(copias[copias.length - 1].fecha) : null;
+  if (!siempre && ultima && ahora - ultima < DIAS_ENTRE_COPIAS * 864e5) return false;
+  copias.push({ fecha: ahora.toISOString(), data });
+  try {
+    localStorage.setItem(COPIAS_AUTO, JSON.stringify(copias.slice(-MAX_COPIAS_AUTO)));
+    return true;
+  } catch { return false; }   // almacén lleno: sin copia, pero los datos siguen intactos
+}
+
+// Vuelve a los datos de la copia «i». Antes guarda los de ahora como otra copia: nada se pierde.
+function recuperarCopiaAutomatica(i, ahora = new Date()) {
+  const copia = copiasAutomaticas()[i];
+  if (!copia) return false;
+  copiaAutomatica(ahora, true);
+  return aplicarCopiaCompleta(limpiarCopia(copia.data).datos).ok;
+}
+
+function renderCopiasAutomaticas() {
+  const lista = document.getElementById('copiasAuto');
+  if (!lista) return;
+  lista.replaceChildren();
+  const copias = copiasAutomaticas();
+  if (!copias.length) { lista.textContent = 'Aún no hay ninguna: se hace sola al abrir la app, una por semana.'; return; }
+  copias.map((c, i) => [c, i]).reverse().forEach(([c, i]) => {
+    const n = k => Array.isArray(c.data?.[k]) ? c.data[k].length : 0;
+    const fila = document.createElement('div');
+    fila.className = 'weight-entry';
+    const texto = document.createElement('span');
+    texto.textContent = `${new Date(c.fecha).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })} · ${n('weights')} pesos, ${n('sessions')} bloques, ${n('labs')} análisis`;
+    const boton = document.createElement('button');
+    boton.className = 'btn btn-primary';
+    boton.textContent = 'Recuperar';
+    boton.addEventListener('click', () => {
+      if (!confirm(`¿Volver a tus datos del ${new Date(c.fecha).toLocaleDateString('es-ES')}?\n\nLo de ahora se guarda antes como otra copia, por si te arrepientes. Los PDF de los análisis no cambian.`)) return;
+      if (!recuperarCopiaAutomatica(i)) return showToast('No se ha podido recuperar: no se ha cambiado nada');
+      location.reload();
+    });
+    fila.append(texto, boton);
+    lista.appendChild(fila);
+  });
+}
+
 /* ===== COPIA DE SEGURIDAD (exportar / importar) ===== */
 // Los datos viven en localStorage de ESTE navegador: la copia permite llevarlos a otro aparato.
 // Formato: cabecera (app, versión, fecha) + todas las claves 'ht_' tal cual (patrón de Crypto_Portafolio).
 const BACKUP_APP = 'health-tracker', BACKUP_VERSION = 1;
 
 document.getElementById('exportBtn').addEventListener('click', () => {
-  const data = {};
-  for (let i = 0; i < localStorage.length; i++) {
-    const k = localStorage.key(i);
-    if (k.startsWith('ht_')) data[k.slice(3)] = Storage.get(k.slice(3));
-  }
+  const data = datosActuales();
   const fecha = new Date().toISOString().slice(0, 10);
   const blob = new Blob([JSON.stringify({ app: BACKUP_APP, version: BACKUP_VERSION, exportedAt: new Date().toISOString(), data }, null, 2)],
                         { type: 'application/json' });

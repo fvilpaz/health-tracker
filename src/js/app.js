@@ -23,6 +23,8 @@ function initApp() {
   updateDashboard();   // ya pinta también el plan (antes se pintaba dos veces al abrir)
   renderWeightLog();
   checkLogros();
+  copiaAutomatica();   // una por semana, al abrir (ver copia.js)
+  renderCopiasAutomaticas();
 
   const newPlanBtn = document.getElementById('newPlanBtn');
   if (newPlanBtn) {
