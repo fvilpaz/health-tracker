@@ -128,3 +128,24 @@ test('configurar: el objetivo nunca baja de IMC 25, y con peso sano o «mantener
   assert.equal(conf({ weight: 65, height: 174 }), undefined);                    // IMC 21,5
   assert.equal(conf({ weight: 95.6, height: 177, objetivo: 'maintain' }), undefined);
 });
+
+test('plan terminado: pasadas sus semanas, sí; dentro, no; sin plan, no', () => {
+  const app = crearApp(), S = app.get('Storage'), fin = app.get('planTerminado');
+  assert.equal(fin(new Date(2026, 8, 29)), false);
+  S.set('settings', { startDate: '2026-06-29', totalWeeks: 12, height: 177 }); S.set('startDate', '2026-06-29T00:00:00.000Z');
+  assert.equal(fin(new Date(2026, 8, 20)), false);   // semana 12
+  assert.equal(fin(new Date(2026, 8, 22)), true);    // semana 13: terminado
+});
+
+test('empezar otro plan: conserva el historial, empieza hoy y el objetivo sale del peso de ahora', () => {
+  const app = crearApp(), S = app.get('Storage');
+  S.set('settings', { startDate: '2026-06-29', totalWeeks: 12, goalWeight: 88.6, height: 177 }); S.set('startDate', '2026-06-29T00:00:00.000Z');
+  S.set('weights', [{ date: '29/6/2026', weight: 95.6 }, { date: '20/9/2026', weight: 90 }]);
+  app.get('nuevoCiclo')(new Date(2026, 8, 29));
+  const s = S.get('settings');
+  assert.equal(s.startDate, '2026-09-29');
+  assert.equal(s.goalWeight, 83);                       // 90 − 7 (por encima de IMC 25 = 78,3)
+  assert.equal(S.get('weights').length, 2);             // el historial no se toca
+  assert.equal(app.get('objetivoPeso')(), 83);          // el objetivo mira el peso al empezar ESTE plan
+  assert.equal(app.get('medidasDelPlan')(S.get('weights'))[0].weight, 90);
+});

@@ -22,6 +22,7 @@ App web personal de salud y seguimiento de progreso. Sin servidor, sin backend, 
 ## Plan de 12 semanas
 
 Tracker semanal integrado con:
+- **Al terminar, aviso «¿empiezas otro?»**: el plan nuevo empieza hoy, conserva todo tu historial y su objetivo sale de tu peso de ese día
 - **Objetivos a partir de tus datos**: con sobrepeso, peso inicial − 7 kg (nunca por debajo de IMC 25) y cintura inicial − 9 cm; con peso sano, «Mantenerme» o menores de 18, sin objetivos (nada escrito en el código)
 - **Peso y cintura reales de cada semana**: salen solos de lo que registras en Progreso (la última medida de esa semana; en verde si llegas al objetivo)
 - **Casillas de entrenos** que se rellenan solas con los bloques hechos cada semana

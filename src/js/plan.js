@@ -12,6 +12,41 @@ function semanaDelPlan(inicio, ref = new Date()) {
   return Math.floor((dia(getWeekStart(ref)) - dia(getWeekStart(inicio))) / 7) + 1;
 }
 
+// Medidas de este plan: desde la última tomada el día de inicio o antes (el punto de partida) en adelante.
+// Al empezar otro plan, el de partida es el peso de entonces, no el primero que se apuntó en la app.
+function medidasDelPlan(lista) {
+  const inicio = Storage.get('settings', {}).startDate;
+  if (!inicio) return lista;
+  let desde = -1;
+  lista.forEach((m, i) => { if (esAIso(m.date) <= inicio) desde = i; });
+  return desde >= 0 ? lista.slice(desde) : lista;
+}
+
+// ¿Ya pasaron todas las semanas del plan?
+function planTerminado(hoy = new Date()) {
+  const inicio = Storage.get('settings', {}).startDate;
+  if (!inicio) return false;
+  return semanaDelPlan(new Date(inicio + 'T00:00:00'), hoy) > (Storage.get('settings', {}).totalWeeks || 12);
+}
+
+// Empezar otro plan sin borrar nada: empieza hoy, mismas semanas, objetivo desde el peso de ahora (misma regla)
+function nuevoCiclo(hoy = new Date()) {
+  const s = { ...Storage.get('settings', {}) }, pesos = Storage.get('weights', []);
+  s.startDate = isoDate(hoy);
+  const actual = pesos.length ? pesos[pesos.length - 1].weight : null;
+  const perfil = Storage.get('profile');
+  const objetivo = actual && s.height ? objetivoInicial(actual, s.height, { menor: esMenor(hoy), objetivo: perfil?.goal }) : null;
+  if (objetivo == null) delete s.goalWeight; else s.goalWeight = objetivo;
+  Storage.set('settings', s);
+  Storage.set('startDate', new Date(s.startDate + 'T00:00:00').toISOString());
+}
+
+document.getElementById('nuevoPlanBtn')?.addEventListener('click', () => {
+  nuevoCiclo();
+  updateDashboard();
+  showToast('Plan nuevo empezado ✓');
+});
+
 function renderPlanTable() {
   const container = document.getElementById('planTable');
   if (!container) return;
@@ -21,10 +56,11 @@ function renderPlanTable() {
   const waists = Storage.get('waists', []);
 
   // Objetivos a partir de TUS datos (antes había 97 kg, 105 cm y 90 kg escritos a fuego como respaldo)
-  const startWeight = weights.length ? weights[0].weight : null;
+  const delPlan = medidasDelPlan(weights), cinturasDelPlan = medidasDelPlan(waists);
+  const startWeight = delPlan.length ? delPlan[0].weight : null;
   // Sin objetivo (peso sano al empezar, «mantenerme» o menor de 18) no hay objetivos que marcar, ni de cintura
   const goalWeight = objetivoPeso();
-  const startWaist = waists.length ? waists[0].waist : null;
+  const startWaist = cinturasDelPlan.length ? cinturasDelPlan[0].waist : null;
   const goalWaist = goalWeight && startWaist && Math.max(60, startWaist - 9);
   const totalWeeks = settings.totalWeeks || 12;
 
