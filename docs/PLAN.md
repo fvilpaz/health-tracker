@@ -53,7 +53,7 @@
 
 **29-sep-2026**
 - [x] Aviso al acabar el plan con «Empezar otro plan»: conserva el historial, empieza hoy y el objetivo sale del peso de ahora; la tabla y el objetivo usan las medidas de ESTE plan
-- [x] Calentamiento de articulaciones (E13) y fuera la fuerza del calentamiento; en los bloques, el principal de cada zona por orden del catálogo (antes salía «Elevación de talones» como piernas)
+- [x] Calentamiento de articulaciones (E13; 8 ejercicios, 5 min 40 s) sin fuerza ni balanceo; en los bloques, el principal de cada zona por orden del catálogo (antes salía «Elevación de talones» como piernas)
 - [x] P0 del 28-sep: aviso de **cetoacidosis** en Ebymect (prospecto de la EMA), sin la dosis de nadie; fuera «omega 3 y vitamina E» del hígado; suplementos: fichas de omega 3 (AHA) y creatina (avisar al médico) y «Evitar»; fuera D3, magnesio, whey y B12 (reglas M7-M9)
 - [x] Barriga (por el ombligo) aparte de la cintura (donde va el cinturón)
 - [x] La app en `src/` y solo eso se publica; `CLAUDE.md` del proyecto

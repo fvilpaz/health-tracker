@@ -55,10 +55,10 @@ test('vueltas según los minutos: 15 → 2, 20 → 3, 30 o más → 4; y la dura
 test('duración de cada fase: se calcula de los ejercicios tal como corre el temporizador (antes, a mano y mal)', () => {
   const app = crearApp(), dur = app.get('duracionFase'), texto = app.get('textoDuracion');
   const w = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'src', 'data', 'workouts.json'), 'utf8'));
-  // Calentamiento de articulaciones (29-sep): marcha y balanceo 40+20, siete de movilidad 30+10 = 400 s. Antes ponía «4 min» a mano.
-  assert.equal(dur(w.warmup, w.warmup.exercises), 400);
-  // Nada de fuerza en el calentamiento: talones, rodillas y sentadillas van en los bloques
-  for (const fuera of ['Sentadilla parcial', 'Elevación de rodillas', 'Elevación de talones']) assert.ok(!w.warmup.exercises.some(e => e.name === fuera), fuera);
+  // Calentamiento de articulaciones (29-sep): marcha 40+20 y siete de movilidad 30+10 = 340 s. Antes ponía «4 min» a mano.
+  assert.equal(dur(w.warmup, w.warmup.exercises), 340);
+  // Nada de fuerza en el calentamiento (talones, rodillas y sentadillas van en los bloques) ni balanceo (Nando: no aporta)
+  for (const fuera of ['Sentadilla parcial', 'Elevación de rodillas', 'Elevación de talones', 'Balanceo de piernas']) assert.ok(!w.warmup.exercises.some(e => e.name === fuera), fuera);
   // Fuerza: 3 vueltas × 4 × (40 + 20) + 2 descansos de 60 s = 840 s
   assert.equal(dur(w.strength, w.strength.blocks['1'].exercises), 840);
   // Vuelta a la calma: 25 × 4 + 30 = 130 s. Ponía «2 min».

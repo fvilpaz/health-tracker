@@ -22,7 +22,7 @@
 | **E9** | Dolor de espalda | **Guía (NICE NG59):** el ejercicio es parte principal del tratamiento. **Criterio de la app:** fuera los que cargan la espalda en flexión o extensión (abdominales completos, tijeras, elevación de piernas, superman). | Catálogo: molestia «espalda». Se quedan bird dog, bicho muerto y puente. |
 | **E10** | Rodillas | **Guía (NICE NG226, artrosis):** el ejercicio terapéutico es el tratamiento principal. **Criterio de la app:** fuera saltos, zancadas y sentadilla isométrica. | Catálogo: molestia «rodillas». |
 | **E11** | Hombros / muñecas | **Criterio de la app** (sin guía concreta): fuera apoyos largos sobre las manos y empujes por encima de la cabeza. | Catálogo: molestias «hombros» y «muñecas». |
-| **E13** | Todos: calentamiento | **Criterio de la app** (práctica habitual de calentamiento: entrar en calor y movilidad articular antes de la fuerza): marcha, giros de cuello suaves (sin círculos completos), hombros, muñecas, tronco, cadera, rodillas, tobillos y balanceo de piernas. Nada de fuerza en el calentamiento. | Fase «Calentamiento» (6 min 40 s) |
+| **E13** | Todos: calentamiento | **Criterio de la app** (práctica habitual de calentamiento: entrar en calor y movilidad articular antes de la fuerza): marcha, giros de cuello suaves (sin círculos completos), hombros, muñecas, tronco, cadera, rodillas, tobillos. Nada de fuerza ni balanceo en el calentamiento. | Fase «Calentamiento» (8 ejercicios, 5 min 40 s) |
 | **E12** | Dolor de pecho, mareos o ejercicio supervisado | **Guía (PAR-Q+ 2024):** con un «sí», consultar al médico antes de empezar. | Aviso en Entreno; nivel 1 y sin saltos. |
 
 ## Alimentación
