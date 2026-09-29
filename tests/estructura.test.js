@@ -8,7 +8,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 test('ningún nombre global está definido en dos archivos', () => {
-  const dir = path.join(__dirname, '..', 'js');
+  const dir = path.join(__dirname, '..', 'src', 'js');
   const donde = new Map(), repetidos = [];
   for (const archivo of fs.readdirSync(dir).filter(f => f.endsWith('.js'))) {
     const src = fs.readFileSync(path.join(dir, archivo), 'utf8');

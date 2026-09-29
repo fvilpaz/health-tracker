@@ -27,7 +27,7 @@ function conRelojFalso() {
     setInterval: f => { const id = siguienteId++; intervalos.set(id, f); return id; },
     clearInterval: id => intervalos.delete(id),
   });
-  vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'js/timer.js'), 'utf8'), ctx);
+  vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'src', 'js/timer.js'), 'utf8'), ctx);
   return { Timer: vm.runInContext('Timer', ctx), reloj };
 }
 
