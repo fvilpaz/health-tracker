@@ -21,6 +21,15 @@ async function loadWorkoutData() {
   return workoutData;
 }
 
+// Segundos que dura una fase, contados como corre el temporizador: cada ejercicio con su descanso (también el
+// último), por las vueltas, más el descanso entre vueltas. Antes los minutos iban escritos a mano y no cuadraban
+// (el calentamiento decía 4 min y son 6).
+function duracionFase(phaseData, ejercicios) {
+  const rounds = phaseData.rounds || 1;
+  return ejercicios.reduce((n, e) => n + e.seconds + (e.rest || 0), 0) * rounds + (phaseData.rest_between_rounds || 0) * (rounds - 1);
+}
+const textoDuracion = seg => `${Math.floor(seg / 60)} min${seg % 60 ? ` ${seg % 60} s` : ''}`;
+
 async function renderWorkoutPhase(phase) {
   const data = await loadWorkoutData();
   currentPhase = phase;
@@ -65,7 +74,8 @@ async function renderWorkoutPhase(phase) {
 
   const roundInfo = document.getElementById('roundInfo');
   if (roundInfo) {
-    roundInfo.textContent = phaseData.rounds ? `${phaseData.rounds} vueltas · ${phaseData.duration} min` : `${phaseData.duration} min`;
+    const dura = textoDuracion(duracionFase(phaseData, phaseExercises(phaseData)));
+    roundInfo.textContent = phaseData.rounds ? `${phaseData.rounds} vueltas · ${dura}` : dura;
   }
 }
 

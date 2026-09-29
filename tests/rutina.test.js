@@ -50,9 +50,19 @@ test('vueltas según los minutos: 15 → 2, 20 → 3, 30 o más → 4; y la dura
   assert.equal(armar({ minutes: 15 }).rounds, 2);
   assert.equal(armar({ minutes: 20 }).rounds, 3);
   assert.equal(armar({ minutes: 45 }).rounds, 4);
-  const f = armar({ minutes: 20 });
-  const seg = f.blocks[1].exercises.reduce((n, e) => n + e.seconds + e.rest, 0) * f.rounds + f.rest_between_rounds * (f.rounds - 1);
-  assert.equal(f.duration, Math.round(seg / 60));
+});
+
+test('duración de cada fase: se calcula de los ejercicios tal como corre el temporizador (antes, a mano y mal)', () => {
+  const app = crearApp(), dur = app.get('duracionFase'), texto = app.get('textoDuracion');
+  const w = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'src', 'data', 'workouts.json'), 'utf8'));
+  // Calentamiento: 6 × (40 + 20) = 360 s. Ponía «4 min».
+  assert.equal(dur(w.warmup, w.warmup.exercises), 360);
+  // Fuerza: 3 vueltas × 4 × (40 + 20) + 2 descansos de 60 s = 840 s
+  assert.equal(dur(w.strength, w.strength.blocks['1'].exercises), 840);
+  // Vuelta a la calma: 25 × 4 + 30 = 130 s. Ponía «2 min».
+  assert.equal(dur(w.cooldown, w.cooldown.exercises), 130);
+  assert.equal(texto(360), '6 min');
+  assert.equal(texto(130), '2 min 10 s');
 });
 
 test('objetivo semanal: los días del perfil; sin perfil, 3 como siempre', () => {

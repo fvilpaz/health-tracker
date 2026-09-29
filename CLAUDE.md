@@ -9,6 +9,8 @@ Estática: HTML + CSS + JS sin compilar, datos en el `localStorage` del navegado
 - Entreno: Bloque 1/2/3 de fuerza, sin cardio. **Solo cuenta el bloque completo.** Objetivo: 3 bloques por semana (lunes-domingo).
 - Perfil (`profile`): cuestionario de 6 pasos con opciones del catálogo `src/data/health.json`, nunca texto que decida nada.
   **Menores de 18: sin metas de peso ni objetivo «perder peso»** (lo lleva el pediatra).
+- **Fuente de verdad: `docs/FUENTES.md`** (guías oficiales con enlace; reglas E1… de ejercicio y A1… de comida). Toda regla
+  de salud que use la app sale de ahí; si no hay guía, se escribe como «criterio de la app». Nada inventado.
 - Cintura = donde va el cinturón · Barriga = por el ombligo (dos medidas distintas).
 - Sin librerías desde internet: Chart.js, pdf.js y la fuente Inter van en `src/vendor/` (verificadas con el sha512 de npm) y la CSP
   solo deja cargar código de este sitio.
