@@ -51,6 +51,7 @@
 ## ✅ Completado
 
 **29-sep-2026**
+- [x] Tracker: icono encima del nombre en las 4 etiquetas; todas caben sobre su recuadro (ENTRENOS sobresalía 5 px por lado)
 - [x] Colores por salud (S1, S2): el peso por el IMC de la OMS en 4 colores y la cintura por cintura/altura, en el Panel y en el tracker (antes el tracker ponía verde «llegaste al objetivo» con un IMC de obesidad); ENTRENOS encima de la casilla 1, a la par de PESO
 - [x] Tracker: «ENTRENOS» a la izquierda, casillas tan anchas como los recuadros y cada una encima del suyo, iconos en las etiquetas y más espacio
 - [x] Gráfica e historial de cintura y barriga en Progreso (con borrar el día)
