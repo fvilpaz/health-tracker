@@ -5,14 +5,6 @@
 
 ---
 
-## 🔲 P0 — Decidido el 28-sep y sin hacer (lo destapó la revisión del 29-sep)
-
-- [ ] **Aviso de cetoacidosis** en la ficha de Ebymect (dapagliflozina): síntomas y «nada de ayunos ni dietas keto sin tu médico». Con fuente oficial en `docs/FUENTES.md`
-- [ ] **Hígado graso:** quitar «Omega-3 y vitamina E tienen evidencia positiva»
-- [ ] **Suplementos como se decidió:** «Lo que tomo» (omega 3, dosis con el médico), «Más adelante» (creatina: avisar al médico, sube la creatinina del análisis), «Evitar» se queda; fuera vitamina D3, magnesio, whey y B12. Hoy la creatina sale «SEGURO» y «beneficia al hígado graso» sin fuente
-
----
-
 ## 🔲 P1 — Alto impacto / Bajo esfuerzo
 
 - [ ] **Mini hábitos diarios** — Checkboxes diarios: 💧 2L agua · 🚶 6k pasos · 🥗 verduras · 💪 entreno · 😴 7h sueño
@@ -60,6 +52,7 @@
 ## ✅ Completado
 
 **29-sep-2026**
+- [x] P0 del 28-sep: aviso de **cetoacidosis** en Ebymect (prospecto de la EMA), sin la dosis de nadie; fuera «omega 3 y vitamina E» del hígado; suplementos: fichas de omega 3 (AHA) y creatina (avisar al médico) y «Evitar"; fuera D3, magnesio, whey y B12 (reglas M7-M9)
 - [x] Barriga (por el ombligo) aparte de la cintura (donde va el cinturón)
 - [x] La app en `src/` y solo eso se publica; `CLAUDE.md` del proyecto
 - [x] Copias automáticas semanales dentro del navegador (las 5 últimas) con «Recuperar»

@@ -68,7 +68,8 @@ function seVe(claves, perfil) {
   if (!perfil) return true;
   return claves.split(' ').some(k => {
     const [tipo, id] = k.split(':');
-    return ((tipo === 'c' ? perfil.conditions : perfil.medications) || []).includes(id);
+    const lista = tipo === 'c' ? perfil.conditions : tipo === 's' ? perfil.supplements : perfil.medications;   // c: enfermedad · m: medicamento · s: suplemento
+    return (lista || []).includes(id);
   });
 }
 
