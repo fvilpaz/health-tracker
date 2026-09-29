@@ -30,7 +30,9 @@ function armarBloques(perfil, catalogo, hoy = new Date()) {
   // E2: a partir de 65 años, un ejercicio de equilibrio en cada bloque (OMS)
   const huecos = [...ZONAS_BASE, ...(anos >= 65 ? ['balance'] : []), ...(perfil.focus || [])].slice(0, 6);
   for (const zona of new Set(huecos)) {
-    const deZona = validos.filter(e => e.zone === zona).sort((a, b) => b.level - a.level || a.id.localeCompare(b.id));
+    // Dentro del mismo nivel, el orden del catálogo (va de lo más básico y útil a lo demás). Antes era alfabético y
+    // «Elevación de talones» (calf-raise) salía como ejercicio principal de piernas.
+    const deZona = validos.filter(e => e.zone === zona).sort((a, b) => b.level - a.level || catalogo.exercises.indexOf(a) - catalogo.exercises.indexOf(b));
     const elegidos = [];
     for (let n = nivel; n >= 1 && elegidos.length < 3; n--) elegidos.push(...deZona.filter(e => e.level === n));
     grupo[zona] = elegidos;
