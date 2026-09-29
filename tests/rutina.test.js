@@ -81,3 +81,31 @@ test('las zonas del cuestionario existen en el catálogo de ejercicios', () => {
   const h = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'src', 'data', 'health.json'), 'utf8'));
   assert.deepEqual(h.focus.map(f => f.id).filter(z => !(z in cat.zones)), []);
 });
+
+test('E2: con 65 años o más, un ejercicio de equilibrio en cada bloque; con menos, no', () => {
+  for (const b of Object.values(armar({ birthDate: '1955-01-01' }).blocks)) assert.equal(b.exercises.filter(e => porNombre[e.name].zone === 'balance').length, 1);
+  assert.equal(todos(armar({ birthDate: '1970-01-01' })).filter(e => e.zone === 'balance').length, 0);
+});
+
+test('E5: embarazo → nada tumbada boca arriba ni boca abajo, nivel 1 y sin saltos', () => {
+  const t = todos(armar({ level: 3, conditions: ['pregnancy'] }));
+  assert.deepEqual(t.filter(e => e.lying).map(e => e.id), []);
+  assert.ok(t.every(e => e.level === 1 && e.impact === 'low'));
+});
+
+test('catálogo: «lying» solo vale back o front, y los de suelo boca arriba/abajo están marcados', () => {
+  for (const e of cat.exercises) assert.ok([undefined, 'back', 'front'].includes(e.lying), e.id);
+  for (const id of ['crunch', 'sit-up', 'glute-bridge', 'dead-bug', 'flutter-kicks', 'leg-raise', 'table-row']) assert.equal(cat.exercises.find(e => e.id === id).lying, 'back', id);
+  for (const id of ['superman', 'reverse-snow-angel']) assert.equal(cat.exercises.find(e => e.id === id).lying, 'front', id);
+});
+
+test('avisos de Entreno según el perfil (E5, E6, E7, E8, E12)', () => {
+  const avisos = p => JSON.parse(JSON.stringify(crearApp().get('avisosEntreno')(p))).map(a => a.regla);
+  assert.deepEqual(avisos(null), []);
+  assert.deepEqual(avisos({ conditions: [], medications: [] }), []);
+  assert.deepEqual(avisos({ fainting: true }), ['E12']);
+  assert.deepEqual(avisos({ conditions: ['pregnancy'] }), ['E5']);
+  assert.deepEqual(avisos({ conditions: ['diabetes2'], medications: ['metformin'] }), []);   // sin insulina, no
+  assert.deepEqual(avisos({ conditions: ['diabetes2'], medications: ['insulin'] }), ['E6']);
+  assert.deepEqual(avisos({ conditions: ['hypertension', 'asthma'] }), ['E7', 'E8']);
+});

@@ -75,7 +75,9 @@ async function renderWorkoutPhase(phase) {
   const roundInfo = document.getElementById('roundInfo');
   if (roundInfo) {
     const dura = textoDuracion(duracionFase(phaseData, phaseExercises(phaseData)));
-    roundInfo.textContent = phaseData.rounds ? `${phaseData.rounds} vueltas · ${dura}` : dura;
+    // El descanso entre vueltas se dice: si no, la suma de la lista no cuadraba con el total
+    const entre = phaseData.rounds > 1 && phaseData.rest_between_rounds ? ` · ${textoDuracion(phaseData.rest_between_rounds)} de descanso entre vueltas` : '';
+    roundInfo.textContent = phaseData.rounds ? `${phaseData.rounds} vueltas${entre} · ${dura}` : dura;
   }
 }
 
