@@ -39,103 +39,45 @@ function initApp() {
 
 // Guarda la configuración inicial. El peso y la cintura se AÑADEN a los que hubiera: antes se sustituían y,
 // si habías apuntado pesos sin configurar el plan, al configurarlo se perdían todos menos uno.
-function guardarConfiguracion({ date, weeks, weight, waist, height }) {
+// Menor de 18: sin objetivo de peso (eso lo lleva el pediatra). La barriga, solo si se da.
+function guardarConfiguracion({ date, weeks, weight, waist, height, belly, menor = false }) {
   const dia = new Date(date + 'T00:00:00'), fecha = fechaEs(dia);
-  Storage.set('settings', { ...Storage.get('settings', {}), startDate: date, totalWeeks: weeks, goalWeight: Math.max(50, weight - 7), height });
+  const settings = { ...Storage.get('settings', {}), startDate: date, totalWeeks: weeks, goalWeight: Math.max(50, weight - 7), height };
+  if (menor) delete settings.goalWeight;
+  Storage.set('settings', settings);
   Storage.set('weights', anotarMedida(Storage.get('weights', []), 'weight', weight, fecha));
   Storage.set('waists', anotarMedida(Storage.get('waists', []), 'waist', waist, fecha));
+  if (belly !== undefined) Storage.set('bellies', anotarMedida(Storage.get('bellies', []), 'belly', belly, fecha));
   Storage.set('startDate', dia.toISOString());
 }
 
+// Bienvenida: «Soy nuevo» abre el cuestionario (perfil.js); «Ya tengo mis datos» carga la copia.
 function showSetup() {
-  const dateStr = isoDate(new Date());   // hoy en hora local (toISOString daba ayer entre las 00:00 y las 02:00)
   const overlay = document.createElement('div');
   overlay.id = 'setupOverlay';
   overlay.setAttribute('role', 'dialog');
   overlay.setAttribute('aria-modal', 'true');
   overlay.setAttribute('aria-labelledby', 'setupTitulo');
-  // eslint-disable-next-line no-unsanitized/property -- solo constantes e iconos del propio código y la fecha de hoy
+  // eslint-disable-next-line no-unsanitized/property -- solo constantes e iconos del propio código
   overlay.innerHTML = `
     <div class="setup-card">
       <button class="setup-close" id="setupCloseBtn" aria-label="Cerrar">${ICONO.cerrar}</button>
       <div class="setup-icon">${duo('correr', 'setup-duo')}</div>
       <h2 class="setup-title" id="setupTitulo">Health Tracker</h2>
-      <p class="setup-subtitle" id="setupSubtitulo">Bienvenido</p>
-
-      <!-- Primero: ¿nuevo o con datos? (antes salía directo el formulario, aunque ya tuvieras tu copia) -->
-      <div id="setupBienvenida">
-        <button class="btn btn-green btn-full" id="setupNuevoBtn">Soy nuevo: configurar mi plan</button>
-        <button class="btn btn-primary btn-full" id="setupCargarBtn" style="margin-top:10px;">Ya tengo mis datos: cargar mi copia</button>
-        <p class="setup-note">La copia es el archivo <strong>.json</strong> que sacaste con «Exportar» en Progreso.</p>
-      </div>
-
-      <div id="setupFormulario" hidden>
-      <div class="setup-field">
-        <label for="setupDate">¿Cuándo empiezas?</label>
-        <input type="date" id="setupDate" value="${dateStr}">
-      </div>
-
-      <div class="setup-field">
-        <label for="setupWeeks">Duración del plan (semanas)</label>
-        <input type="number" id="setupWeeks" value="12" min="4" max="24" step="1" inputmode="numeric">
-      </div>
-
-      <div class="setup-field">
-        <label for="setupHeight">Altura (cm)</label>
-        <input type="number" id="setupHeight" placeholder="Ej: 175" step="1" min="120" max="230" inputmode="numeric">
-      </div>
-
-      <div class="setup-field">
-        <label for="setupWeight">Peso actual (kg)</label>
-        <input type="number" id="setupWeight" placeholder="Ej: 80" step="0.1" min="30" max="300" inputmode="decimal">
-      </div>
-
-      <div class="setup-field">
-        <label for="setupWaist">Cintura actual (cm) — donde va el cinturón</label>
-        <input type="number" id="setupWaist" placeholder="Ej: 95" step="0.1" min="40" max="200" inputmode="decimal">
-      </div>
-
-      <button class="btn btn-green btn-full" id="setupStartBtn">${ICONO.jugar}Empezar</button>
-      <button class="btn btn-full setup-cancel" id="setupCancelBtn">Cancelar, ya lo configuro luego</button>
-      </div>
+      <p class="setup-subtitle">Bienvenido</p>
+      <button class="btn btn-green btn-full" id="setupNuevoBtn">Soy nuevo: crear mi perfil</button>
+      <button class="btn btn-primary btn-full" id="setupCargarBtn" style="margin-top:10px;">Ya tengo mis datos: cargar mi copia</button>
+      <p class="setup-note">La copia es el archivo <strong>.json</strong> que sacaste con «Exportar» en Progreso.</p>
       <p class="setup-note">Todo se guarda en tu navegador. Nada se envía a ningún servidor.</p>
     </div>
   `;
   document.body.appendChild(overlay);
   document.getElementById('setupNuevoBtn').focus({ preventScroll: true });
 
-  document.getElementById('setupNuevoBtn').addEventListener('click', () => {
-    document.getElementById('setupBienvenida').hidden = true;
-    document.getElementById('setupFormulario').hidden = false;
-    document.getElementById('setupSubtitulo').textContent = 'Configura tu plan';
-    document.getElementById('setupHeight').focus({ preventScroll: true });
-  });
+  document.getElementById('setupNuevoBtn').addEventListener('click', () => { overlay.remove(); abrirCuestionario({ nuevo: true }); });
   // Cargar la copia = lo mismo que «Importar» de Progreso (valida el archivo, pregunta y recarga la app)
   document.getElementById('setupCargarBtn').addEventListener('click', () => document.getElementById('importFile').click());
-
-  const closeSetup = () => { overlay.remove(); initApp(); };
-
-  document.getElementById('setupStartBtn').addEventListener('click', () => {
-    const date = document.getElementById('setupDate').value;
-    const weeks = parseInt(document.getElementById('setupWeeks').value) || 12;
-    const weight = parseFloat(document.getElementById('setupWeight').value);
-    const waist = parseFloat(document.getElementById('setupWaist').value);
-    const height = parseInt(document.getElementById('setupHeight').value);
-
-    // Mismos rangos que en Progreso, y avisando de qué falta (antes: con un campo vacío no hacía nada,
-    // y aceptaba 5 kg o 999 cm, que rompían el panel, las metas y el plan)
-    if (!date) return showToast('Pon la fecha de inicio');
-    if (weeks < 4 || weeks > 24) return showToast('El plan tiene que durar entre 4 y 24 semanas');
-    if (!medidaValida('height', height) || !medidaValida('weight', weight) || !medidaValida('waist', waist)) return;
-
-    guardarConfiguracion({ date, weeks, weight, waist, height });
-
-    overlay.remove();
-    initApp();
-  });
-
-  document.getElementById('setupCancelBtn').addEventListener('click', closeSetup);
-  document.getElementById('setupCloseBtn').addEventListener('click', closeSetup);
+  document.getElementById('setupCloseBtn').addEventListener('click', () => { overlay.remove(); initApp(); });
 }
 
 /* ===== THEME ===== */

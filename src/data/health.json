@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "goals": [
+    { "id": "lose", "name": "Perder peso", "adultsOnly": true },
+    { "id": "maintain", "name": "Mantenerme" },
+    { "id": "strength", "name": "Ganar fuerza" },
+    { "id": "health", "name": "Salud en general" }
+  ],
+  "conditions": [
+    { "id": "diabetes2", "name": "Diabetes tipo 2" },
+    { "id": "prediabetes", "name": "Prediabetes" },
+    { "id": "fatty-liver", "name": "Hígado graso" },
+    { "id": "hypertension", "name": "Tensión alta" },
+    { "id": "cholesterol", "name": "Colesterol alto" },
+    { "id": "thyroid", "name": "Tiroides" },
+    { "id": "asthma", "name": "Asma" },
+    { "id": "heart", "name": "Problemas de corazón" },
+    { "id": "pregnancy", "name": "Embarazo" }
+  ],
+  "medications": [
+    { "id": "ebymect", "name": "Ebymect (dapagliflozina + metformina)" },
+    { "id": "metformin", "name": "Metformina" },
+    { "id": "omega3", "name": "Omega 3" },
+    { "id": "insulin", "name": "Insulina" },
+    { "id": "blood-pressure", "name": "Pastillas de la tensión" },
+    { "id": "statins", "name": "Pastillas del colesterol (estatinas)" },
+    { "id": "thyroid-med", "name": "Pastillas del tiroides" }
+  ],
+  "levels": [
+    { "id": 1, "name": "Nada o casi nada" },
+    { "id": 2, "name": "Algo (1-2 días por semana)" },
+    { "id": 3, "name": "Habitual (3 o más días)" }
+  ],
+  "pains": [
+    { "id": "knees", "name": "Rodillas" },
+    { "id": "back", "name": "Espalda" },
+    { "id": "shoulders", "name": "Hombros" },
+    { "id": "wrists", "name": "Muñecas" }
+  ],
+  "days": [2, 3, 4, 5, 6],
+  "minutes": [15, 20, 30, 45],
+  "diets": [
+    { "id": "all", "name": "Como de todo" },
+    { "id": "no-meat", "name": "Sin carne (pescado sí)" },
+    { "id": "vegetarian", "name": "Vegetariano" },
+    { "id": "vegan", "name": "Vegano" }
+  ],
+  "allergies": [
+    { "id": "gluten", "name": "Gluten" },
+    { "id": "lactose", "name": "Lactosa" },
+    { "id": "nuts", "name": "Frutos secos" },
+    { "id": "shellfish", "name": "Marisco" },
+    { "id": "fish", "name": "Pescado" },
+    { "id": "egg", "name": "Huevo" }
+  ]
+}
