@@ -17,6 +17,7 @@ async function loadWorkoutData() {
   const res = await fetch('data/workouts.json');
   if (!res.ok) throw new Error('sin ejercicios');
   workoutData = await res.json();
+  await aplicarRutina();   // con perfil: bloques recomendados (rutina.js)
   return workoutData;
 }
 
@@ -49,7 +50,7 @@ async function renderWorkoutPhase(phase) {
       : ex.rest ? `${ex.seconds}s / ${ex.rest}s desc` : `${ex.seconds}s`;
     const ytUrl = ex.video || `https://www.youtube.com/results?search_query=${encodeURIComponent(`cómo hacer ${ex.name} ejercicio`)}`;
 
-    // eslint-disable-next-line no-unsanitized/property -- ejercicios de data/workouts.json, archivo propio de la app
+    // eslint-disable-next-line no-unsanitized/property -- ejercicios de data/workouts.json o data/exercises.json, archivos propios de la app
     div.innerHTML = `
       <div class="exercise-num">${i + 1}</div>
       <div class="exercise-info">
@@ -194,7 +195,7 @@ function workoutDone() {
     saveSession(currentBlock, minutos, phaseExercises(workoutData.strength).map(e => e.name));
     // eslint-disable-next-line no-unsanitized/property -- número de bloque (1-3) e icono
     nameEl.innerHTML = `¡Bloque ${currentBlock} completado! ${duo('confeti', 'estado fiesta')}`;
-    labelEl.textContent = `${sessionsInWeek().length} de ${WEEK_GOAL} esta semana`;
+    labelEl.textContent = `${sessionsInWeek().length} de ${objetivoSemana()} esta semana`;
   } else {
     // Calentamiento o calma sueltos: no cuentan como entreno
     nameEl.textContent = currentPhase === 'warmup' ? 'Calentamiento hecho ✓' : 'Vuelta a la calma hecha ✓';
@@ -213,7 +214,8 @@ document.querySelectorAll('.phase-tab').forEach(tab => {
   tab.addEventListener('click', () => { if (!workoutActive) renderWorkoutPhase(tab.dataset.phase); });
 });
 
-document.querySelectorAll('.block-btn').forEach(btn => {
+// Solo los de Bloque 1/2/3: el interruptor «Recomendados / Los de siempre» también usa .block-btn
+document.querySelectorAll('#blockPicker .block-btn').forEach(btn => {
   btn.addEventListener('click', () => { if (workoutActive) return; currentBlock = btn.dataset.block; renderWorkoutPhase('strength'); });
 });
 

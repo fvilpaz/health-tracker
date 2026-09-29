@@ -32,7 +32,7 @@ function updateDashboard() {
   if (weekEl) {
     weekEl.textContent = sessionsInWeek().length;   // bloques completos de esta semana
     const objEl = document.getElementById('dashWeekGoal');
-    if (objEl) objEl.textContent = WEEK_GOAL;
+    if (objEl) objEl.textContent = objetivoSemana();
   }
 
   // Racha
