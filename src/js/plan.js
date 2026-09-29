@@ -22,11 +22,11 @@ function renderPlanTable() {
 
   // Objetivos a partir de TUS datos (antes había 97 kg, 105 cm y 90 kg escritos a fuego como respaldo)
   const startWeight = weights.length ? weights[0].weight : null;
-  const goalWeight = settings.goalWeight || (startWeight && startWeight - 7);
+  // Sin objetivo (peso sano al empezar, «mantenerme» o menor de 18) no hay objetivos que marcar, ni de cintura
+  const goalWeight = objetivoPeso();
   const startWaist = waists.length ? waists[0].waist : null;
-  const goalWaist = startWaist && Math.max(60, startWaist - 9);
+  const goalWaist = goalWeight && startWaist && Math.max(60, startWaist - 9);
   const totalWeeks = settings.totalWeeks || 12;
-  const menor = esMenor();
 
   const startDate = Storage.get('startDate', null);
   if (!startDate) { container.innerHTML = '<div class="empty-state">Registra tu peso para activar el plan</div>'; return; }
@@ -45,9 +45,8 @@ function renderPlanTable() {
     weekDate.setDate(start.getDate() + (w - 1) * 7);
     const dateLabel = weekDate.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
 
-    // Menor de 18: sin objetivos de bajar (solo lo real); eso lo lleva el pediatra
-    const targetWeight = startWeight && !menor ? startWeight - ((startWeight - goalWeight) / totalWeeks) * w : null;
-    const targetWaist = startWaist && !menor ? startWaist - ((startWaist - goalWaist) / totalWeeks) * w : null;
+    const targetWeight = startWeight && goalWeight ? startWeight - ((startWeight - goalWeight) / totalWeeks) * w : null;
+    const targetWaist = startWaist && goalWaist ? startWaist - ((startWaist - goalWaist) / totalWeeks) * w : null;
 
     // Lo real de la semana sale de lo que registras en Progreso (una sola fuente): la última medida de esa semana
     const realWeight = ultimaDeSemana(weights, 'weight', weekDate);

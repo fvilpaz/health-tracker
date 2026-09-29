@@ -39,11 +39,13 @@ function initApp() {
 
 // Guarda la configuración inicial. El peso y la cintura se AÑADEN a los que hubiera: antes se sustituían y,
 // si habías apuntado pesos sin configurar el plan, al configurarlo se perdían todos menos uno.
-// Menor de 18: sin objetivo de peso (eso lo lleva el pediatra). La barriga, solo si se da.
-function guardarConfiguracion({ date, weeks, weight, waist, height, belly, menor = false }) {
+// Objetivo de peso: 7 kg menos, pero nunca por debajo de IMC 25; y solo con sobrepeso (IMC ≥ 25), si no se ha
+// elegido «mantenerme» y si no es menor de 18 (eso lo lleva el pediatra). La barriga, solo si se da.
+function guardarConfiguracion({ date, weeks, weight, waist, height, belly, menor = false, objetivo }) {
   const dia = new Date(date + 'T00:00:00'), fecha = fechaEs(dia);
-  const settings = { ...Storage.get('settings', {}), startDate: date, totalWeeks: weeks, goalWeight: Math.max(50, weight - 7), height };
-  if (menor) delete settings.goalWeight;
+  const m2 = (height / 100) ** 2;
+  const settings = { ...Storage.get('settings', {}), startDate: date, totalWeeks: weeks, goalWeight: Math.max(50, weight - 7, +(25 * m2).toFixed(1)), height };
+  if (menor || objetivo === 'maintain' || weight / m2 < 25) delete settings.goalWeight;
   Storage.set('settings', settings);
   Storage.set('weights', anotarMedida(Storage.get('weights', []), 'weight', weight, fecha));
   Storage.set('waists', anotarMedida(Storage.get('waists', []), 'waist', waist, fecha));

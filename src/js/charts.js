@@ -10,7 +10,7 @@ function renderWeightChart(entries) {
   const labels = entries.map(e => e.date);
   const data = entries.map(e => e.weight);
   // Objetivo y escala a partir de TUS datos (antes: línea fija en 90 kg y eje fijo de 80 a 110)
-  const objetivo = Storage.get('settings', {}).goalWeight || null;
+  const objetivo = objetivoPeso();   // la línea del objetivo, solo si tiene sentido (ver dashboard.js)
   const valores = objetivo ? [...data, objetivo] : data;
 
   if (weightChart) weightChart.destroy();
