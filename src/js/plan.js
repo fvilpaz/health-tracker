@@ -63,6 +63,8 @@ function renderPlanTable() {
   const goalWeight = objetivoPeso();
   const startWaist = cinturasDelPlan.length ? cinturasDelPlan[0].waist : null;
   const goalWaist = goalWeight && startWaist && Math.max(60, startWaist - 9);
+  const barrigasDelPlan = medidasDelPlan(bellies);
+  const startBelly = barrigasDelPlan.length ? barrigasDelPlan[0].belly : null;
   const totalWeeks = settings.totalWeeks || 12;
 
   const startDate = Storage.get('startDate', null);
@@ -117,10 +119,10 @@ function renderPlanTable() {
     });
     html += `</div>`;
     html += `<div class="plan-inputs">`;
-    // Semana 1: el punto de partida («inicio» y lo que pusiste al empezar), sin objetivo
-    html += planValor(targetWeight, realWeight, 'kg', w === 1 ? 'inicio' : undefined);
-    html += planValor(targetWaist, realWaist, 'cm', w === 1 ? 'inicio' : undefined);
-    html += planValor(null, realBelly, 'cm', w === 1 ? 'inicio' : undefined);   // sin objetivo semanal: no hay regla con fuente para la barriga
+    html += planValor(targetWeight, realWeight, 'kg');
+    html += planValor(targetWaist, realWaist, 'cm');
+    // Barriga: sin meta (no hay regla con fuente); solo la semana 1 enseña su valor de partida
+    html += planValor(objetivoDeLaSemana(startBelly, null, totalWeeks, w), realBelly, 'cm');
     html += `</div>`;
     html += `</div>`;
 
@@ -145,18 +147,19 @@ function ultimaDeSemana(lista, campo, lunes) {
   return enSemana.length ? enSemana[enSemana.length - 1][campo] : null;
 }
 
-// Objetivo de la semana «w»: la 1 es el punto de partida (sin objetivo) y se baja por igual hasta la meta, que se
-// alcanza justo en la última semana. Antes la semana 1 ya pedía haber bajado (iba una semana adelantada).
+// Objetivo de la semana «w»: la 1 es el mismo valor con el que empiezas (tal cual, también sin meta) y se baja por
+// igual hasta la meta, que se alcanza justo en la última semana. Antes la semana 1 ya pedía haber bajado.
 function objetivoDeLaSemana(inicio, meta, semanas, w) {
-  if (inicio == null || meta == null || w <= 1) return null;
+  if (inicio == null) return null;
+  if (w <= 1) return inicio;
+  if (meta == null) return null;
   return inicio - ((inicio - meta) / Math.max(1, semanas - 1)) * (w - 1);
 }
 
-// Objetivo arriba y lo real debajo (verde si llegas al objetivo de esa semana). Sin objetivo, «etiqueta» arriba.
-function planValor(objetivo, real, unidad, etiqueta) {
+// Objetivo arriba y lo real debajo (verde si llegas al objetivo de esa semana)
+function planValor(objetivo, real, unidad) {
   const cumple = real != null && objetivo != null && real <= objetivo;
-  const arriba = etiqueta ? `${etiqueta} ${unidad}` : `<span>${objetivo != null ? objetivo.toFixed(1) : '—'}</span> ${unidad}`;
-  return `<div class="plan-input-group"><span class="plan-target">${arriba}</span>` +
+  return `<div class="plan-input-group"><span class="plan-target"><span>${objetivo != null ? objetivo.toFixed(1) : '—'}</span> ${unidad}</span>` +
     `<span class="plan-real${real != null ? ' con-dato' : ''}${cumple ? ' cumple' : ''}">${real != null ? esc(real) : '—'}</span></div>`;
 }
 
