@@ -92,7 +92,17 @@
           <div class="stat-value" id="dashWHtR">--</div>
           <div class="stat-unit" id="dashWHtRStatus">objetivo: &lt; 0.5</div>
         </div>
-        <div class="stat-card purple" style="grid-column: span 3;">
+        <div class="stat-card green">
+          <div class="stat-label">Barriga</div>
+          <div class="stat-value" id="dashBelly">--</div>
+          <div class="stat-unit">cm</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Barr. perdido</div>
+          <div class="stat-value" id="dashBellyLost">--</div>
+          <div class="stat-unit">cm</div>
+        </div>
+        <div class="stat-card purple">
           <div class="stat-label">IMC</div>
           <div class="stat-value" id="dashIMC">--</div>
           <div class="stat-unit" id="dashHeight">altura: --</div>
@@ -466,10 +476,14 @@
           <button class="btn btn-primary" id="saveWaistBtn">Cintura</button>
         </div>
         <div class="weight-input-row">
+          <input type="number" id="bellyInput" placeholder="Barriga (cm)" aria-label="Barriga en cm" inputmode="decimal" step="0.1" min="40" max="200">
+          <button class="btn btn-primary" id="saveBellyBtn">Barriga</button>
+        </div>
+        <div class="weight-input-row">
           <input type="number" id="heightInput" placeholder="Altura (cm)" aria-label="Altura en cm" inputmode="numeric" step="1" min="120" max="230">
           <button class="btn btn-primary" id="saveHeightBtn">Altura</button>
         </div>
-        <div style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">Mide en ayunas, a la altura del ombligo, sin apretar</div>
+        <div style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">Mide en ayunas y sin apretar: la cintura donde va el cinturón y la barriga por el ombligo</div>
       </div>
 
       <div class="card">
@@ -491,7 +505,7 @@
           <button class="btn btn-primary btn-datos" id="importBtn"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Importar</button>
           <input type="file" id="importFile" accept="application/json,.json" hidden>
         </div>
-        <div style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">Descarga una copia con todo (ajustes, pesos, cinturas, entrenos, logros, análisis) y cárgala en otro aparato. Tus datos solo viven en este navegador: exporta de vez en cuando. <strong>El archivo lleva tus datos de salud sin cifrar</strong>: guárdalo en un sitio seguro y no lo compartas.</div>
+        <div style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">Descarga una copia con todo (ajustes, pesos, cinturas, barriga, entrenos, logros, análisis) y cárgala en otro aparato. Tus datos solo viven en este navegador: exporta de vez en cuando. <strong>El archivo lleva tus datos de salud sin cifrar</strong>: guárdalo en un sitio seguro y no lo compartas.</div>
       </div>
     </section>
 

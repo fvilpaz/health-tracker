@@ -76,6 +76,8 @@ test('medidaValida: acepta dentro del rango y, fuera, lo rechaza avisando', () =
   assert.equal(valida('weight', 25), false);
   assert.equal(valida('weight', NaN), false);   // campo vacío
   assert.equal(valida('waist', 40), true);
+  assert.equal(valida('belly', 110), true);
+  assert.equal(valida('belly', 999), false);
   assert.equal(valida('height', 231), false);
 });
 

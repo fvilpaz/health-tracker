@@ -12,6 +12,7 @@ const COPIA_BUENA = {
   startDate: '2026-01-05T00:00:00.000Z', theme: 'light',
   weights: [{ date: '5/1/2026', weight: 88 }, { date: '12/1/2026', weight: 87.4 }],
   waists: [{ date: '5/1/2026', waist: 99 }],
+  bellies: [{ date: '5/1/2026', belly: 108 }],
   sessions: [{ date: '2026-01-06', block: '1', minutes: 16, exercises: ['Sentadillas'] }, { date: '2026-01-03', block: null }],
   trainings: ['3/1/2026'], logros: ['first_train'],
   labs: [{ date: '2026-01-10', values: { hba1c: 6.1, glucosa: 99, hdl: 45 } }],
@@ -29,14 +30,16 @@ test('una copia manipulada: fuera todo lo que no tiene la forma correcta, y se c
     sessions: [{ date: '2026-01-06', block: ataque }, { date: '2026-01-07', block: '9' }],
     labs: [{ date: '2026-01-10', values: { hba1c: ataque } }, { date: '2026-01-11', values: { inventada: 5 } }],
     plan: { 1: { weight: ataque }, semana: { weight: 90 } },
+    bellies: [{ date: '3/1/2026', belly: ataque }, { date: '4/1/2026', belly: 107.5 }],
     theme: 'rosa', clave_rara: ataque,
   });
   assert.deepEqual(plano(r.datos.weights), [{ date: '2/1/2026', weight: 91 }]);
+  assert.deepEqual(plano(r.datos.bellies), [{ date: '4/1/2026', belly: 107.5 }]);
   assert.deepEqual(plano(r.datos.sessions), []);
   assert.deepEqual(plano(r.datos.labs), []);
   assert.deepEqual(plano(r.datos.plan), {});
   assert.equal(r.datos.theme, undefined);
-  assert.equal(r.descartados, 2 + 2 + 2 + 2 + 1 + 1);   // pesos, sesiones, análisis, plan, tema, clave rara
+  assert.equal(r.descartados, 2 + 1 + 2 + 2 + 2 + 1 + 1);   // pesos, barriga, sesiones, análisis, plan, tema, clave rara
 });
 
 test('las claves viejas (racha por días, calendario) se ignoran sin contar como error', () => {

@@ -27,8 +27,8 @@ function initApp() {
   const newPlanBtn = document.getElementById('newPlanBtn');
   if (newPlanBtn) {
     newPlanBtn.addEventListener('click', () => {
-      if (!confirm('¿Finalizar este plan y empezar uno nuevo?\n\nSe borrarán todos los datos (peso, cintura, entrenos, logros).\n\nSi quieres conservarlos, cancela y usa antes «Exportar» en Progreso.')) return;
-      const keys = ['settings', 'weights', 'waists', 'startDate', 'trainings', 'sessions', 'streak', 'logros', 'plan'];
+      if (!confirm('¿Finalizar este plan y empezar uno nuevo?\n\nSe borrarán todos los datos (peso, cintura, barriga, entrenos, logros).\n\nSi quieres conservarlos, cancela y usa antes «Exportar» en Progreso.')) return;
+      const keys = ['settings', 'weights', 'waists', 'bellies', 'startDate', 'trainings', 'sessions', 'streak', 'logros', 'plan'];
       keys.forEach(k => Storage.remove(k));
       location.reload();
     });
@@ -81,7 +81,7 @@ function showSetup() {
       </div>
 
       <div class="setup-field">
-        <label for="setupWaist">Cintura actual (cm) — a la altura del ombligo</label>
+        <label for="setupWaist">Cintura actual (cm) — donde va el cinturón</label>
         <input type="number" id="setupWaist" placeholder="Ej: 95" step="0.1" min="40" max="200" inputmode="decimal">
       </div>
 
