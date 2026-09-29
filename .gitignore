@@ -2,3 +2,6 @@ docs/SESION.md
 
 # Informes de nando-toolkit (no subir: señalan los puntos débiles)
 docs/audit-*
+
+# Perfiles con datos reales (se importan en la app; nunca se suben)
+perfiles/
