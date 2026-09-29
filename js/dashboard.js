@@ -72,6 +72,14 @@ function updateDashboard() {
   const waistLostEl = document.getElementById('dashWaistLost');
   if (waistLostEl) waistLostEl.textContent = diferencia(startWaist, currentWaist);
 
+  // Barriga (por el ombligo): la actual y lo perdido desde la primera
+  const bellies = Storage.get('bellies', []);
+  const currentBelly = bellies.length ? bellies[bellies.length - 1].belly : null;
+  const bellyEl = document.getElementById('dashBelly');
+  if (bellyEl) bellyEl.textContent = currentBelly ? currentBelly.toFixed(1) : '--';
+  const bellyLostEl = document.getElementById('dashBellyLost');
+  if (bellyLostEl) bellyLostEl.textContent = diferencia(bellies.length ? bellies[0].belly : null, currentBelly);
+
   // Semáforo de peso (por IMC) y cintura (por cintura/altura); sin altura, sin color
   semaforo(weightEl, heightCm && currentWeight ? currentWeight / (heightCm / 100) ** 2 : null, 25, 30);
   // redondeado a 2 decimales, igual que el número que enseña la tarjeta Cintura / altura

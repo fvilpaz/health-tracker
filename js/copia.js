@@ -39,7 +39,7 @@ function limpiarCopia(entrada) {
   // porque vienen en cualquier copia hecha antes del 28-sep-2026.
   const obsoleta = clave => clave === 'streak' || clave.startsWith('calendar_');
   for (const clave of Object.keys(entrada)) {
-    if (!['settings', 'startDate', 'weights', 'waists', 'sessions', 'labs', 'plan', 'logros', 'theme', 'trainings'].includes(clave) && !obsoleta(clave)) descartados++;
+    if (!['settings', 'startDate', 'weights', 'waists', 'bellies', 'sessions', 'labs', 'plan', 'logros', 'theme', 'trainings'].includes(clave) && !obsoleta(clave)) descartados++;
   }
 
   const s = entrada.settings;
@@ -58,6 +58,7 @@ function limpiarCopia(entrada) {
 
   lista('weights', e => e && esFechaEs(e.date) && enRango('weight', e.weight) ? { date: e.date, weight: e.weight } : null);
   lista('waists', e => e && esFechaEs(e.date) && enRango('waist', e.waist) ? { date: e.date, waist: e.waist } : null);
+  lista('bellies', e => e && esFechaEs(e.date) && enRango('belly', e.belly) ? { date: e.date, belly: e.belly } : null);
   lista('trainings', t => esFechaEs(t) ? t : null);
   lista('logros', id => typeof id === 'string' && /^[a-z0-9_]{1,30}$/.test(id) ? id : null);
   lista('sessions', e => {
@@ -160,7 +161,7 @@ document.getElementById('importFile').addEventListener('change', async e => {
   }
   const cuando = copia.exportedAt ? new Date(copia.exportedAt).toLocaleDateString('es-ES') : 'fecha desconocida';
   const analisis = d.labs ? `${n('labs')} análisis` : 'sin análisis (se conservan los tuyos)';
-  if (!confirm(`Copia del ${cuando}: ${n('weights')} pesos, ${n('waists')} cinturas, ${n('sessions')} bloques de fuerza, ${analisis}.\n\n` +
+  if (!confirm(`Copia del ${cuando}: ${n('weights')} pesos, ${n('waists')} cinturas, ${n('bellies')} barrigas, ${n('sessions')} bloques de fuerza, ${analisis}.\n\n` +
                `Esto SUSTITUYE los datos de este aparato.${aviso}\n\n¿Continuar?`)) return;
   const r = aplicarCopiaCompleta(d);
   if (!r.ok) return showToast('No cabe en el almacenamiento del navegador: no se ha cambiado nada');

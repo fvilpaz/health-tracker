@@ -10,12 +10,12 @@ App web personal de salud y seguimiento de progreso. Sin servidor, sin backend, 
 
 | Sección | Descripción |
 |---------|-------------|
-| **Dashboard** | Peso actual, perdido, IMC, cintura, ratio cintura/altura, bloques de esta semana, racha de **semanas cumplidas**, logros. Peso, cintura y ratio cambian de color (🟢/🟠/🔴) según el IMC y la cintura/altura |
+| **Dashboard** | Peso actual, perdido, IMC, cintura (donde va el cinturón), barriga (por el ombligo) y lo perdido de cada una, ratio cintura/altura, bloques de esta semana, racha de **semanas cumplidas**, logros. Peso, cintura y ratio cambian de color (🟢/🟠/🔴) según el IMC y la cintura/altura |
 | **🎯 Metas** | Metas a corto, medio y largo plazo (IMC 30, peso objetivo, IMC 27) con lo que falta; historial de análisis: **subes el PDF del laboratorio y la app lee la fecha y los valores** (tú revisas y guardas), el PDF queda adjunto. Cada análisis es un desplegable con tu valor, cuánto debería estar y qué es cada prueba; debajo, comparativa entre dos análisis (a elegir) con sugerencias |
 | **Entrenamiento** | Calentamiento → fuerza → calma, con temporizador SVG. La fuerza va en **bloques 1 / 2 / 3** (sin cardio) que rotan solos. Solo cuenta como entreno el bloque de fuerza **completo**; se apunta solo con fecha, minutos y ejercicios |
 | **Nutrición** | Esquema del plato, ideas de comidas, alimentos OK y a evitar |
 | **Meds** | Ebymect, hígado graso, Gilbert, señales de alerta y suplementos (seguros, con precaución y a evitar) |
-| **Progreso** | Registro de peso, cintura y altura; gráfica de peso; historial editable; exportar e importar copia |
+| **Progreso** | Registro de peso, cintura, barriga y altura; gráfica de peso; historial editable; exportar e importar copia |
 | **Semana** | Objetivo de **3 bloques por semana** (lunes a domingo, los días que quieras): aviso 🟢 vas bien · 🟠 vas justo · 🔴 no llegas o domingo con pendientes; los días con su bloque, qué bloque toca con botón para entrenar, y semanas anteriores en desplegables |
 
 ## Plan de 12 semanas
@@ -58,7 +58,7 @@ health-tracker/
 │   ├── analisis.js         ← Análisis: catálogo de pruebas, tabla, comparativa, lector del PDF y PDF guardados
 │   ├── dashboard.js        ← Panel principal (tarjetas y semáforo) y metas
 │   ├── plan.js             ← Plan de 12 semanas (objetivos, lo real de cada semana y casillas)
-│   ├── medidas.js          ← Guardar peso, cintura y altura; historial de peso
+│   ├── medidas.js          ← Guardar peso, cintura, barriga y altura; historial de peso
 │   ├── logros.js           ← Logros
 │   └── app.js              ← Arranque, configuración inicial, tema, navegación, avisos e instalación
 ├── data/workouts.json      ← Datos de ejercicios por fase

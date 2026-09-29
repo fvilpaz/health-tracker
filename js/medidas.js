@@ -1,9 +1,9 @@
 /* eslint-disable security/detect-object-injection -- las claves son nombres del propio código (catálogos, campos) o ya validadas; nunca texto de fuera sin comprobar (revisado 28-sep-2026) */
-/* Medidas: guardar peso, altura y cintura, y el historial de peso (con borrar). Se movió tal cual desde
+/* Medidas: guardar peso, altura, cintura y barriga, y el historial de peso (con borrar). Se movió tal cual desde
    app.js (28-sep-2026). */
 
 // Rangos admitidos; fuera de ellos se avisa (antes el botón no hacía nada y parecía roto)
-const RANGO = { weight: [30, 300, 'un peso', 'kg'], waist: [40, 200, 'una cintura', 'cm'], height: [120, 230, 'una altura', 'cm'] };
+const RANGO = { weight: [30, 300, 'un peso', 'kg'], waist: [40, 200, 'una cintura', 'cm'], belly: [40, 200, 'una barriga', 'cm'], height: [120, 230, 'una altura', 'cm'] };
 function medidaValida(campo, valor) {
   const [min, max, nombre, unidad] = RANGO[campo];
   if (!isNaN(valor) && valor >= min && valor <= max) return true;
@@ -12,7 +12,7 @@ function medidaValida(campo, valor) {
 }
 
 // La tecla «Intro»/«Ir» del teclado del móvil guarda (antes no hacía nada)
-[['weightInput', 'saveWeightBtn'], ['waistInput', 'saveWaistBtn'], ['heightInput', 'saveHeightBtn']].forEach(([campo, boton]) => {
+[['weightInput', 'saveWeightBtn'], ['waistInput', 'saveWaistBtn'], ['bellyInput', 'saveBellyBtn'], ['heightInput', 'saveHeightBtn']].forEach(([campo, boton]) => {
   document.getElementById(campo)?.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById(boton).click(); });
 });
 
@@ -74,6 +74,17 @@ document.getElementById('saveWaistBtn').addEventListener('click', () => {
   updateDashboard();
   checkLogros();
   showToast('Cintura guardada ✓');
+});
+
+// Barriga: la cinta por el ombligo (la cintura es donde va el cinturón). Se guarda igual que la cintura.
+document.getElementById('saveBellyBtn').addEventListener('click', () => {
+  const input = document.getElementById('bellyInput');
+  const val = parseFloat(input.value);
+  if (!medidaValida('belly', val)) return;
+  Storage.set('bellies', anotarMedida(Storage.get('bellies', []), 'belly', val, fechaEs(new Date())));
+  input.value = '';
+  updateDashboard();
+  showToast('Barriga guardada ✓');
 });
 
 function renderWeightLog() {
