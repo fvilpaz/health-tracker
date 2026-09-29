@@ -92,6 +92,17 @@ test('fichas de Meds y Nutrición: sin perfil se ve todo (como antes); con perfi
   assert.equal(seVe('m:ebymect', { medications: ['ebymect'] }), true);
   assert.equal(seVe('c:diabetes2 m:insulin', { conditions: ['diabetes2'] }), true);
   assert.equal(seVe('c:fatty-liver', { conditions: ['asthma'], medications: ['ebymect'] }), false);
+  assert.equal(seVe('s:omega3', { supplements: ['omega3'] }), true);      // fichas por suplemento
+  assert.equal(seVe('s:omega3', { supplements: [] }), false);
+});
+
+test('P0 del 28-sep: cetoacidosis en Ebymect, sin «vitamina E» en hígado, sin suplementos que se decidió quitar, sin dosis de nadie', () => {
+  const html = fs.readFileSync(path.join(__dirname, '..', 'src', 'index.html'), 'utf8');
+  const meds = html.slice(html.indexOf('<section id="medicacion"'), html.indexOf('</section>', html.indexOf('<section id="medicacion"')));
+  assert.match(meds, /cetoacidosis/i);
+  assert.doesNotMatch(meds, /vitamina E/);
+  for (const fuera of ['Vitamina D3', 'Magnesio', 'Whey', 'Vitamina B12', '5mg + Metformina 850mg']) assert.ok(!meds.includes(fuera), fuera);
+  assert.doesNotMatch(meds, /SEGURO<\/span>[\s\S]{0,200}Creatina/);
 });
 
 test('cada ficha de index.html apunta a enfermedades y medicamentos que existen en el catálogo', () => {
@@ -99,7 +110,7 @@ test('cada ficha de index.html apunta a enfermedades y medicamentos que existen 
   const html = fs.readFileSync(path.join(__dirname, '..', 'src', 'index.html'), 'utf8');
   const claves = [...html.matchAll(/data-si="([^"]+)"/g)].flatMap(m => m[1].split(' '));
   assert.ok(claves.length >= 10, 'hay fichas marcadas');
-  const existe = { c: new Set(h.conditions.map(x => x.id)), m: new Set(h.medications.map(x => x.id)) };
+  const existe = { c: new Set(h.conditions.map(x => x.id)), m: new Set(h.medications.map(x => x.id)), s: new Set(h.supplements.map(x => x.id)) };
   assert.deepEqual(claves.filter(k => { const [t, id] = k.split(':'); return !existe[t]?.has(id); }), []);
 });
 
