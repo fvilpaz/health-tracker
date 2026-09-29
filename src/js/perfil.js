@@ -75,8 +75,7 @@ function seVe(claves, perfil) {
 function aplicarPerfilFichas() {
   const perfil = Storage.get('profile');
   document.querySelectorAll('[data-si]').forEach(el => { el.hidden = !seVe(el.dataset.si, perfil); });
-  const aviso = document.getElementById('avisoMedico');
-  if (aviso) aviso.hidden = !riesgoEjercicio(perfil);
+  renderAvisosEntreno();   // rutina.js
   const vacio = document.getElementById('medsVacio');
   if (vacio) vacio.hidden = !perfil || [...document.querySelectorAll('#medicacion [data-si]')].some(el => !el.hidden);
 }
