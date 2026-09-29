@@ -632,7 +632,7 @@ table.labs td.fuera { color: var(--red); }
 }
 .plan-card.current { border-color: var(--blue); background: var(--blue-light); }
 /* Etiquetas dentro de cada semana: ENTRENOS encima del 1 2 3; PESO, CINTURA y BARRIGA encima de su recuadro */
-.plan-mini { display: inline-flex; align-items: center; gap: 4px; font-size: 0.55rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.04em; }
+.plan-mini { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.55rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.02em; }   /* icono encima del nombre: todas caben sobre su recuadro */
 .mini-ico { width: 12px; height: 12px; color: var(--blue); }
 /* Entrenos: la etiqueta y debajo las 3 casillas, cada una en su tercio (alineadas con los recuadros de abajo) */
 .plan-entrenos { margin-bottom: 14px; }
