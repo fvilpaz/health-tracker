@@ -768,11 +768,11 @@ table.labs td.fuera { color: var(--red); }
    así nada salta de sitio al abrir o cerrar algo (con columnas, las tarjetas se recolocaban solas). Lo que se
    reparte en horizontal es el CONTENIDO de cada tarjeta, en columnas automáticas. En el móvil no cambia nada. */
 @media (min-width: 900px) {
-  .app-container, .app-footer { max-width: min(94vw, 1500px); }
+  .app-container, .app-footer { max-width: max(60vw, 860px); }   /* 20 % de margen a cada lado; nunca más estrecha de 860 px */
   .stats-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }   /* las 9 tarjetas en una fila en un portátil */
   #exerciseList { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 10px; }
   /* Dentro de las tarjetas, en fila: comidas del día, todas las opciones, recomendaciones, alimentos, logros, metas, días */
-  #comidasIdeas, #comidasTodasLista, #comidasConsejos { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; align-items: start; }
+  #comidasIdeas, #comidasTodasLista, #comidasConsejos { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; align-items: start; }
   .food-grid, .logros-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
   .metas-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
   .semana-dias { display: grid; grid-template-columns: repeat(7, 1fr); }
