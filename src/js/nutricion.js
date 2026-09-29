@@ -53,7 +53,8 @@ async function renderNutricion() {
     const bloque = el('div', 'meal-card');
     const ul = el('ul', 'meal-items');
     ul.append(...c.lines.map(l => el('li', '', l)));
-    bloque.append(el('div', 'meal-title', c.title), ul);
+    if (c.title) bloque.append(el('div', 'meal-title', c.title));   // las generales (A1) van sin título
+    bloque.append(ul);
     return bloque;
   }));
 }

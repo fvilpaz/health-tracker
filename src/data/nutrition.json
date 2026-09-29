@@ -77,7 +77,7 @@
     { "name": "Grasas trans y saturadas (bollería industrial, manteca)", "rule": "A6", "when": "c:cholesterol" }
   ],
   "advice": [
-    { "rule": "A1", "title": "Para todo el mundo (AESAN)", "lines": [
+    { "rule": "A1", "lines": [
       "Al día: 3 o más raciones de verdura y 2 o 3 de fruta entera (el zumo no la sustituye).",
       "A la semana: legumbres 4 o más veces, pescado 3 o más (sobre todo azul), huevos hasta 4 y carne como mucho 3 (mejor ave o conejo).",
       "Cereales mejor integrales, aceite de oliva para cocinar y aliñar, y agua como bebida." ] },
