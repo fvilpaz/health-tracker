@@ -28,7 +28,7 @@ Tracker semanal integrado con:
 
 ## Características técnicas
 
-- **Stack**: HTML5 · CSS3 · JavaScript ES6 · Chart.js 4 · pdf.js 4 (las dos en `vendor/`, verificadas contra el registro npm)
+- **Stack**: HTML5 · CSS3 · JavaScript ES6 · Chart.js 4 · pdf.js 4 (las dos en `src/vendor/`, verificadas contra el registro npm)
 - **Sin dependencias de build** — archivos estáticos puros
 - **Tema oscuro** por defecto (y claro), responsive (mobile-first); colores con contraste suficiente (WCAG ≥ 4,5) en los dos
 - **localStorage** — tus datos no salen de tu navegador
@@ -41,33 +41,34 @@ Tracker semanal integrado con:
 
 ```
 health-tracker/
-├── index.html              ← App principal (7 pestañas)
-├── manifest.webmanifest    ← Nombre, colores e iconos para instalarla como app
-├── sw.js                   ← Service worker: red primero, sin conexión usa la última copia
-├── icons/                  ← Iconos 192/512, maskable y de iOS
-├── vendor/                 ← Chart.js y pdf.js servidos desde aquí (ver vendor/README.md)
-├── css/styles.css          ← Estilos completos (dark mode, responsive)
-├── js/                     ← Un archivo por tarea (se cargan en este orden desde index.html)
-│   ├── iconos.js           ← Todos los iconos (línea y duotono) en un solo sitio
-│   ├── storage.js          ← Wrapper de localStorage + esc() para pintar datos sin riesgo
-│   ├── copia.js            ← Exportar/importar la copia, validando lo que entra (solo lo que tiene la forma correcta)
-│   ├── timer.js            ← Temporizador con círculo SVG
-│   ├── charts.js           ← Gráfica Chart.js para peso
-│   ├── workout.js          ← Fases del entreno, temporizador y sus botones
-│   ├── semana.js           ← Bloques hechos (sessions), lunes de cada semana, aviso de color y racha
-│   ├── analisis.js         ← Análisis: catálogo de pruebas, tabla, comparativa, lector del PDF y PDF guardados
-│   ├── dashboard.js        ← Panel principal (tarjetas y semáforo) y metas
-│   ├── plan.js             ← Plan de 12 semanas (objetivos, lo real de cada semana y casillas)
-│   ├── medidas.js          ← Guardar peso, cintura, barriga y altura; historial de peso
-│   ├── logros.js           ← Logros
-│   └── app.js              ← Arranque, configuración inicial, tema, navegación, avisos e instalación
-├── data/workouts.json      ← Datos de ejercicios por fase
-├── docs/
-│   ├── PLAN.md             ← Plan de mejoras priorizado
-│   └── SESION.md           ← Notas internas (no público)
+├── src/                    ← La app: SOLO esta carpeta se publica en la web
+│   ├── index.html              ← App principal (7 pestañas)
+│   ├── manifest.webmanifest    ← Nombre, colores e iconos para instalarla como app
+│   ├── sw.js                   ← Service worker: red primero, sin conexión usa la última copia
+│   ├── icons/                  ← Iconos 192/512, maskable y de iOS
+│   ├── vendor/                 ← Chart.js y pdf.js servidos desde aquí (ver vendor/README.md)
+│   ├── css/styles.css          ← Estilos completos (dark mode, responsive)
+│   ├── js/                     ← Un archivo por tarea (se cargan en este orden desde index.html)
+│   │   ├── tema.js             ← Pone el tema (claro/oscuro) antes de pintar: sin destello al abrir
+│   │   ├── iconos.js           ← Todos los iconos (línea y duotono) en un solo sitio
+│   │   ├── storage.js          ← Wrapper de localStorage + esc() para pintar datos sin riesgo
+│   │   ├── copia.js            ← Exportar/importar la copia, validando lo que entra (solo lo que tiene la forma correcta)
+│   │   ├── timer.js            ← Temporizador con círculo SVG
+│   │   ├── charts.js           ← Gráfica Chart.js para peso
+│   │   ├── workout.js          ← Fases del entreno, temporizador y sus botones
+│   │   ├── semana.js           ← Bloques hechos (sessions), lunes de cada semana, aviso de color y racha
+│   │   ├── analisis.js         ← Análisis: catálogo de pruebas, tabla, comparativa, lector del PDF y PDF guardados
+│   │   ├── dashboard.js        ← Panel principal (tarjetas y semáforo) y metas
+│   │   ├── plan.js             ← Plan de 12 semanas (objetivos, lo real de cada semana y casillas)
+│   │   ├── medidas.js          ← Guardar peso, cintura, barriga y altura; historial de peso
+│   │   ├── logros.js           ← Logros
+│   │   └── app.js              ← Arranque, configuración inicial, tema, navegación, avisos e instalación
+│   └── data/workouts.json      ← Datos de ejercicios por fase
 ├── tests/                  ← Pruebas (node --test): semana, copias/seguridad, análisis, plan, lector del PDF, temporizador, panel, metas y logros
+├── docs/PLAN.md            ← Plan de mejoras priorizado
+├── CLAUDE.md               ← Contexto para la IA: reglas y decisiones que no se tocan
 └── .github/workflows/
-    └── pages.yml           ← Deploy automático a GitHub Pages
+    └── pages.yml           ← Pruebas y, si pasan, publica src/ en GitHub Pages
 ```
 
 ## Privacidad
@@ -88,7 +89,7 @@ si uno falla, la web no se actualiza. Los datos de los tests son inventados (el 
 
 ## Seguridad
 
-- **Nada de terceros en tiempo real**: Chart.js, pdf.js y la fuente Inter van en `vendor/`; una **CSP** solo deja cargar código y fuentes de este sitio. La app no contacta con ningún otro servidor.
+- **Nada de terceros en tiempo real**: Chart.js, pdf.js y la fuente Inter van en `src/vendor/`; una **CSP** solo deja cargar código y fuentes de este sitio. La app no contacta con ningún otro servidor.
 - **Importar es seguro**: una copia manipulada no puede colar código (se valida al entrar y todo se escapa al pintarse).
 - **Ver PDF** abre siempre como PDF, aunque el archivo diga otra cosa.
 - Auditado con [nando-toolkit](https://github.com/fvilpaz) (gitleaks, ESLint de seguridad, semgrep); los informes no se suben al repo.

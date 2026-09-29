@@ -6,7 +6,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const RAIZ = path.join(__dirname, '..');
+const RAIZ = path.join(__dirname, '..', 'src');   // la app vive en src/
 
 test('el service worker guarda para sin conexión todos los scripts que carga index.html', () => {
   const sw = fs.readFileSync(path.join(RAIZ, 'sw.js'), 'utf8');

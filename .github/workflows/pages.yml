@@ -42,8 +42,8 @@ jobs:
       - uses: actions/configure-pages@v4
       # Sella sw.js con el commit: así el móvil detecta la versión nueva, borra la caché vieja y se recarga
       - name: Versión del service worker
-        run: sed -i "/^const CACHE/s/__VERSION__/${GITHUB_SHA::12}/" sw.js && grep -n "const CACHE" sw.js
+        run: sed -i "/^const CACHE/s/__VERSION__/${GITHUB_SHA::12}/" src/sw.js && grep -n "const CACHE" src/sw.js
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: src   # solo la app: las pruebas y los documentos no se publican
       - uses: actions/deploy-pages@v4
