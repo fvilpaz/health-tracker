@@ -54,6 +54,7 @@ function renderPlanTable() {
   const settings = Storage.get('settings', {});
   const weights = Storage.get('weights', []);
   const waists = Storage.get('waists', []);
+  const bellies = Storage.get('bellies', []);
 
   // Objetivos a partir de TUS datos (antes había 97 kg, 105 cm y 90 kg escritos a fuego como respaldo)
   const delPlan = medidasDelPlan(weights), cinturasDelPlan = medidasDelPlan(waists);
@@ -87,6 +88,7 @@ function renderPlanTable() {
     // Lo real de la semana sale de lo que registras en Progreso (una sola fuente): la última medida de esa semana
     const realWeight = ultimaDeSemana(weights, 'weight', weekDate);
     const realWaist = ultimaDeSemana(waists, 'waist', weekDate);
+    const realBelly = ultimaDeSemana(bellies, 'belly', weekDate);
     const hechos = sessionsInWeek(weekDate).length;   // las casillas salen solas de los bloques hechos esa semana
     const checks = [0, 1, 2].map(i => i < hechos);
     const isCurrent = w === currentWeekNum;
@@ -112,6 +114,7 @@ function renderPlanTable() {
     html += `<div class="plan-inputs">`;
     html += planValor(targetWeight, realWeight, 'kg');
     html += planValor(targetWaist, realWaist, 'cm');
+    html += planValor(null, realBelly, 'cm', 'barriga');   // sin objetivo semanal: no hay regla con fuente para la barriga
     html += `</div>`;
     html += `</div>`;
 
@@ -136,10 +139,11 @@ function ultimaDeSemana(lista, campo, lunes) {
   return enSemana.length ? enSemana[enSemana.length - 1][campo] : null;
 }
 
-// Objetivo arriba y lo real debajo (verde si llegas al objetivo de esa semana)
-function planValor(objetivo, real, unidad) {
+// Objetivo arriba y lo real debajo (verde si llegas al objetivo de esa semana). Sin objetivo, «etiqueta» arriba.
+function planValor(objetivo, real, unidad, etiqueta) {
   const cumple = real != null && objetivo != null && real <= objetivo;
-  return `<div class="plan-input-group"><span class="plan-target"><span>${objetivo != null ? objetivo.toFixed(1) : '—'}</span> ${unidad}</span>` +
+  const arriba = etiqueta ? etiqueta : `<span>${objetivo != null ? objetivo.toFixed(1) : '—'}</span> ${unidad}`;
+  return `<div class="plan-input-group"><span class="plan-target">${arriba}</span>` +
     `<span class="plan-real${real != null ? ' con-dato' : ''}${cumple ? ' cumple' : ''}">${real != null ? esc(real) : '—'}</span></div>`;
 }
 
