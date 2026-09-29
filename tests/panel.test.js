@@ -150,18 +150,18 @@ test('empezar otro plan: conserva el historial, empieza hoy y el objetivo sale d
   assert.equal(app.get('medidasDelPlan')(S.get('weights'))[0].weight, 90);
 });
 
-test('tracker semanal: sin objetivo sale «— cm» (la leyenda ya dice qué es) y la semana 1, «inicio» con su unidad', () => {
-  const valor = crearApp().get('planValor');
-  const barriga = valor(null, 108.5, 'cm');
+test('tracker semanal: sin objetivo sale «— cm» (la leyenda ya dice qué es)', () => {
+  const barriga = crearApp().get('planValor')(null, 108.5, 'cm');
   assert.match(barriga, /<span>—<\/span> cm/);
-  assert.doesNotMatch(barriga, /barriga|cumple/);
+  assert.doesNotMatch(barriga, /barriga|cumple|inicio/);
   assert.match(barriga, /108\.5/);
-  assert.match(valor(null, 95.6, 'kg', 'inicio'), /inicio kg/);
 });
 
-test('objetivo de cada semana: la 1 es el punto de partida (sin objetivo) y la última llega justo a la meta', () => {
+test('objetivo de cada semana: la 1 es el valor con el que empiezas (tal cual) y la última llega justo a la meta', () => {
   const obj = crearApp().get('objetivoDeLaSemana');
-  assert.equal(obj(95.6, 88.6, 12, 1), null);                 // semana 1: lo que pusiste al empezar
+  assert.equal(obj(95.6, 88.6, 12, 1), 95.6);                 // semana 1: el mismo número con el que empiezas
+  assert.equal(obj(110, null, 12, 1), 110);                   // también sin meta (la barriga): su punto de partida
+  assert.equal(obj(110, null, 12, 2), null);                  // y luego, sin objetivos
   assert.equal(+obj(95.6, 88.6, 12, 2).toFixed(2), 94.96);    // 95,6 − 7/11
   assert.equal(+obj(95.6, 88.6, 12, 12).toFixed(2), 88.6);    // última semana = meta
   assert.equal(obj(95.6, null, 12, 5), null);                  // sin meta, sin objetivos

@@ -51,7 +51,7 @@
 ## ✅ Completado
 
 **29-sep-2026**
-- [x] Tracker: semana 1 como punto de partida (sin objetivo; iba una semana adelantada) y leyenda como una fila más, alineada con cada columna también cuando las medidas bajan
+- [x] Tracker: semana 1 con los mismos números con los que empiezas (iba una semana adelantada); columna «— cm» en la barriga y leyenda como una fila más, alineada con cada columna también cuando las medidas bajan
 - [x] Tracker semanal con la barriga: peso, cintura y barriga siempre juntas (en móviles pequeños bajan juntas bajo las casillas)
 - [x] Aviso al acabar el plan con «Empezar otro plan»: conserva el historial, empieza hoy y el objetivo sale del peso de ahora; la tabla y el objetivo usan las medidas de ESTE plan
 - [x] Calentamiento de articulaciones (E13; 8 ejercicios, 5 min 40 s) sin fuerza ni balanceo; en los bloques, el principal de cada zona por orden del catálogo (antes salía «Elevación de talones» como piernas)
