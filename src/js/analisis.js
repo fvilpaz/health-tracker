@@ -106,14 +106,13 @@ function renderAnalisis() {
     return `<details class="lab-sec" data-fecha="${esc(l.date)}"${abiertos.has(l.date) ? ' open' : ''}><summary><div class="lab-tit">${duo('semana', 'tit-ico')} ${esc(labFechaLarga(l.date))}` +
       `<small>${pruebas.length} pruebas · ${fuera ? `${estado('alerta')} ${fuera} fuera de rango` : `${estado('ok')} todo en rango`}</small></div><span class="lab-flecha"></span></summary>` +
       `<div class="lab-cuerpo"><button class="btn btn-primary lab-pdf" data-fecha="${esc(l.date)}" title="Adjuntar PDF" aria-label="Adjuntar PDF">${ICONO.adjuntar}</button>` +
+      `<button class="btn btn-red lab-borrar" data-fecha="${esc(l.date)}" title="Borrar análisis" aria-label="Borrar análisis (valores y PDF)">${ICONO.papelera}</button>` +
       pruebas.map(t => {
         const v = l.values[t.k], mal = t.mejor !== 'info' && labFuera(t, v);
         return `<div class="lab-fila ${mal ? 'fuera' : ''}"><div class="lab-fila-top"><span>${estado(t.mejor === 'info' ? 'info' : mal ? 'alerta' : 'ok')} ${t.n}</span>` +
           `<strong>${labNum(v)} <small>${t.u}</small></strong></div>` +
           `<div class="lab-fila-ref">Debería: ${labDebe(t)} ${t.u}</div><div class="lab-fila-que">${LAB_INFO[t.k][0]}</div></div>`;
-      }).join('') +
-      `<button class="btn btn-full setup-cancel lab-borrar" data-fecha="${esc(l.date)}">${ICONO.papelera} Borrar este análisis</button>` +
-      '</div></details>';
+      }).join('') + '</div></details>';
   }).join('');
   pdfFechas().then(fechas => tabla.querySelectorAll('.lab-pdf').forEach(b => {
     if (!fechas.includes(b.dataset.fecha)) return;
