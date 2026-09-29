@@ -35,6 +35,7 @@
 - [ ] **Dosis y recordatorios de tomas** — como la app Salud de Apple: por cada medicamento, dosis, forma (pastilla, inyección…) y cuándo; aviso a la hora de la toma
 - [ ] **Menú semanal** — hoy hay «Sugerencias del día» según el perfil; generar la semana completa respetando las raciones de la AESAN (legumbres ≥4, pescado ≥3, carne ≤3…)
 - [ ] **Copia automática a Google Drive** — sin tocar nada: permiso con la cuenta de Google, alta en Google Cloud y abrir la CSP a Google. NUNCA a GitHub (repo público; una llave de GitHub en el móvil es un riesgo)
+- [ ] **Sincronizar con un Gist** (idea de Nando, 29-sep-2026) — la copia en un Gist secreto de GitHub, que lean el móvil y el PC. Pega: hace falta una llave (token) de GitHub guardada en el móvil; si alguien la saca, entra en su cuenta. Mitigar con un token que SOLO pueda tocar Gists y un Gist secreto (no es privado del todo: quien tenga el enlace lo ve)
 - [ ] **Sincronizar móvil y PC** — hoy cada aparato tiene sus datos (localStorage) y se pasan con Exportar/Importar. Opciones: un archivo en Drive que lean los dos, o servidor propio (Django + PostgreSQL). Con servidor: datos de salud = categoría especial del RGPD
 - [ ] **Idioma inglés** — selector de idioma en «Mi perfil»; todos los textos a diccionarios (es/en), catálogos (ejercicios, comidas, consejos, fichas de Meds, avisos) con su versión en inglés **revisada** (un aviso médico mal traducido es peligroso), fechas y decimales según el idioma. Grande: varios cientos de líneas, por pasos. Hacerlo cuando alguien lo vaya a usar en inglés
 - [ ] **Datos del reloj** — ver pasos, pulso, sueño… de Google Fit / Amazfit (Zepp) en la app. Ojo: Google Fit está cerrando su API (Health Connect en Android la sustituye) y desde una web no se lee Health Connect directamente: revisar opciones (Zepp → Google Fit/Strava, o app Android)
@@ -52,6 +53,7 @@
 ## ✅ Completado
 
 **29-sep-2026**
+- [x] Calentamiento de articulaciones (E13) y fuera la fuerza del calentamiento; en los bloques, el principal de cada zona por orden del catálogo (antes salía «Elevación de talones» como piernas)
 - [x] P0 del 28-sep: aviso de **cetoacidosis** en Ebymect (prospecto de la EMA), sin la dosis de nadie; fuera «omega 3 y vitamina E» del hígado; suplementos: fichas de omega 3 (AHA) y creatina (avisar al médico) y «Evitar»; fuera D3, magnesio, whey y B12 (reglas M7-M9)
 - [x] Barriga (por el ombligo) aparte de la cintura (donde va el cinturón)
 - [x] La app en `src/` y solo eso se publica; `CLAUDE.md` del proyecto

@@ -55,9 +55,10 @@ test('vueltas según los minutos: 15 → 2, 20 → 3, 30 o más → 4; y la dura
 test('duración de cada fase: se calcula de los ejercicios tal como corre el temporizador (antes, a mano y mal)', () => {
   const app = crearApp(), dur = app.get('duracionFase'), texto = app.get('textoDuracion');
   const w = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'src', 'data', 'workouts.json'), 'utf8'));
-  // Calentamiento: 5 × (40 + 20) = 300 s (sin la sentadilla parcial desde el 29-sep). Antes ponía «4 min» a mano.
-  assert.equal(dur(w.warmup, w.warmup.exercises), 300);
-  assert.ok(!w.warmup.exercises.some(e => e.name === 'Sentadilla parcial'));
+  // Calentamiento de articulaciones (29-sep): marcha y balanceo 40+20, siete de movilidad 30+10 = 400 s. Antes ponía «4 min» a mano.
+  assert.equal(dur(w.warmup, w.warmup.exercises), 400);
+  // Nada de fuerza en el calentamiento: talones, rodillas y sentadillas van en los bloques
+  for (const fuera of ['Sentadilla parcial', 'Elevación de rodillas', 'Elevación de talones']) assert.ok(!w.warmup.exercises.some(e => e.name === fuera), fuera);
   // Fuerza: 3 vueltas × 4 × (40 + 20) + 2 descansos de 60 s = 840 s
   assert.equal(dur(w.strength, w.strength.blocks['1'].exercises), 840);
   // Vuelta a la calma: 25 × 4 + 30 = 130 s. Ponía «2 min».
@@ -109,4 +110,10 @@ test('avisos de Entreno según el perfil (E5, E6, E7, E8, E12)', () => {
   assert.deepEqual(avisos({ conditions: ['diabetes2'], medications: ['metformin'] }), []);   // sin insulina, no
   assert.deepEqual(avisos({ conditions: ['diabetes2'], medications: ['insulin'] }), ['E6']);
   assert.deepEqual(avisos({ conditions: ['hypertension', 'asthma'] }), ['E7', 'E8']);
+});
+
+test('el principal de cada zona sale por orden del catálogo, no alfabético (antes salía «Elevación de talones» como piernas)', () => {
+  const f = armar({ level: 1 });
+  assert.equal(f.blocks[1].exercises[0].name, 'Sentadilla a silla');
+  assert.ok(!todos(f).some(e => e.id === 'partial-squat'), 'la sentadilla parcial es de calentamiento');
 });
