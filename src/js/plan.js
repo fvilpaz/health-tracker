@@ -120,7 +120,7 @@ function renderPlanTable() {
     // Semana 1: el punto de partida («inicio» y lo que pusiste al empezar), sin objetivo
     html += planValor(targetWeight, realWeight, 'kg', w === 1 ? 'inicio' : undefined);
     html += planValor(targetWaist, realWaist, 'cm', w === 1 ? 'inicio' : undefined);
-    html += planValor(null, realBelly, 'cm', 'barriga');   // sin objetivo semanal: no hay regla con fuente para la barriga
+    html += planValor(null, realBelly, 'cm', w === 1 ? 'inicio' : undefined);   // sin objetivo semanal: no hay regla con fuente para la barriga
     html += `</div>`;
     html += `</div>`;
 
@@ -155,7 +155,7 @@ function objetivoDeLaSemana(inicio, meta, semanas, w) {
 // Objetivo arriba y lo real debajo (verde si llegas al objetivo de esa semana). Sin objetivo, «etiqueta» arriba.
 function planValor(objetivo, real, unidad, etiqueta) {
   const cumple = real != null && objetivo != null && real <= objetivo;
-  const arriba = etiqueta ? etiqueta : `<span>${objetivo != null ? objetivo.toFixed(1) : '—'}</span> ${unidad}`;
+  const arriba = etiqueta ? `${etiqueta} ${unidad}` : `<span>${objetivo != null ? objetivo.toFixed(1) : '—'}</span> ${unidad}`;
   return `<div class="plan-input-group"><span class="plan-target">${arriba}</span>` +
     `<span class="plan-real${real != null ? ' con-dato' : ''}${cumple ? ' cumple' : ''}">${real != null ? esc(real) : '—'}</span></div>`;
 }
