@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initApp() {
   initNav();
+  aplicarPerfilFichas();   // Meds y Nutrición según el perfil (perfil.js)
   updateDashboard();   // ya pinta también el plan (antes se pintaba dos veces al abrir)
   renderWeightLog();
   checkLogros();

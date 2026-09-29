@@ -201,7 +201,7 @@
       <div class="card">
         <div class="card-title" role="heading" aria-level="2">Esquema del plato</div>
         <div class="disclaimer">
-          Plato equilibrado para diabetes tipo 2 y hígado graso. Prioriza alimentos de bajo índice glucémico y grasas saludables.
+          Plato equilibrado<span data-si="c:diabetes2 c:prediabetes m:ebymect m:metformin m:insulin">, pensado para controlar el azúcar</span><span data-si="c:fatty-liver"> y cuidar el hígado</span>. Prioriza alimentos de bajo índice glucémico y grasas saludables.
         </div>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
           <div class="food-tag good">½ verduras y hortalizas</div>
@@ -276,7 +276,11 @@
 
     <!-- ===== MEDICACIÓN ===== -->
     <section id="medicacion" class="section">
-      <div class="card">
+      <div class="card" id="medsVacio" hidden>
+        <div class="card-title" role="heading" aria-level="2">Tu medicación</div>
+        <div class="meta-aviso">No has marcado medicación ni enfermedades con ficha en tu perfil. Si tomas algo, añádelo en «Mi perfil» (botón de arriba). Aquí verás qué vigilar y las señales de alerta.</div>
+      </div>
+      <div class="card" data-si="m:ebymect">
         <div class="med-card">
           <div class="med-name">Ebymect</div>
           <div class="med-components">Dapagliflozina 5mg + Metformina 850mg</div>
@@ -290,7 +294,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" data-si="c:fatty-liver">
         <div class="card-title" role="heading" aria-level="2">Hígado graso (NAFLD)</div>
         <ul class="med-tips" style="list-style:none; display:flex; flex-direction:column; gap:5px;">
           <li style="font-size:0.83rem;">La pérdida de peso es el tratamiento principal</li>
@@ -301,7 +305,7 @@
         </ul>
       </div>
 
-      <div class="card">
+      <div class="card" data-si="c:gilbert">
         <div class="card-title" role="heading" aria-level="2">Síndrome de Gilbert</div>
         <ul class="med-tips" style="list-style:none; display:flex; flex-direction:column; gap:5px;">
           <li style="font-size:0.83rem;">Benigno — no requiere tratamiento</li>
@@ -311,32 +315,32 @@
         </ul>
       </div>
 
-      <div class="card">
+      <div class="card" data-si="m:ebymect c:diabetes2 m:insulin c:gilbert">
         <div class="card-title" role="heading" aria-level="2"><svg class="tit-ico aviso" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M215.46,216H40.54C27.92,216,20,202.79,26.13,192.09L113.59,40.22c6.3-11,22.52-11,28.82,0l87.46,151.87C236,202.79,228.08,216,215.46,216Z" opacity="0.2"/><path d="M236.8,188.09,149.35,36.22h0a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09ZM222.93,203.8a8.5,8.5,0,0,1-7.48,4.2H40.55a8.5,8.5,0,0,1-7.48-4.2,7.59,7.59,0,0,1,0-7.72L120.52,44.21a8.75,8.75,0,0,1,15,0l87.45,151.87A7.59,7.59,0,0,1,222.93,203.8ZM120,144V104a8,8,0,0,1,16,0v40a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,180Z"/></svg> Señales de alerta</div>
-        <div class="alert-card">
+        <div class="alert-card" data-si="m:ebymect">
           <div class="alert-title">Infección urinaria (dapagliflozina)</div>
           Ardor al orinar, fiebre, dolor lumbar → consultar médico
         </div>
-        <div class="alert-card">
+        <div class="alert-card" data-si="c:diabetes2 m:insulin m:ebymect">
           <div class="alert-title">Hipoglucemia</div>
           Temblores, sudoración fría, mareo → comer algo con azúcar rápido
         </div>
-        <div class="alert-card">
+        <div class="alert-card" data-si="m:ebymect">
           <div class="alert-title">Deshidratación</div>
           Boca seca, orina oscura, dolor de cabeza → beber agua + electrolitos
         </div>
-        <div class="alert-card">
+        <div class="alert-card" data-si="c:gilbert">
           <div class="alert-title">Ictericia pronunciada (Gilbert)</div>
           Ojos muy amarillos + malestar general → analítica de control
         </div>
       </div>
 
       <!-- Suplementos (antes pestaña propia) -->
-      <div class="disclaimer">
+      <div class="disclaimer" data-si="c:diabetes2 c:prediabetes c:fatty-liver m:ebymect m:metformin m:insulin">
         Esta sección es orientativa. Consulta siempre con tu médico antes de añadir suplementos, especialmente con diabetes tipo 2 y medicación activa.
       </div>
 
-      <div class="card">
+      <div class="card" data-si="c:diabetes2 c:prediabetes c:fatty-liver m:ebymect m:metformin m:insulin">
         <div class="card-title" role="heading" aria-level="2">Suplementos recomendados</div>
 
         <div class="suplement-card safe">
@@ -384,7 +388,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" data-si="c:diabetes2 c:prediabetes c:fatty-liver m:ebymect m:metformin m:insulin">
         <div class="card-title" role="heading" aria-level="2">Con precaución</div>
 
         <div class="suplement-card caution">
@@ -412,7 +416,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" data-si="c:diabetes2 c:prediabetes c:fatty-liver m:ebymect m:metformin m:insulin">
         <div class="card-title" role="heading" aria-level="2">Evitar</div>
 
         <div class="suplement-card avoid">

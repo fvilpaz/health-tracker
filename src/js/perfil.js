@@ -57,6 +57,24 @@ function limpiarPerfil(p) {
   return { perfil, descartados };
 }
 
+/* ===== FICHAS SEGÚN EL PERFIL (Meds y Nutrición) ===== */
+// Cada ficha de index.html lleva data-si="c:enfermedad m:medicamento …" (ids de data/health.json): se ve si el
+// perfil tiene alguna. Sin perfil se ve todo, como antes (una copia vieja no pierde nada de vista).
+function seVe(claves, perfil) {
+  if (!perfil) return true;
+  return claves.split(' ').some(k => {
+    const [tipo, id] = k.split(':');
+    return ((tipo === 'c' ? perfil.conditions : perfil.medications) || []).includes(id);
+  });
+}
+
+function aplicarPerfilFichas() {
+  const perfil = Storage.get('profile');
+  document.querySelectorAll('[data-si]').forEach(el => { el.hidden = !seVe(el.dataset.si, perfil); });
+  const vacio = document.getElementById('medsVacio');
+  if (vacio) vacio.hidden = !perfil || [...document.querySelectorAll('#medicacion [data-si]')].some(el => !el.hidden);
+}
+
 /* ===== CUESTIONARIO ===== */
 let catalogoSalud = null;
 async function cargarCatalogoSalud() {
@@ -213,7 +231,7 @@ async function abrirCuestionario({ nuevo }) {
       Storage.set('settings', s);
     }
     overlay.remove();
-    if (nuevo) initApp(); else { updateDashboard(); showToast('Perfil guardado ✓'); }
+    if (nuevo) initApp(); else { updateDashboard(); aplicarPerfilFichas(); showToast('Perfil guardado ✓'); }
   }
 
   $('pfSiguiente').addEventListener('click', () => {
