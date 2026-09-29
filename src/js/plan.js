@@ -107,18 +107,19 @@ function renderPlanTable() {
     html += `<span class="plan-week-label">Semana ${w}</span>`;
     html += `<span class="plan-date">${dateLabel}</span>`;
     html += `</div>`;
-    html += `<div class="plan-entrenos"><span class="plan-mini">ENTRENOS</span><div class="plan-checks">`;
+    // Entrenos: las 3 casillas tan anchas como los recuadros de abajo, cada una encima de uno
+    html += `<div class="plan-entrenos"><span class="plan-mini">${duo('pesa', 'mini-ico')}ENTRENOS</span><div class="plan-inputs">`;
     [1, 2, 3].forEach((num, i) => {
-      html += `<span class="plan-check ${checks[i] ? 'checked' : ''}">${checks[i] ? '✓' : num}</span>`;
+      html += `<div class="plan-input-group"><span class="plan-check ${checks[i] ? 'checked' : ''}">${checks[i] ? '✓' : num}</span></div>`;
     });
     html += `</div></div>`;
 
     html += `<div class="plan-row-bottom">`;
     html += `<div class="plan-inputs">`;
-    html += planValor(targetWeight, realWeight, 'kg', 'PESO');
-    html += planValor(targetWaist, realWaist, 'cm', 'CINTURA');
+    html += planValor(targetWeight, realWeight, 'kg', 'PESO', 'balanza');
+    html += planValor(targetWaist, realWaist, 'cm', 'CINTURA', 'regla');
     // Barriga: sin meta (no hay regla con fuente); solo la semana 1 enseña su valor de partida
-    html += planValor(objetivoDeLaSemana(startBelly, null, totalWeeks, w), realBelly, 'cm', 'BARRIGA');
+    html += planValor(objetivoDeLaSemana(startBelly, null, totalWeeks, w), realBelly, 'cm', 'BARRIGA', 'regla');
     html += `</div>`;
     html += `</div>`;
 
@@ -153,9 +154,9 @@ function objetivoDeLaSemana(inicio, meta, semanas, w) {
 }
 
 // Nombre (PESO…), objetivo y lo real debajo (verde si llegas al objetivo de esa semana)
-function planValor(objetivo, real, unidad, nombre) {
+function planValor(objetivo, real, unidad, nombre, icono) {
   const cumple = real != null && objetivo != null && real <= objetivo;
-  return `<div class="plan-input-group">${nombre ? `<span class="plan-mini">${nombre}</span>` : ''}<span class="plan-target"><span>${objetivo != null ? objetivo.toFixed(1) : '—'}</span> ${unidad}</span>` +
+  return `<div class="plan-input-group">${nombre ? `<span class="plan-mini">${icono ? duo(icono, 'mini-ico') : ''}${nombre}</span>` : ''}<span class="plan-target"><span>${objetivo != null ? objetivo.toFixed(1) : '—'}</span> ${unidad}</span>` +
     `<span class="plan-real${real != null ? ' con-dato' : ''}${cumple ? ' cumple' : ''}">${real != null ? esc(real) : '—'}</span></div>`;
 }
 
