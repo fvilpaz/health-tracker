@@ -9,6 +9,7 @@ const path = require('node:path');
 const RAIZ = path.join(__dirname, '..');
 const leer = f => JSON.parse(fs.readFileSync(path.join(RAIZ, 'src', 'data', f), 'utf8'));
 const fichas = leer('ejercicios-gym.json').ejercicios;
+const porRef = new Map(Object.entries(fichas));   // para buscar por referencia sin indexar un objeto con texto variable
 const plan = leer('gym.json');
 const ejerciciosDelPlan = plan.days.flatMap(d => d.exercises);
 
@@ -38,7 +39,7 @@ test('correcciones aprobadas por Nando el 7-oct-2026: polea en d3e4, «recostado
   assert.deepEqual(fichas.d3e4.trabaja, ['bíceps (antebrazo como apoyo)']);
   assert.match(fichas.d1e2.pasos[0], /^Recostado/);
   assert.doesNotMatch(JSON.stringify(fichas.d1e2), /tumbado|abrazaras/);
-  for (const ref of ['d1e6', 'd2e5', 'd3e7']) assert.match(fichas[ref].pasos.join(' '), /rodillas en línea con los pies/, ref);
+  for (const ref of ['d1e6', 'd2e5', 'd3e7']) assert.match(porRef.get(ref).pasos.join(' '), /rodillas en línea con los pies/, ref);
   assert.match(fichas.d2e7.pasos[0], /parte delantera del pie/);
   assert.match(fichas.d3e3.pasos[0], /^Sentado con la espalda apoyada \(o de pie\)/);
   assert.ok(fichas.d3e1.trabaja.includes('hombros (parte delantera)'));
@@ -60,7 +61,7 @@ test('«Ojo» y revisión: todas llevan Ojo salvo las sin cambios; todas están 
   assert.deepEqual(fichas.d4e1.pasos[0], 'Espalda apoyada.');
   // las máquinas dicen que los ajustes cambian entre modelos (salvo d1e5, que ya lo dice con su propio Ojo; d4e1 sigue pendiente)
   for (const ref of ['d1e1', 'd1e3', 'd1e6', 'd2e1', 'd2e2', 'd2e5', 'd2e8', 'd3e1', 'd3e2', 'd3e6', 'd3e7', 'd4e2', 'd4e5', 'd4e7', 'd1e7']) {
-    assert.match(fichas[ref].ojo, /Los ajustes cambian entre modelos/, ref);
+    assert.match(porRef.get(ref).ojo, /Los ajustes cambian entre modelos/, ref);
   }
   assert.match(fichas.d1e5.ojo, /indicaciones de la máquina/);
 });
