@@ -10,7 +10,8 @@ const DIR = path.join(__dirname, '..', 'src', 'js');
 function duplicados(archivos) {
   const vistos = new Map(), repetidos = [];
   for (const [archivo, texto] of Object.entries(archivos)) {
-    for (const m of texto.matchAll(/^(?:async\s+)?(?:function\s*\*?|const|let|var)\s+([A-Za-z_$][\w$]*)/gm)) {
+    const nombres = [...texto.matchAll(/^(?:async )?function\*? ([\w$]+)/gm), ...texto.matchAll(/^(?:const|let|var) ([\w$]+)/gm)];
+    for (const m of nombres) {
       if (vistos.has(m[1])) repetidos.push(`${m[1]} (${vistos.get(m[1])} y ${archivo})`);
       else vistos.set(m[1], archivo);
     }
