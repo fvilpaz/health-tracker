@@ -70,9 +70,19 @@ function limpiarCopia(entrada) {
     if (!e || !esFechaIso(e.date) || ![null, '1', '2', '3'].includes(e.block ?? null)) return null;
     if (e.minutes !== undefined && !(esNum(e.minutes) && e.minutes > 0 && e.minutes <= 180)) return null;
     if (e.exercises !== undefined && !(Array.isArray(e.exercises) && e.exercises.length <= 20 && e.exercises.every(x => esTexto(x)))) return null;
+    // Sesión del gimnasio: día del plan (1-5) y cardio opcional al empezar / al acabar (minutos, km y nota, todo opcional)
+    if (e.day !== undefined && !['1', '2', '3', '4', '5'].includes(e.day)) return null;
+    const cardioBueno = c => c && typeof c === 'object' && (c.minutes === undefined || (esNum(c.minutes) && c.minutes > 0 && c.minutes <= 600)) &&
+      (c.km === undefined || (esNum(c.km) && c.km >= 0 && c.km <= 200)) && (c.note === undefined || esTexto(c.note, 120));
+    if (e.cardio !== undefined && !(e.cardio && typeof e.cardio === 'object' && ['start', 'end'].every(k => e.cardio[k] === undefined || cardioBueno(e.cardio[k])))) return null;
     const limpia = { date: e.date, block: e.block ?? null };
+    if (e.day !== undefined) limpia.day = e.day;
     if (e.minutes !== undefined) limpia.minutes = e.minutes;
     if (e.exercises !== undefined) limpia.exercises = [...e.exercises];
+    if (e.cardio !== undefined) {
+      limpia.cardio = {};
+      for (const k of ['start', 'end']) if (e.cardio[k]) limpia.cardio[k] = Object.fromEntries(['minutes', 'km', 'note'].filter(c => e.cardio[k][c] !== undefined).map(c => [c, e.cardio[k][c]]));
+    }
     return limpia;
   });
   const pruebas = new Set(LAB_TESTS.map(t => t.k));
