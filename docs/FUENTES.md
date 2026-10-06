@@ -23,6 +23,7 @@
 | **E10** | Rodillas | **Guía (NICE NG226, artrosis):** el ejercicio terapéutico es el tratamiento principal. **Criterio de la app:** fuera saltos, zancadas y sentadilla isométrica. | Catálogo: molestia «rodillas». |
 | **E11** | Hombros / muñecas | **Criterio de la app** (sin guía concreta): fuera apoyos largos sobre las manos y empujes por encima de la cabeza. | Catálogo: molestias «hombros» y «muñecas». |
 | **E13** | Todos: calentamiento | **Criterio de la app** (práctica habitual de calentamiento: entrar en calor y movilidad articular antes de la fuerza): marcha, giros de cuello suaves (sin círculos completos), hombros, muñecas, tronco, cadera, rodillas, tobillos. Nada de fuerza ni balanceo en el calentamiento. | Fase «Calentamiento» (8 ejercicios, 5 min 40 s) |
+| **E14** | Plan de gimnasio ya hecho: menores de 18, embarazo o algún «sí» del PAR-Q | **Criterio de la app** (se apoya en E4, E5 y E12): un plan de 5 días pensado para otra persona no es adecuado sin que un profesional lo vea. | No se ofrece el plan de gimnasio automático; se pueden apuntar sesiones a mano (fecha y nota) y se muestra el texto de la puerta. Siguen los avisos de E5 y E12. 50+ sin otro factor: solo el aviso suave de E3. |
 | **E12** | Dolor de pecho, mareos o ejercicio supervisado | **Guía (PAR-Q+ 2024):** con un «sí», consultar al médico antes de empezar. | Aviso en Entreno; nivel 1 y sin saltos. |
 
 ## Alimentación

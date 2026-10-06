@@ -25,6 +25,18 @@ function renderAvisosEntreno() {
   caja.hidden = !avisos.length;
 }
 
+/* ===== Puerta del plan de gimnasio (docs/FUENTES.md, E14: criterio de la app; se apoya en E4, E5 y E12) =====
+   Menor de 18, embarazo o algún «sí» del PAR-Q: no se ofrece el plan de 5 días (sí apuntar sesiones a mano).
+   Sin perfil o con perfil sin esos factores, el plan se ve como siempre. */
+function puertaGym(perfil, hoy = new Date()) {
+  if (!perfil) return { cerrada: false, motivos: [] };
+  const motivos = [];
+  if (perfil.birthDate && edad(perfil.birthDate, hoy) < 18) motivos.push('menor');
+  if ((perfil.conditions || []).includes('pregnancy')) motivos.push('embarazo');
+  if (riesgoEjercicio(perfil)) motivos.push('parq');
+  return { cerrada: motivos.length > 0, motivos };
+}
+
 /* ===== Modos de entreno (profile.modes): píldoras «Mis modos», estados vacíos y acordeones ===== */
 const PILDORAS = [['gym', 'Gimnasio'], ['home', 'En casa']];
 

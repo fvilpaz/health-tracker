@@ -126,3 +126,11 @@ test('el borrador de la sesión (gymDraft) se ignora al importar, sin contarlo c
   assert.equal(r.descartados, 0);
   assert.equal(r.datos.gymDraft, undefined);
 });
+
+test('gym.json: cada ejercicio tiene un id estable y único', () => {
+  const plan = JSON.parse(require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'src', 'data', 'gym.json'), 'utf8'));
+  const ids = plan.days.flatMap(d => d.exercises.map(e => e.id));
+  assert.equal(ids.length, 38);
+  assert.ok(ids.every(id => /^d[1-5]e\d{1,2}$/.test(id)));
+  assert.equal(new Set(ids).size, ids.length);
+});

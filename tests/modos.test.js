@@ -132,3 +132,17 @@ test('avisosEntreno no depende de los modos', () => {
   for (const modes of [[], ['gym'], ['home'], ['home', 'gym'], undefined])
     assert.deepEqual(plano(avisos({ ...p, modes }).map(a => a.regla)), ['E5']);
 });
+
+test('puertaGym: menor, embarazo o PAR-Q «sí» cierran el plan automático; el resto lo ve igual', () => {
+  const puerta = crearApp().get('puertaGym'), hoy = new Date(2026, 9, 6);
+  const motivos = p => plano(puerta(p, hoy).motivos);
+  assert.equal(puerta(null, hoy).cerrada, false);                                    // sin perfil: como siempre
+  assert.equal(puerta(PERFIL, hoy).cerrada, false);                                  // perfil de Ana (adulta, sin nada)
+  assert.deepEqual(motivos({ ...PERFIL, birthDate: '2010-01-01' }), ['menor']);
+  assert.equal(puerta({ ...PERFIL, birthDate: '2008-10-06' }, hoy).cerrada, false);  // cumple 18 hoy
+  assert.deepEqual(motivos({ ...PERFIL, birthDate: '2008-10-07' }), ['menor']);      // 18 mañana
+  assert.deepEqual(motivos({ ...PERFIL, conditions: ['pregnancy'] }), ['embarazo']);
+  for (const q of ['chestPain', 'fainting', 'supervisedOnly']) assert.deepEqual(motivos({ ...PERFIL, [q]: true }), ['parq']);
+  assert.deepEqual(motivos({ ...PERFIL, birthDate: '2010-01-01', conditions: ['pregnancy'], chestPain: true }), ['menor', 'embarazo', 'parq']);
+  assert.equal(puerta({ ...PERFIL, birthDate: '1970-01-01', conditions: ['hypertension'] }, hoy).cerrada, false);   // 50+: solo el aviso suave
+});
