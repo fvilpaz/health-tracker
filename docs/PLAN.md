@@ -59,6 +59,24 @@
 
 ---
 
+### Hallazgos de la pasada de clarificación (7-oct-2026, tras fichas + cardio + flecha) — SOLO anotados, nada arreglado de paso
+Pedida por Nando: tras cada diseño, buscar hallazgos, fallos, deuda técnica y contradicciones. Los textos de las fichas siguen SIN aprobar.
+- **Textos de las fichas (`ejercicios-gym.json`):**
+  1. **Contradicción interna en `d3e3` (press de hombros con mancuernas):** el paso 1 pone las mancuernas «a la altura de los hombros» y el 3 baja «hasta la altura de las orejas». Decidir una.
+  2. **Máquinas supuestas, sin confirmar con Nando:** `d1e1` («Press de banca placas») se describe como press de pecho sentado con asas; `d3e4` («Bíceps máquina de pie barra Z») y `d4e1` («Press superior vertical discos») se describen de forma genérica. Si su máquina es otra, el texto engaña. Son parte de las 10 «a revisar» que no entraron.
+  3. **`d2e8` (hiperextensión, zona lumbar) sin «Ojo»:** el perfil de Nando tiene molestia de espalda y la ficha no avisa; la línea «si notas molestia en la zona lumbar, para y consúltalo» está propuesta pero sin aprobar (el test lo impide: `Ojo` solo con su visto bueno).
+  4. **Faltan las «reglas generales»** de la propuesta (movimiento controlado, respirar sin aguantar el aire, no bloquear articulaciones): no están en la app. El aviso de tensión alta (E7) sí dice no aguantar la respiración, pero en otro sitio de Entreno.
+  5. **Redacción desigual:** algunos pasos son frases sueltas («Espalda apoyada.», «Baja despacio.»); `d1e7` y `d4e7` llevan el mismo texto aunque son dos máquinas.
+  6. **Todas llevan «sin revisar»;** ninguna fuente citada (regla E15 de `FUENTES.md` = criterio de la app): a contrastar con el especialista de salud/entrenamiento.
+- **Deuda técnica:**
+  7. **Código dormido de imágenes** en `gym.js` (`DIBUJO_SEGURO`, `FUENTE_SEGURA`, `LICENCIA_URL`, ramas `.webp`/`.svg`, pie y aviso «orientativ…») y su CSS (`.gym-tip-figura`, `--foto`…) sin ningún dato que lo use hoy; está probado con un DOM de pruebas. Decidir: mantenerlo hasta que lleguen las capturas, o quitarlo y recuperarlo de la rama de respaldo.
+  8. **Sobrantes sin usar:** `cardio_start` y `cardio_end` en `gym.json` (se dejaron a propósito), `.gym-cardio-plan` en el CSS, el campo `nota` de `ejercicios-gym.json`.
+  9. **La rama local `backup-fotos-ejercicios` contiene las fotos del dataset y los dibujos:** NUNCA `git push --all` ni subir esa rama; si se publica, las imágenes entran en el historial público.
+  10. **`workout.js` pinta `name`/`tip` con `innerHTML` sin `esc()`** (ya anotado antes del editor del plan).
+  11. **El service worker no guardaba `data/ejercicios-gym.json` para sin conexión** (hallazgo de la auditora): «Cómo se hace» habría fallado en el gimnasio sin cobertura si no se había abierto antes con red. Corregido en el mismo cambio, con una prueba nueva que exige que TODO `data/*.json` pedido con `fetch` esté en la lista de `sw.js` (sin el arreglo, falla).
+- **Verificación pendiente (nadie la ha hecho):** tema claro, 320 px, teclado real y los días 2-5 de las fichas y del cardio; sesiones antiguas reales de Nando con el cardio viejo.
+- **Contradicciones de documentación ya corregidas hoy:** README y CLAUDE.md decían que el entreno «En casa» estaba quitado; el PLAN daba por «sin commit» la bandeja de nandis (`cc1d7e2`, subida) y por pendientes cosas hechas (LICENSE, fichas, cardio).
+
 ## 💡 Aparcado
 
 - **Orden tras el primer push** (6-oct-2026, decisión de la auditoría con el informe de UX; un cambio por vez, no tocar `renderGym`, `guardarGym` y el reloj en el mismo commit): a) CARDIO como bloque único (filas con minutos como texto para admitir «10:38», km con teclado decimal, etiqueta visible por campo, máx. 4, orden de hecho, quitar con confirmación en línea o «Deshacer», sin borrar al vaciar campos, guardar el formato nuevo como lista aceptando SIEMPRE start/end antiguos; el borrador `gymDraft` viejo se descarta por fecha); b) tarjeta del gym: quitar el `<label>` envolvente y casilla de 44 px separada; c) desplegable con ▶ y tip en el gym; d) descanso mostrado en la tarjeta; e) tarjeta común solo cuando casa y gym ya se parezcan; f) editor del plan y, mucho después, fotos propias. Descanso: híbrido solo en datos (`e.rest ?? plan.rest`) cuando exista el editor; no se unifica la interacción (en casa guía el temporizador; en el gym decides tú cuándo acaba la serie).

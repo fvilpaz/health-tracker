@@ -17,6 +17,18 @@ test('el service worker guarda para sin conexión todos los scripts que carga in
   assert.deepEqual(faltan, [], `faltan en ESENCIAL de sw.js: ${faltan.join(', ')}`);
 });
 
+test('el service worker guarda para sin conexión todos los data/*.json que la app pide con fetch (si no, esa pantalla fallaría en el gimnasio sin cobertura)', () => {
+  const sw = fs.readFileSync(path.join(RAIZ, 'sw.js'), 'utf8');
+  const guardados = new Set([...sw.matchAll(/'([^']+\.json)'/g)].map(m => m[1]));
+  const pedidos = new Set();
+  for (const f of fs.readdirSync(path.join(RAIZ, 'js')).filter(n => n.endsWith('.js'))) {
+    const js = fs.readFileSync(path.join(RAIZ, 'js', f), 'utf8');
+    for (const m of js.matchAll(/fetch\('(data\/[^']+\.json)'\)/g)) pedidos.add(m[1]);
+  }
+  assert.ok(pedidos.size >= 5, 'no he encontrado los fetch de data/ (¿cambió la forma de pedirlos?)');
+  assert.deepEqual([...pedidos].filter(u => !guardados.has(u)), [], 'faltan en ESENCIAL de sw.js');
+});
+
 test('el service worker solo borra SUS cachés (el dominio lo comparten otras apps)', () => {
   const sw = fs.readFileSync(path.join(RAIZ, 'sw.js'), 'utf8');
   assert.match(sw, /k\.startsWith\(PREFIJO\) && k !== CACHE/);
