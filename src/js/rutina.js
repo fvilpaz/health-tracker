@@ -26,7 +26,7 @@ function renderAvisosEntreno() {
 }
 
 /* ===== Modos de entreno (profile.modes): píldoras «Mis modos», estados vacíos y acordeones ===== */
-const NOMBRE_MODO = { gym: 'Gimnasio', home: 'En casa' };
+const PILDORAS = [['gym', 'Gimnasio'], ['home', 'En casa']];
 
 // Qué se ve en Entreno: 'sin-perfil' (no hay dónde guardar el modo), 'sin-modos' (perfil que aún no ha elegido) o 'con-modos';
 // los modos activos, cuál va abierto (el gimnasio si está) y si hay acordeón (solo con los dos modos)
@@ -42,28 +42,31 @@ function modosAlPulsar(modos, modo) {
   return quedan.length ? { modes: quedan } : { error: 'Tiene que quedar al menos un modo activo' };
 }
 
-function renderModos() {
+function renderModos(foco) {
   const fila = document.getElementById('modosFila');
   if (!fila) return;
   const $ = id => document.getElementById(id);
   const perfil = Storage.get('profile'), v = vistaEntreno(perfil), estado = $('modosEstado');
   estado.textContent = '';
   // Píldoras (botones con aria-pressed y ✓ en la activa); sin perfil no se ofrecen. La última activa lleva aria-disabled.
-  fila.replaceChildren(...(perfil ? ['gym', 'home'] : []).map(m => {
+  fila.replaceChildren(...(perfil ? PILDORAS : []).map(([m, nombre]) => {
     const activo = v.modos.includes(m), b = document.createElement('button');
     b.type = 'button';
     b.className = 'pildora';
-    b.textContent = (activo ? '✓ ' : '') + NOMBRE_MODO[m];
+    b.textContent = (activo ? '✓ ' : '') + nombre;
+    b.dataset.modo = m;
     b.setAttribute('aria-pressed', String(activo));
     if (activo && v.modos.length === 1) b.setAttribute('aria-disabled', 'true');
     b.addEventListener('click', () => {
       const r = modosAlPulsar(v.modos, m);
       if (r.error) { estado.textContent = r.error; return; }
       guardarModos(r.modes);
-      renderModos();
+      renderModos(m);
     });
     return b;
   }));
+  // Repintar destruye los botones: el foco vuelve a la píldora pulsada (teclado y lector de pantalla)
+  if (foco) fila.querySelector(`[data-modo="${foco}"]`)?.focus();
   // Estados vacíos
   $('entrenoVacio').hidden = v.estado === 'con-modos';
   $('entrenoVacioTitulo').textContent = v.estado === 'sin-perfil' ? 'Crea tu perfil para elegir dónde entrenas' : 'Elige dónde entrenas';
@@ -73,10 +76,12 @@ function renderModos() {
   $('entrenoCrearPerfil').hidden = v.estado !== 'sin-perfil';
   // Cada modo, a la vista solo si está activo; con los dos, acordeón con el primero abierto; con uno, sin acordeón
   for (const [id, m] of [['modoGym', 'gym'], ['modoCasa', 'home']]) {
-    const el = $(id);
+    const el = $(id), igual = !el.hidden && el.dataset.acordeon === String(v.acordeon);
     el.hidden = !v.modos.includes(m);
     el.classList.toggle('modo--solo', !v.acordeon);
-    el.open = !v.acordeon || v.abierto === m;
+    // Solo se decide abierto/cerrado al aparecer el modo o cambiar entre acordeón y no: lo que la persona abrió o cerró se respeta
+    if (!igual) el.open = !v.acordeon || v.abierto === m;
+    el.dataset.acordeon = String(v.acordeon);
   }
 }
 document.getElementById('entrenoCrearPerfil')?.addEventListener('click', () => abrirCuestionario({ nuevo: true }));
