@@ -684,6 +684,22 @@ table.labs td.fuera { color: var(--red); }
 .pf-sub { margin-top: 12px; }
 .meal-todas summary { cursor: pointer; font-size: 0.8rem; font-weight: 600; color: var(--blue); padding: 8px 0; min-height: 44px; display: flex; align-items: center; }
 .pf-riesgo { color: var(--red); }
+/* Modos de entreno: píldoras «Mis modos» (activan) y acordeones (pliegan) */
+.modos { margin-bottom: 14px; }
+.modos-titulo { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+.modos-fila { display: flex; flex-wrap: wrap; gap: 8px; }
+.pildora { min-height: 44px; padding: 8px 16px; border-radius: 99px; border: 2px solid var(--border); background: var(--surface); color: var(--text-muted);
+  font: inherit; font-weight: 600; cursor: pointer; transition: all var(--transition); }
+.pildora[aria-pressed="true"] { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+.pildora[aria-disabled="true"] { cursor: not-allowed; }
+.pildora:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.modos-estado { margin: 8px 0 0; min-height: 1.1em; font-size: 0.8rem; font-weight: 600; color: var(--red); }
+.modo { margin-bottom: 12px; }
+.modo > summary { list-style: none; display: flex; align-items: center; justify-content: space-between; padding: 6px 2px 10px; cursor: pointer; user-select: none;
+  font-size: 0.8rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); }
+.modo > summary::-webkit-details-marker { display: none; }
+.modo--solo > summary { display: none; }   /* con un solo modo no hay acordeón */
+.modo[open] > summary .lab-flecha:before { transform: translateY(2px) rotate(225deg); border-color: var(--blue); }
 .pf-error { margin: -4px 0 12px; font-size: 0.8rem; font-weight: 600; color: var(--red); }
 .setup-note { font-size: 0.7rem; color: var(--text-muted); margin-top: 16px; line-height: 1.4; }
 .setup-cancel {

@@ -149,6 +149,18 @@
     <!-- ===== ENTRENAMIENTO ===== -->
     <section id="entrenamiento" class="section">
       <div class="card" id="avisosEntreno" hidden></div>
+      <div class="modos">
+        <div class="modos-titulo">Mis modos</div>
+        <div class="modos-fila" id="modosFila"></div>
+        <p class="modos-estado" id="modosEstado" role="status"></p>
+      </div>
+      <div class="card" id="entrenoVacio" hidden>
+        <div class="card-title" role="heading" aria-level="2" id="entrenoVacioTitulo"></div>
+        <p class="meta-aviso" id="entrenoVacioTexto"></p>
+        <button class="btn btn-green btn-full" id="entrenoCrearPerfil" hidden>Crear mi perfil</button>
+      </div>
+      <details class="modo" id="modoGym" open>
+        <summary class="modo-cab">Gimnasio<span class="lab-flecha"></span></summary>
       <div class="card" id="gymCard">
         <div class="card-title" role="heading" aria-level="2">Sesión del gimnasio</div>
         <div class="gym-dias" id="gymDias"></div>
@@ -172,6 +184,11 @@
         <div id="gymCardio"></div>
       </div>
       <button class="btn btn-green btn-full" id="gymGuardar">Guardar sesión</button>
+      </details>
+      <details class="modo" id="modoCasa" hidden>
+        <summary class="modo-cab">En casa<span class="lab-flecha"></span></summary>
+        <div class="card"><p class="meta-aviso">El entreno guiado en casa llega en la siguiente tarea.</p></div>
+      </details>
     </section>
 
     <!-- ===== NUTRICIÓN ===== -->

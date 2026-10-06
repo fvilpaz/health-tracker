@@ -46,6 +46,16 @@ function migrarModos() {
   if (p && !Array.isArray(p.modes)) Storage.set('profile', { ...p, modes: modosActivos(p) });
 }
 
+// ÚNICO escritor de los modos desde fuera del cuestionario (las píldoras de Entreno): valida, guarda en el perfil y devuelve
+// si se pudo. Sin perfil no hay dónde guardar, y un perfil que ya eligió nunca se queda sin modo (la última activa no se quita).
+function guardarModos(lista) {
+  const p = Storage.get('profile');
+  const modes = MODOS.filter(m => Array.isArray(lista) && lista.includes(m));
+  if (!p || !modes.length) return false;
+  Storage.set('profile', { ...p, modes });
+  return true;
+}
+
 // Un perfil recién creado empieza sin ningún modo hasta que elija; si no lo trajera, la migración lo confundiría con uno antiguo
 const conModos = (p, nuevo) => nuevo && !Array.isArray(p.modes) ? { ...p, modes: [] } : p;
 
@@ -126,6 +136,7 @@ function aplicarPerfilFichas() {
   const perfil = Storage.get('profile');
   document.querySelectorAll('[data-si]').forEach(el => { el.hidden = !seVe(el.dataset.si, perfil); });
   renderAvisosEntreno();   // rutina.js
+  renderModos();           // rutina.js: píldoras, estados vacíos y acordeones de Entreno
   renderNutricion();       // nutricion.js
   const vacio = document.getElementById('medsVacio');
   if (vacio) vacio.hidden = !perfil || [...document.querySelectorAll('#medicacion [data-si]')].some(el => !el.hidden);

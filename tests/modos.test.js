@@ -93,3 +93,42 @@ test('copia vieja (sin modes) importada: el perfil queda sin modes y, al cargar,
   assert.equal(mala.datos.profile.modes, undefined);
   assert.equal(mala.descartados, 2);
 });
+
+test('guardarModos: único escritor; filtra, ordena y no guarda vacío ni sin perfil', () => {
+  const app = crearApp(), S = app.get('Storage'), guardar = app.get('guardarModos');
+  assert.equal(guardar(['gym']), false);                                             // sin perfil no inventa uno
+  assert.equal(S.get('profile'), null);
+  S.set('profile', { ...PERFIL, modes: ['gym'] });
+  assert.equal(guardar(['gym', 'home']), true);
+  assert.deepEqual(plano(S.get('profile').modes), ['home', 'gym']);
+  assert.equal(guardar([]), false);
+  assert.equal(guardar(['x']), false);
+  assert.deepEqual(plano(S.get('profile').modes), ['home', 'gym']);
+  assert.equal(S.get('profile').name, 'Ana');                                        // el resto del perfil intacto
+});
+
+test('modosAlPulsar: activa, desactiva y no deja ninguno', () => {
+  const pulsar = crearApp().get('modosAlPulsar');
+  assert.deepEqual(plano(pulsar(['gym'], 'home')), { modes: ['home', 'gym'] });
+  assert.deepEqual(plano(pulsar(['home', 'gym'], 'gym')), { modes: ['home'] });
+  assert.ok(pulsar(['gym'], 'gym').error);
+  assert.ok(pulsar([], 'x').error);
+});
+
+test('vistaEntreno: sin perfil, sin modos, uno o los dos (acordeón solo con dos; abre el gimnasio)', () => {
+  const vista = crearApp().get('vistaEntreno');
+  assert.equal(vista(null).estado, 'sin-perfil');
+  assert.equal(vista({ ...PERFIL, modes: [] }).estado, 'sin-modos');
+  assert.deepEqual(plano(vista(PERFIL)), { estado: 'con-modos', modos: ['gym'], abierto: 'gym', acordeon: false });
+  assert.deepEqual(plano(vista({ ...PERFIL, modes: ['home'] })), { estado: 'con-modos', modos: ['home'], abierto: 'home', acordeon: false });
+  const dos = plano(vista({ ...PERFIL, modes: ['home', 'gym'] }));
+  assert.equal(dos.acordeon, true);
+  assert.equal(dos.abierto, 'gym');
+});
+
+test('avisosEntreno no depende de los modos', () => {
+  const avisos = crearApp().get('avisosEntreno');
+  const p = { ...PERFIL, conditions: ['pregnancy'] };
+  for (const modes of [[], ['gym'], ['home'], ['home', 'gym'], undefined])
+    assert.deepEqual(plano(avisos({ ...p, modes }).map(a => a.regla)), ['E5']);
+});
