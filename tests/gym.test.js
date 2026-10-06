@@ -275,7 +275,8 @@ test('abrir la explicación: carga una sola vez, no marca, y sin conexión se re
   const [, boton, region] = f.children;
   region.replaceChildren = (...h) => { region.children = h; };
   await boton.oyentes.get('click')();                                                  // abre: falla la carga
-  assert.equal(region.children[0].textContent, 'Todavía no hay explicación de este ejercicio.');
+  assert.equal(region.children[0].textContent, 'No se ha podido cargar la explicación. Comprueba la conexión y ábrela otra vez.');   // fallo de carga ≠ «no existe»
+  assert.equal(region.children[0].attr('role'), 'status');                             // y se anuncia
   await boton.oyentes.get('click')();                                                  // cierra
   falla = false;
   await boton.oyentes.get('click')();                                                  // abre otra vez: reintenta y pinta
@@ -283,4 +284,14 @@ test('abrir la explicación: carga una sola vez, no marca, y sin conexión se re
   await boton.oyentes.get('click')(); await boton.oyentes.get('click')();              // cierra y abre: no vuelve a cargar
   assert.equal(cargas, 2);
   assert.deepEqual(cambios, []);                                                       // nada de esto marca el ejercicio
+});
+
+test('explicación: ref existente pero sin contenido → «Todavía no hay…» (distinto del fallo de carga)', async () => {
+  const app = crearApp();
+  app.get('document').createElement = elementoFalso;
+  const f = app.get('filaEjercicio')({ e: { id: 'd1e2', name: 'Remo', ref: 'remo' }, i: 0, hecha: false, meta: 'm', alCambiar: () => {}, cargarExplicacion: async () => null });
+  const [, boton, region] = f.children;
+  await boton.oyentes.get('click')();
+  assert.equal(region.children[0].textContent, 'Todavía no hay explicación de este ejercicio.');
+  assert.equal(region.children[0].attr('role'), undefined);
 });
