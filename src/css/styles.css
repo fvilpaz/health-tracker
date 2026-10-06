@@ -308,10 +308,13 @@ a { color: inherit; text-decoration: none; }
   transition: background var(--transition), border-color var(--transition);
 }
 .gym-fila-ej { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
-.gym-fila-ej > .gym-ej { flex: 1; min-width: 0; }
-.gym-info-btn { flex: 0 0 44px; min-height: 44px; border-radius: var(--radius-sm); border: 2px solid var(--border); background: var(--surface); color: var(--blue); font: inherit; font-weight: 700; cursor: pointer; }
-.gym-info-btn[aria-expanded="true"] { border-color: var(--blue); background: var(--blue-light); }
-.gym-info-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.gym-fila-ej > .gym-ej { flex: 1 0 100%; min-width: 0; }
+/* Botón de la explicación: texto discreto bajo el nombre (sin caja), zona táctil de 44 px; «hecho» sigue siendo lo llamativo */
+.gym-info-btn { flex: 0 0 auto; min-height: 44px; margin: -4px 0 0 58px; padding: 0 8px; border: 0; background: none; color: var(--blue);
+  font: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+.gym-info-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: var(--radius-sm); }
+.gym-flecha { display: inline-block; transition: transform var(--transition); }
+.gym-info-btn[aria-expanded="true"] .gym-flecha { transform: rotate(180deg); }
 .gym-tip { flex: 1 0 100%; font-size: 0.8rem; color: var(--text-muted); padding: 2px 4px 4px; }
 .gym-tip p { margin: 6px 0; }
 .gym-tip-pasos { margin: 6px 0; padding-left: 20px; }

@@ -150,12 +150,15 @@ function filaEjercicio({ e, i, hecha, meta, alCambiar, cargarExplicacion }) {
   label.append(nuevo('span', 'gym-ej-num', String(i + 1)), cuerpo, casilla);
   fila.append(label);
   if (e.ref && cargarExplicacion) {
-    const boton = nuevo('button', 'gym-info-btn', 'i'), region = nuevo('div', 'gym-tip');
+    const boton = nuevo('button', 'gym-info-btn', 'Cómo se hace '), region = nuevo('div', 'gym-tip');
+    const flecha = nuevo('span', 'gym-flecha', '▾');
+    flecha.setAttribute('aria-hidden', 'true');
+    boton.append(flecha);
     let pintada = false;
     boton.type = 'button';
     region.id = `gym-tip-${e.id}`;
     region.hidden = true;
-    boton.setAttribute('aria-label', `Cómo se hace: ${e.name}`);
+    boton.setAttribute('aria-label', `Cómo se hace: ${e.name}`);   // empieza por el texto visible; distingue un botón de otro
     boton.setAttribute('aria-controls', region.id);
     boton.setAttribute('aria-expanded', 'false');
     boton.addEventListener('click', async () => {

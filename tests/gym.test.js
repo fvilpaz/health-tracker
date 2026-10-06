@@ -226,7 +226,10 @@ test('fila del ejercicio: el <label> marca; el botón de explicación es su herm
   assert.equal(con.children.length, 3);
   assert.ok(!lab.children.includes(boton) && !lab.children.includes(region));        // el botón NO va dentro del label
   assert.equal(boton.tag, 'button');
-  assert.equal(boton.attr('aria-label'), 'Cómo se hace: Remo');
+  assert.equal(boton.children[0].textContent, '▾');                                   // la flecha, aparte del texto visible
+  assert.equal(boton.textContent, 'Cómo se hace ');
+  assert.equal(boton.children[0].attr('aria-hidden'), 'true');                         // la flecha no se lee
+  assert.equal(boton.attr('aria-label'), 'Cómo se hace: Remo');                        // empieza por el texto visible y dice qué ejercicio
   assert.equal(boton.attr('aria-controls'), region.id);
   assert.equal(boton.attr('aria-expanded'), 'false');
   assert.equal(region.hidden, true);
