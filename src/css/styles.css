@@ -235,9 +235,24 @@ a { color: inherit; text-decoration: none; }
   gap: 10px;
   margin-top: 12px;
 }
-.weight-input-row input {
+.weight-input-row .btn-datos { flex: 1; }   /* Exportar e Importar, mitad y mitad */
+/* Registrar medidas: un hueco por medida (el nombre dentro y la unidad en una pastilla) y un solo botón «Guardar medidas» */
+.medida-campo { position: relative; display: flex; min-width: 0; margin-top: 12px; }
+.medida-guardar { margin-top: 14px; }
+.medida-unidad {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%); pointer-events: none;
+  padding: 2px 7px; border-radius: 99px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text-muted); font-size: 0.72rem; font-weight: 700;
+}
+/* El borde lleva el color de esa medida en las gráficas (peso azul, cintura naranja, barriga púrpura); el texto sigue gris para que se lea en claro y oscuro */
+.medida-unidad.peso { border-color: #3b82f6; }
+.medida-unidad.cintura { border-color: #f97316; }
+.medida-unidad.barriga { border-color: #a855f7; }
+.medida-campo input::-webkit-outer-spin-button, .medida-campo input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }   /* las flechitas taparían la unidad */
+.medida-campo input[type=number] { -moz-appearance: textfield; appearance: textfield; }
+.medida-campo input {
   flex: 1;
-  padding: 10px 14px;
+  min-width: 0;
+  padding: 10px 46px 10px 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   background: var(--surface2);
@@ -245,9 +260,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 1rem;
   font-family: inherit;
 }
-.weight-input-row input:focus { outline: none; border-color: var(--blue); }
-.weight-input-row .btn-datos { flex: 1; }   /* Exportar e Importar, mitad y mitad */
-.weight-input-row input + .btn { flex: 0 0 88px; padding-left: 0; padding-right: 0; }   /* Peso, Cintura y Altura del mismo ancho */
+.medida-campo input:focus { outline: none; border-color: var(--blue); }
 .btn {
   padding: 10px 18px;
   border: none;
@@ -461,9 +474,8 @@ table.labs td.fuera { color: var(--red); }
 .w-rotulo { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.03em; color: var(--text-muted); }
 .medida-fila .w-value { white-space: nowrap; }
 .weight-entry .w-value { font-weight: 700; font-size: 1rem; color: var(--blue); }
-.weight-entry .w-diff { font-size: 0.75rem; font-weight: 600; }
-.weight-entry .w-diff.down { color: var(--green); }
-.weight-entry .w-diff.up { color: var(--red); }
+.weight-entry .w-value.down { color: var(--green); }   /* el cambio: baja en verde, sube en rojo */
+.weight-entry .w-value.up { color: var(--red); }
 .weight-entry .w-del {
   background: none;
   border: none;

@@ -184,7 +184,7 @@ function renderCopiasAutomaticas() {
     const fila = document.createElement('div');
     fila.className = 'weight-entry';
     const texto = document.createElement('span');
-    texto.textContent = `${new Date(c.fecha).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })} · ${n('weights')} pesos, ${n('sessions')} bloques, ${n('labs')} análisis`;
+    texto.textContent = `${new Date(c.fecha).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })} · ${n('weights')} pesos, ${n('sessions')} sesiones, ${n('labs')} análisis`;
     const boton = document.createElement('button');
     boton.className = 'btn btn-primary';
     boton.textContent = 'Recuperar';
@@ -254,7 +254,7 @@ document.getElementById('importFile').addEventListener('change', async e => {
   }
   const cuando = copia.exportedAt ? new Date(copia.exportedAt).toLocaleDateString('es-ES') : 'fecha desconocida';
   const analisis = d.labs ? `${n('labs')} análisis` : 'sin análisis (se conservan los tuyos)';
-  if (!confirm(`Copia del ${cuando}: ${n('weights')} pesos, ${n('waists')} cinturas, ${n('bellies')} barrigas, ${n('sessions')} bloques de fuerza, ${analisis}.\n\n` +
+  if (!confirm(`Copia del ${cuando}: ${n('weights')} pesos, ${n('waists')} cinturas, ${n('bellies')} barrigas, ${n('sessions')} sesiones de entreno, ${analisis}.\n\n` +
                `Esto SUSTITUYE los datos de este aparato.${aviso}\n\n¿Continuar?`)) return;
   const r = aplicarCopiaCompleta(d);
   if (!r.ok) return showToast('No cabe en el almacenamiento del navegador: no se ha cambiado nada');

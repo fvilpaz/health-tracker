@@ -4,16 +4,34 @@
 
 // Rangos admitidos; fuera de ellos se avisa (antes el botón no hacía nada y parecía roto)
 const RANGO = { weight: [30, 300, 'un peso', 'kg'], waist: [40, 200, 'una cintura', 'cm'], belly: [40, 200, 'una barriga', 'cm'], height: [120, 230, 'una altura', 'cm'] };
+const avisoRango = campo => { const [min, max, nombre, unidad] = RANGO[campo]; return `Pon ${nombre} entre ${min} y ${max} ${unidad}`; };
 function medidaValida(campo, valor) {
-  const [min, max, nombre, unidad] = RANGO[campo];
+  const [min, max] = RANGO[campo];
   if (!isNaN(valor) && valor >= min && valor <= max) return true;
-  showToast(`Pon ${nombre} entre ${min} y ${max} ${unidad}`);
+  showToast(avisoRango(campo));
   return false;
 }
 
+// Las casillas de «Registrar medidas»: campo del dato → id de la casilla. Un solo botón «Guardar» las manda todas.
+const CASILLAS_MEDIDAS = [['weight', 'weightInput'], ['waist', 'waistInput'], ['belly', 'bellyInput'], ['height', 'heightInput']];
+
+// Lo escrito en las casillas ({ campo: texto }) → { campo: número } solo con las que tienen algo; o { error }.
+// Se comprueba TODO antes de guardar nada: con una casilla mal, no se guarda ninguna (nada queda a medias).
+function medidasEscritas(textos) {
+  const r = {};
+  for (const [campo] of CASILLAS_MEDIDAS) {
+    const t = String(textos[campo] ?? '').trim().replace(',', '.');
+    if (t === '') continue;
+    const v = campo === 'height' ? parseInt(t, 10) : Number(t);
+    if (!(v >= RANGO[campo][0] && v <= RANGO[campo][1])) return { error: avisoRango(campo) };
+    r[campo] = v;
+  }
+  return Object.keys(r).length ? r : { error: 'Escribe al menos una medida' };
+}
+
 // La tecla «Intro»/«Ir» del teclado del móvil guarda (antes no hacía nada)
-[['weightInput', 'saveWeightBtn'], ['waistInput', 'saveWaistBtn'], ['bellyInput', 'saveBellyBtn'], ['heightInput', 'saveHeightBtn']].forEach(([campo, boton]) => {
-  document.getElementById(campo)?.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById(boton).click(); });
+CASILLAS_MEDIDAS.forEach(([, id]) => {
+  document.getElementById(id)?.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('guardarMedidasBtn').click(); });
 });
 
 // Añade la medida de «fecha» a la lista; si ya había una ese día, la sustituye (una por día).
@@ -35,77 +53,42 @@ function fechaMedida() {
   return fechaEs(new Date(iso + 'T12:00'));
 }
 
-/* ===== PESO ===== */
-document.getElementById('saveWeightBtn').addEventListener('click', () => {
-  const input = document.getElementById('weightInput');
-  const val = parseFloat(input.value);
-  if (!medidaValida('weight', val)) return;
+/* ===== GUARDAR: peso, cintura, barriga y altura de una vez ===== */
+document.getElementById('guardarMedidasBtn')?.addEventListener('click', () => {
+  const m = medidasEscritas(Object.fromEntries(CASILLAS_MEDIDAS.map(([campo, id]) => [campo, document.getElementById(id).value])));
+  if (m.error) return showToast(m.error);
   const fecha = fechaMedida();
   if (!fecha) return;
 
-  const weights = anotarMedida(Storage.get('weights', []), 'weight', val, fecha);
-
-  if (!Storage.get('startDate')) Storage.set('startDate', new Date().toISOString());
-
-  Storage.set('weights', weights);
-  input.value = '';
+  const guardadas = [];
+  if (m.weight !== undefined) {
+    Storage.set('weights', anotarMedida(Storage.get('weights', []), 'weight', m.weight, fecha));
+    if (!Storage.get('startDate')) Storage.set('startDate', new Date().toISOString());
+    guardadas.push('peso');
+  }
+  if (m.waist !== undefined) { Storage.set('waists', anotarMedida(Storage.get('waists', []), 'waist', m.waist, fecha)); guardadas.push('cintura'); }
+  // Barriga: la cinta por el ombligo (la cintura es donde va el cinturón). Se guarda igual que la cintura.
+  if (m.belly !== undefined) { Storage.set('bellies', anotarMedida(Storage.get('bellies', []), 'belly', m.belly, fecha)); guardadas.push('barriga'); }
+  if (m.height !== undefined) {
+    Storage.set('settings', { ...Storage.get('settings', {}), height: m.height });
+    document.getElementById('heightInput').placeholder = `Altura: ${m.height}`;
+    guardadas.push('altura');
+  }
+  CASILLAS_MEDIDAS.forEach(([, id]) => { document.getElementById(id).value = ''; });
   updateDashboard();
-  renderWeightLog();            // el historial y la gráfica de Progreso también (antes seguían sin el peso nuevo)
-  renderWeightChart(weights);
+  renderWeightLog();            // los historiales y las gráficas de Progreso también
+  renderWeightChart(Storage.get('weights', []));
+  renderMedidasLog();
+  renderMedidasChart();
   checkLogros();
-  showToast('Peso guardado ✓');
+  showToast(`Guardado ✓ ${guardadas.join(', ')}`);
 });
 
 // Altura del usuario (cm), guardada en los ajustes. Sin altura: null (IMC y ratio muestran "--").
 function getHeightCm() {
   return Storage.get('settings', {}).height || null;
 }
-if (getHeightCm()) document.getElementById('heightInput').placeholder = `Altura: ${getHeightCm()} cm`;
-
-document.getElementById('saveHeightBtn').addEventListener('click', () => {
-  const input = document.getElementById('heightInput');
-  const val = parseInt(input.value);
-  if (!medidaValida('height', val)) return;
-  Storage.set('settings', { ...Storage.get('settings', {}), height: val });
-  input.value = '';
-  input.placeholder = `Altura: ${val} cm`;
-  updateDashboard();
-  checkLogros();
-  showToast('Altura guardada ✓');
-});
-
-document.getElementById('saveWaistBtn').addEventListener('click', () => {
-  const input = document.getElementById('waistInput');
-  const val = parseFloat(input.value);
-  if (!medidaValida('waist', val)) return;
-  const fecha = fechaMedida();
-  if (!fecha) return;
-
-  const waists = anotarMedida(Storage.get('waists', []), 'waist', val, fecha);
-
-  Storage.set('waists', waists);
-  input.value = '';
-  updateDashboard();
-  renderMedidasLog();           // el historial y la gráfica de cintura y barriga también
-  renderMedidasChart();
-  checkLogros();
-  showToast('Cintura guardada ✓');
-});
-
-// Barriga: la cinta por el ombligo (la cintura es donde va el cinturón). Se guarda igual que la cintura.
-document.getElementById('saveBellyBtn').addEventListener('click', () => {
-  const input = document.getElementById('bellyInput');
-  const val = parseFloat(input.value);
-  if (!medidaValida('belly', val)) return;
-  const fecha = fechaMedida();
-  if (!fecha) return;
-  Storage.set('bellies', anotarMedida(Storage.get('bellies', []), 'belly', val, fecha));
-  input.value = '';
-  updateDashboard();
-  renderMedidasLog();
-  renderMedidasChart();
-  showToast('Barriga guardada ✓');
-});
+if (getHeightCm()) document.getElementById('heightInput').placeholder = `Altura: ${getHeightCm()}`;   // la altura de ahora, en gris (la unidad va en la pastilla)
 
 // Cintura y barriga juntas por fecha, de la más antigua a la más reciente; null si ese día falta una de las dos
 function medidasPorFecha(waists, bellies) {
@@ -125,15 +108,9 @@ function renderMedidasLog() {
     caja.innerHTML = '<div class="empty-state">' + duo('regla', 'vacio-ico') + '<div>Aún no hay registros de cintura ni barriga</div></div>';
     return;
   }
-  const el = (tag, clase, texto) => { const e = document.createElement(tag); e.className = clase; e.textContent = texto; return e; };
   caja.replaceChildren(...filas.map(f => {
     const fila = el('div', 'weight-entry medida-fila', '');
-    // Cada medida con su rótulo pequeño encima del valor (así nunca se pegan ni se parten en el móvil)
-    const celda = (rotulo, valor) => { const c = el('span', 'w-celda', ''); c.append(el('span', 'w-rotulo', rotulo), el('span', 'w-value', valor)); return c; };
-    const borrar = el('button', 'w-del', '');
-    // eslint-disable-next-line no-unsanitized/property -- solo el icono del propio código
-    borrar.innerHTML = ICONO.cerrar;
-    borrar.title = borrar.ariaLabel = 'Eliminar';
+    const borrar = botonBorrar();
     borrar.addEventListener('click', () => {
       if (!confirm(`¿Borrar la cintura y la barriga del ${f.date}?`)) return;
       Storage.set('waists', Storage.get('waists', []).filter(m => m.date !== f.date));
@@ -143,10 +120,26 @@ function renderMedidasLog() {
       updateDashboard();
     });
     fila.append(el('span', 'w-date', f.date),
-      celda('CINTURA', f.waist != null ? `${f.waist} cm` : '—'),
-      celda('BARRIGA', f.belly != null ? `${f.belly} cm` : '—'), borrar);
+      celdaMedida('CINTURA', f.waist != null ? `${f.waist} cm` : '—'),
+      celdaMedida('BARRIGA', f.belly != null ? `${f.belly} cm` : '—'), borrar);
     return fila;
   }));
+}
+
+// Piezas de las filas de los historiales (peso, cintura y barriga): la fecha arriba y debajo cada medida con su rótulo
+// pequeño encima del valor, y la papelera. Así nada se pega ni se parte en el móvil.
+const el = (tag, clase, texto) => { const e = document.createElement(tag); e.className = clase; e.textContent = texto; return e; };
+function celdaMedida(rotulo, texto, clase = '') {
+  const c = el('span', 'w-celda', '');
+  c.append(el('span', 'w-rotulo', rotulo), el('span', 'w-value' + (clase ? ' ' + clase : ''), texto));
+  return c;
+}
+function botonBorrar() {
+  const b = el('button', 'w-del', '');
+  // eslint-disable-next-line no-unsanitized/property -- solo el icono del propio código
+  b.innerHTML = ICONO.cerrar;
+  b.title = b.ariaLabel = 'Eliminar';
+  return b;
 }
 
 function renderWeightLog() {
@@ -160,35 +153,24 @@ function renderWeightLog() {
     return;
   }
 
-  container.innerHTML = '';
-  [...entries].reverse().forEach((e, i, arr) => {
+  container.replaceChildren(...[...entries].reverse().map((e, i, arr) => {
     const prev = arr[i + 1];
     const diff = prev ? (e.weight - prev.weight).toFixed(1) : null;
     const diffClass = diff ? (diff < 0 ? 'down' : 'up') : '';
-    const diffText = diff ? (diff < 0 ? diff + ' kg' : '+' + diff + ' kg') : '';
+    const diffText = diff ? (diff < 0 ? diff + ' kg' : '+' + diff + ' kg') : '—';   // el primero no tiene con qué compararse
 
-    const div = document.createElement('div');
-    div.className = 'weight-entry';
-    // eslint-disable-next-line no-unsanitized/property -- fecha y peso con esc(); diferencia calculada (número)
-    div.innerHTML = `
-      <span class="w-date">${esc(e.date)}</span>
-      <span class="w-value">${esc(e.weight)} kg</span>
-      ${diff ? `<span class="w-diff ${diffClass}">${diffText}</span>` : '<span></span>'}
-      <button class="w-del" data-date="${esc(e.date)}" title="Eliminar" aria-label="Eliminar">${ICONO.cerrar}</button>
-    `;
-    container.appendChild(div);
-  });
-
-  container.querySelectorAll('.w-del').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const date = btn.dataset.date;
+    const fila = el('div', 'weight-entry medida-fila', '');
+    const borrar = botonBorrar();
+    borrar.addEventListener('click', () => {
       // Se tocaba sin querer al desplazar la lista y no había vuelta atrás
-      if (!confirm(`¿Borrar el peso del ${date}?`)) return;
-      const updated = Storage.get('weights', []).filter(e => e.date !== date);
+      if (!confirm(`¿Borrar el peso del ${e.date}?`)) return;
+      const updated = Storage.get('weights', []).filter(w => w.date !== e.date);
       Storage.set('weights', updated);
       renderWeightLog();
       renderWeightChart(updated);
       updateDashboard();
     });
-  });
+    fila.append(el('span', 'w-date', e.date), celdaMedida('PESO', `${e.weight} kg`), celdaMedida('CAMBIO', diffText, diffClass), borrar);
+    return fila;
+  }));
 }
