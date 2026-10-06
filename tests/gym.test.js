@@ -185,3 +185,51 @@ test('solo gimnasio (sin entreno en casa) el reloj se comporta como antes; marca
   assert.equal(els.get('gymDescanso').attrs.get('aria-disabled'), 'true');                     // el reloj del gym, inerte
   assert.equal(els.get('startWorkoutBtn').attrs.get('aria-disabled'), 'false');
 });
+
+// Un DOM mínimo para mirar la estructura de la fila: elementos con hijos, atributos y eventos
+function elementoFalso(tag) {
+  const oyentes = new Map(), attrs = new Map();
+  const el = {
+    tag, children: [], className: '', textContent: '', hidden: false, checked: false,
+    classList: { toggle(c, on) { const l = new Set(el.className.split(' ').filter(Boolean)); if (on) l.add(c); else l.delete(c); el.className = [...l].join(' '); } },
+    append(...h) { el.children.push(...h); },
+    setAttribute(k, v) { attrs.set(k, v); },
+    attr: k => attrs.get(k),
+    addEventListener(t, f) { oyentes.set(t, f); },
+    dispara(t) { oyentes.get(t)?.(); },
+  };
+  return el;
+}
+
+test('fila del ejercicio: el <label> marca; el botón de explicación es su hermano y no marca; sin tip no hay botón', () => {
+  const app = crearApp();
+  app.get('document').createElement = elementoFalso;
+  const fila = app.get('filaEjercicio'), llamadas = [];
+  const hacer = e => fila({ e, i: 0, hecha: false, meta: '3 series × 15 reps', alCambiar: m => llamadas.push(m) });
+
+  const sin = hacer({ id: 'd1e1', name: 'Press' });
+  assert.equal(sin.children.length, 1);                                              // solo el <label>: idéntico a antes
+  const label = sin.children[0], casilla = label.children[2];
+  assert.equal(label.tag, 'label');
+  assert.equal(casilla.tag, 'input');
+  casilla.checked = true; casilla.dispara('change');                                 // tocar la casilla (o el cuerpo del label) marca
+  assert.deepEqual(llamadas, [true]);
+  assert.ok(label.className.includes('hecho'));
+  casilla.checked = false; casilla.dispara('change');
+  assert.deepEqual(llamadas, [true, false]);
+
+  llamadas.length = 0;
+  const con = hacer({ id: 'd1e2', name: 'Remo', tip: 'texto' });
+  const [lab, boton, region] = con.children;
+  assert.equal(con.children.length, 3);
+  assert.ok(!lab.children.includes(boton) && !lab.children.includes(region));        // el botón NO va dentro del label
+  assert.equal(boton.tag, 'button');
+  assert.equal(boton.attr('aria-label'), 'Cómo se hace: Remo');
+  assert.equal(boton.attr('aria-controls'), region.id);
+  assert.equal(boton.attr('aria-expanded'), 'false');
+  assert.equal(region.hidden, true);
+  boton.dispara('click');
+  assert.equal(region.hidden, false);
+  assert.equal(boton.attr('aria-expanded'), 'true');
+  assert.deepEqual(llamadas, []);                                                    // el botón nuevo no marca
+});
