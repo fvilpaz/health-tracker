@@ -318,9 +318,19 @@ a { color: inherit; text-decoration: none; }
 .gym-tip { flex: 1 0 100%; font-size: 0.8rem; color: var(--text-muted); padding: 2px 4px 4px; }
 .gym-tip p { margin: 6px 0; }
 .gym-tip-pasos { margin: 6px 0; padding-left: 20px; }
-.gym-tip-fotos { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0; }
-.gym-tip-figura { margin: 0; text-align: center; font-size: 0.75rem; }
-.gym-tip-foto { width: 100%; height: auto; border-radius: var(--radius-sm); background: var(--surface2); }
+.gym-tip-fotos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 8px 0; }
+/* Los dibujos (SVG negro sobre transparente) van SIN tocar, en una tarjeta de blanco roto con marco y esquinas: se ven también de noche */
+.gym-tip-figura { margin: 0; padding: 6px; text-align: center; font-size: 0.75rem; background: #f4f4f2; color: #475569; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.gym-tip-foto { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: contain; }
+/* Las fotos (no los dibujos) llenan la tarjeta: 4:3 recortando lo que sobra, sin franjas blancas */
+.gym-tip-figura--foto { padding: 0; overflow: hidden; background: var(--surface2); }
+.gym-tip-figura--foto .gym-tip-foto { aspect-ratio: 4 / 3; object-fit: cover; }
+.gym-tip-figura--foto figcaption { padding: 4px 0; color: var(--text-muted); }
+.gym-tip-aviso { color: var(--text); font-weight: 600; }
+.gym-tip-pie { font-size: 0.72rem; opacity: 0.9; }
+.gym-tip-pie a, .gym-tip-video { color: var(--blue); }
+.gym-tip-video { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; text-decoration: none; }
+.gym-tip-etiqueta { font-size: 0.72rem; font-style: italic; }
 .gym-ej.hecho { background: var(--green-light); border-color: var(--green); }
 .gym-ej-num {
   width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;

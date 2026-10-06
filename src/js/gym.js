@@ -104,9 +104,13 @@ async function cargarExplicaciones() {
   return explicacionesGym;
 }
 
-// Pinta una explicación dentro de «region»: Trabaja, pasos numerados, Ojo y las dos fotos (Inicio / Final). Todo con textContent.
-// Las fotos solo se crean aquí (al abrir): nombres de archivo seguros, tamaño fijo y carga diferida. Sin foto, solo texto.
-const FOTO_SEGURA = /^[a-z0-9-]{1,40}\.webp$/;
+// Pinta una explicación dentro de «region»: Trabaja, pasos numerados, Ojo, las dos imágenes (Inicio / Final) con su pie de
+// atribución y el enlace de búsqueda en YouTube. Todo con textContent. Las imágenes solo se crean aquí (al abrir): nombres
+// de archivo seguros (los dibujos de Everkinetic, img/everkinetic/), tamaño fijo y carga diferida. Sin imagen, solo texto.
+const DIBUJO_SEGURO = /^d[1-5]e\d{1,2}-(inicio|final)\.(webp|svg)$/;   // .webp = foto (img/gym/), .svg = dibujo de Everkinetic (img/everkinetic/)
+const FUENTE_SEGURA = /^https:\/\/(commons\.wikimedia\.org\/wiki\/File:[\w.%()-]{1,200}|github\.com\/yuhonas\/free-exercise-db)$/;
+const LICENCIA_URL = 'https://creativecommons.org/licenses/by-sa/3.0/deed.es';
+const urlYoutube = nombre => `https://www.youtube.com/results?search_query=${encodeURIComponent(`cómo hacer ${nombre} ejercicio`)}`;
 function construirExplicacion(exp, nombre, region) {
   const nuevo = (tag, clase, texto) => { const el = document.createElement(tag); if (clase) el.className = clase; if (texto !== undefined) el.textContent = texto; return el; };
   const partes = [];
@@ -117,22 +121,44 @@ function construirExplicacion(exp, nombre, region) {
     partes.push(ol);
   }
   if (exp.ojo) partes.push(nuevo('p', 'gym-tip-ojo', 'Ojo: ' + exp.ojo));
-  const fotos = [['inicio', 'Inicio'], ['final', 'Final']].filter(([k]) => exp.fotos && FOTO_SEGURA.test(String(exp.fotos[k])));
-  if (fotos.length) {
+  const dibujos = [['inicio', 'Inicio'], ['final', 'Final']].filter(([k]) => exp.fotos && DIBUJO_SEGURO.test(String(exp.fotos[k])));
+  if (dibujos.length) {
     const fig = nuevo('div', 'gym-tip-fotos');
-    for (const [k, titulo] of fotos) {
-      const figura = nuevo('figure', 'gym-tip-figura'), img = nuevo('img', 'gym-tip-foto');
-      img.src = 'img/gym/' + exp.fotos[k];
+    for (const [k, titulo] of dibujos) {
+      const figura = nuevo('figure', 'gym-tip-figura' + (String(exp.fotos[k]).endsWith('.webp') ? ' gym-tip-figura--foto' : '')), img = nuevo('img', 'gym-tip-foto');
+      const esFoto = exp.fotos[k].endsWith('.webp');
+      img.src = (esFoto ? 'img/gym/' : 'img/everkinetic/') + exp.fotos[k];
       img.alt = `${nombre}: posición de ${titulo.toLowerCase()}`;
-      img.width = 300; img.height = 200;
+      img.width = 300; img.height = 300;
       img.loading = 'lazy';
       figura.append(img, nuevo('figcaption', '', titulo));
       fig.append(figura);
     }
     partes.push(fig);
-    if (exp.fotos.aproximada) partes.push(nuevo('p', 'gym-tip-aviso', 'Foto orientativa: tu máquina puede ser distinta.'));
+    const foto = String(exp.fotos.inicio).endsWith('.webp');
+    if (exp.fotos.aproximada) partes.push(nuevo('p', 'gym-tip-aviso', `${foto ? 'Foto' : 'Dibujo'} orientativ${foto ? 'a' : 'o'}: tu máquina puede ser distinta. Ajústala según sus indicaciones o pregunta a un monitor.`));
+    const pie = nuevo('p', 'gym-tip-pie');
+    if (foto) pie.append('Foto: free-exercise-db');
+    else {
+      pie.append('Dibujo: Everkinetic · ');
+      const lic = nuevo('a', '', 'CC BY-SA 3.0');
+      lic.href = LICENCIA_URL; lic.target = '_blank'; lic.rel = 'noopener noreferrer';
+      pie.append(lic);
+    }
+    if (FUENTE_SEGURA.test(String(exp.fotos.fuente))) {
+      const fuente = nuevo('a', '', 'origen');
+      fuente.href = exp.fotos.fuente; fuente.target = '_blank'; fuente.rel = 'noopener noreferrer';
+      pie.append(' · ', fuente);
+    }
+    partes.push(pie);
   }
   if (!partes.length) partes.push(nuevo('p', 'gym-tip-aviso', 'Todavía no hay explicación de este ejercicio.'));
+  else {
+    const video = nuevo('a', 'gym-tip-video', '▶ Buscar en YouTube (se abre fuera de la app)');
+    video.href = urlYoutube(nombre); video.target = '_blank'; video.rel = 'noopener noreferrer';
+    video.setAttribute('aria-label', `Buscar en YouTube: ${nombre} (se abre fuera de la app)`);
+    partes.push(video, nuevo('p', 'gym-tip-etiqueta', 'Texto redactado con ayuda de IA, sin revisar. Guía orientativa: no sustituye la indicación de un profesional. Si algo te duele, para y consúltalo.'));
+  }
   region.replaceChildren(...partes);
 }
 
