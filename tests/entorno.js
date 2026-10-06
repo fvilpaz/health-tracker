@@ -11,7 +11,7 @@ const vm = require('node:vm');
 
 const RAIZ = path.join(__dirname, '..', 'src');   // la app vive en src/
 // Mismo orden que index.html
-const SCRIPTS = ['js/tema.js', 'js/iconos.js', 'js/storage.js', 'js/copia.js', 'js/timer.js', 'js/charts.js', 'js/workout.js', 'js/semana.js', 'js/analisis.js', 'js/dashboard.js', 'js/plan.js', 'js/medidas.js', 'js/logros.js', 'js/habitos.js', 'js/perfil.js', 'js/rutina.js', 'js/nutricion.js', 'js/app.js'];
+const SCRIPTS = ['js/tema.js', 'js/iconos.js', 'js/storage.js', 'js/copia.js', 'js/timer.js', 'js/charts.js', 'js/workout.js', 'js/semana.js', 'js/analisis.js', 'js/dashboard.js', 'js/plan.js', 'js/medidas.js', 'js/logros.js', 'js/habitos.js', 'js/perfil.js', 'js/rutina.js', 'js/nutricion.js', 'js/gym.js', 'js/app.js'];
 
 // Un objeto que acepta cualquier propiedad o llamada y devuelve otro igual: sirve de elemento, de lista, de estilo…
 function comodin() {
