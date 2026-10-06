@@ -92,6 +92,32 @@ function guardarLibre() {
   checkLogros();
 }
 
+// La fila de un ejercicio: <div> con el <label> que marca (número, nombre, meta y casilla) y, solo si el ejercicio trae
+// explicación (e.tip), un botón APARTE, hermano del label (tocarlo no marca), que despliega la explicación hacia abajo.
+function filaEjercicio({ e, i, hecha, meta, alCambiar }) {
+  const nuevo = (tag, clase, texto) => { const el = document.createElement(tag); if (clase) el.className = clase; if (texto !== undefined) el.textContent = texto; return el; };
+  const fila = nuevo('div', 'gym-fila-ej'), label = nuevo('label', 'gym-ej' + (hecha ? ' hecho' : ''));
+  const cuerpo = nuevo('span', 'gym-ej-cuerpo'), casilla = nuevo('input', 'gym-check');
+  casilla.type = 'checkbox';
+  casilla.checked = hecha;
+  casilla.addEventListener('change', () => { label.classList.toggle('hecho', casilla.checked); alCambiar(casilla.checked); });
+  cuerpo.append(nuevo('span', 'gym-ej-nombre', e.name), nuevo('span', 'gym-ej-meta', meta));
+  label.append(nuevo('span', 'gym-ej-num', String(i + 1)), cuerpo, casilla);
+  fila.append(label);
+  if (e.tip) {
+    const boton = nuevo('button', 'gym-info-btn', 'i'), region = nuevo('div', 'gym-tip', e.tip);
+    boton.type = 'button';
+    region.id = `gym-tip-${e.id}`;
+    region.hidden = true;
+    boton.setAttribute('aria-label', `Cómo se hace: ${e.name}`);
+    boton.setAttribute('aria-controls', region.id);
+    boton.setAttribute('aria-expanded', 'false');
+    boton.addEventListener('click', () => { region.hidden = !region.hidden; boton.setAttribute('aria-expanded', String(!region.hidden)); });
+    fila.append(boton, region);
+  }
+  return fila;
+}
+
 async function renderGym() {
   const lista = document.getElementById('gymEjercicios');
   if (!lista) return;
@@ -116,22 +142,11 @@ async function renderGym() {
   fecha.value = b.when || fecha.max;
   fecha.onchange = () => { if (fecha.value && fecha.value !== fecha.max) b.when = fecha.value; else delete b.when; guardar(); };
 
-  // Una tarjeta por ejercicio: círculo con su número, nombre con series × repeticiones y casilla redonda (verde al hacerlo)
-  lista.replaceChildren(...plan.days.find(d => d.id === b.day).exercises.map((e, i) => {
-    const hecha = b.done.includes(e.name);
-    const fila = nuevo('label', 'gym-ej' + (hecha ? ' hecho' : '')), num = nuevo('span', 'gym-ej-num', String(i + 1));
-    const cuerpo = nuevo('span', 'gym-ej-cuerpo'), casilla = nuevo('input', 'gym-check');
-    casilla.type = 'checkbox';
-    casilla.checked = hecha;
-    casilla.addEventListener('change', () => {
-      b.done = casilla.checked ? [...b.done, e.name] : b.done.filter(n => n !== e.name);
-      fila.classList.toggle('hecho', casilla.checked);
-      guardar();
-    });
-    cuerpo.append(nuevo('span', 'gym-ej-nombre', e.name), nuevo('span', 'gym-ej-meta', `${e.sets || plan.sets} series × ${plan.reps} reps`));
-    fila.append(num, cuerpo, casilla);
-    return fila;
-  }));
+  // Una fila por ejercicio: el <label> (número, nombre, series × reps y casilla) sigue marcando al tocar cualquier parte
+  lista.replaceChildren(...plan.days.find(d => d.id === b.day).exercises.map((e, i) => filaEjercicio({
+    e, i, hecha: b.done.includes(e.name), meta: `${e.sets || plan.sets} series × ${plan.reps} reps`,
+    alCambiar: marcado => { b.done = marcado ? [...b.done, e.name] : b.done.filter(n => n !== e.name); guardar(); },
+  })));
 
   // Cardio opcional: los minutos del plan salen solo como pista en gris, nunca como obligación
   document.getElementById('gymCardio').replaceChildren(...CARDIOS_GYM.map(([k, titulo, clavePlan]) => {
