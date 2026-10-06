@@ -6,7 +6,7 @@ Estática: HTML + CSS + JS sin compilar, datos en el `localStorage` del navegado
 ## Decisiones que NO se tocan
 - **El repositorio es PÚBLICO.** Los datos de salud (pesos, análisis, PDF) viven SOLO en el navegador del usuario.
   Nunca datos reales en el código ni en las pruebas (solo inventados). Los PDF de análisis de Nando llevan su DNI: jamás al repo.
-- Entreno: la app **solo apunta** lo que haces en el gimnasio (vídeos y plan están en la app del gimnasio). Plan de 5 días en rotación (`data/gym.json`); cuenta cada sesión con lo que marcaste. **Mínimo 3 por semana, ideal 5** (lunes-domingo; criterio de la entrenadora, sin fuente en `FUENTES.md`). El cardio es opcional y va dentro de la sesión. El entreno guiado de calistenia en casa (bloques, calentamiento, calma) se quitó el 6-oct-2026: se recupera con la etiqueta de git `calistenia-en-casa`.
+- Entreno: la app **solo apunta** lo que haces en el gimnasio (vídeos y plan están en la app del gimnasio). Plan de 5 días en rotación (`data/gym.json`); cuenta cada sesión con lo que marcaste. **Mínimo 3 por semana, ideal 5** (lunes-domingo; criterio de la entrenadora, sin fuente en `FUENTES.md`). El cardio es opcional, va dentro de la sesión y es una LISTA de hasta 4 (`sessions[].cardio`); **el formato viejo `{start, end}` se lee SIEMPRE (sesiones guardadas, borradores y copias importadas): no se rompe ni se convierte sin pedirlo**. El entreno guiado «En casa» (calistenia: calentamiento, fuerza por bloques, calma) se recuperó el 6-oct-2026 como modo del perfil (`profile.modes`); `armarBloques` y su catálogo son los de la etiqueta de git `calistenia-en-casa`, sin tocar. Las fichas «Cómo se hace» de cada ejercicio del gimnasio van en `data/ejercicios-gym.json` (por `ref`), con la etiqueta «sin revisar» hasta que Nando las apruebe; por ahora **sin imágenes** (las serán capturas de Nando, carpeta `mis-capturas`; no se suben fotos ni dibujos de internet sin su orden).
 - Perfil (`profile`): cuestionario de 6 pasos con opciones del catálogo `src/data/health.json`, nunca texto que decida nada.
   Modos de entreno en `profile.modes` (`home` y/o `gym`, se leen con `modosActivos()`): un perfil de antes sin `modes` migra solo a `['gym']`; uno nuevo nace con `[]` y el cuestionario obliga a elegir al menos uno (las preguntas de nivel, molestias, zonas y minutos solo con «En casa»).
   **Menores de 18: sin metas de peso ni objetivo «perder peso»** (lo lleva el pediatra).
@@ -33,6 +33,6 @@ Estática: HTML + CSS + JS sin compilar, datos en el `localStorage` del navegado
   Comprobar el informe real (`docs/audit-*.txt`): un filtro que no ve la auditoría también diría «verde».
 
 ## Pendiente
-Ver `docs/PLAN.md`. Del informe `Desktop\INFORME-health-tracker.md` quedan: decisiones A y B (ambas de momento sin tocar).
+Ver `docs/PLAN.md`. Del informe `Desktop\INFORME-health-tracker.md` quedaban las decisiones A y B (ambas sin tocar); ese archivo ya no está en el Escritorio (hay un `docs/INFORME-2026-09-28.md` sin seguimiento en el repo): comprobar si siguen vigentes.
 
 ✅ **Wake Lock probado en móvil:** pantalla se mantiene activa durante entreno (29-sep, primer entreno).
