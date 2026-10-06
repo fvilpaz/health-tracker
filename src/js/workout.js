@@ -93,6 +93,7 @@ async function renderWorkoutPhase(phase) {
 // Con un entreno en marcha no se puede cambiar de fase ni de bloque: antes se podía, se mezclaban los ejercicios
 // y hasta se apuntaba como hecho un bloque de fuerza que no se había hecho (revisión del 28-sep).
 function bloquearEleccion(si) {
+  marcarRelojes();   // gym.js: el reloj del gimnasio se ve inerte mientras corre este entreno (y vuelve al terminar)
   document.querySelectorAll('.phase-tab, .block-btn').forEach(b => { b.disabled = si; b.setAttribute('aria-disabled', si); });
 }
 
@@ -106,6 +107,8 @@ function actualizarPausa() {
 
 function startWorkout() {
   if (!workoutData) return;
+  const d = decisionReloj('casa', { corre: Timer.isRunning(), casaActivo: workoutActive });   // gym.js: el Timer es uno solo
+  if (d.aviso) { avisarReloj('casaAviso', d.aviso); return; }
   workoutActive = true;
   bloquearEleccion(true);
   mantenerPantalla(true);

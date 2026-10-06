@@ -150,3 +150,38 @@ test('textoPuerta: sin «matrona» para menores', () => {
   assert.ok(texto(['embarazo']).includes('matrona'));
   assert.ok(texto(['parq']).includes('plan de gimnasio ya hecho'));
 });
+
+test('decisionReloj: el Timer es uno; el reloj del gimnasio y el entreno en casa no se pisan ni se paran solos', () => {
+  const decide = (q, corre, casaActivo) => JSON.parse(JSON.stringify(crearApp().get('decisionReloj')(q, { corre, casaActivo })));
+  // Entreno en casa en marcha (corriendo o en pausa): el reloj del gimnasio no hace nada y avisa
+  for (const corre of [true, false]) assert.deepEqual(decide('gym', corre, true), { accion: 'nada', aviso: 'Termina o para el entreno en casa para usar este reloj' });
+  // Descanso del gimnasio corriendo: «Iniciar entrenamiento» no arranca y avisa
+  assert.deepEqual(decide('casa', true, false), { accion: 'nada', aviso: 'Para el descanso del gimnasio antes de empezar' });
+  // Sin choque, todo como siempre: el reloj arranca y, corriendo, se para; el entreno en casa arranca
+  assert.deepEqual(decide('gym', false, false), { accion: 'arrancar' });
+  assert.deepEqual(decide('gym', true, false), { accion: 'parar' });
+  assert.deepEqual(decide('casa', false, false), { accion: 'arrancar' });
+});
+
+test('solo gimnasio (sin entreno en casa) el reloj se comporta como antes; marcarRelojes los pone inertes solo cuando toca', () => {
+  const app = crearApp(), decide = app.get('decisionReloj'), els = new Map();
+  for (const casaActivo of [false, undefined]) {
+    assert.equal(decide('gym', { corre: false, casaActivo }).accion, 'arrancar');
+    assert.equal(decide('gym', { corre: true, casaActivo }).accion, 'parar');
+    assert.equal(decide('gym', { corre: true, casaActivo }).aviso, undefined);
+  }
+  app.get('document').getElementById = id => (els.has(id) ? els.get(id) : els.set(id, { setAttribute(k, v) { this[k] = v; } }).get(id));
+  const marcar = app.get('marcarRelojes'), T = app.get('Timer');
+  marcar();
+  assert.equal(els.get('gymDescanso')['aria-disabled'], 'false');
+  assert.equal(els.get('startWorkoutBtn')['aria-disabled'], 'false');
+  T.start(30, () => {}, () => {});                                                   // corre el reloj del gym (workoutActive false)
+  marcar();
+  assert.equal(els.get('gymDescanso')['aria-disabled'], 'false');
+  assert.equal(els.get('startWorkoutBtn')['aria-disabled'], 'true');                 // «Iniciar» inerte mientras corre el del gym
+  T.stop();
+  app.get('(function(){ workoutActive = true; })')();                                  // entreno en casa en marcha
+  marcar();
+  assert.equal(els.get('gymDescanso')['aria-disabled'], 'true');                     // el reloj del gym, inerte
+  assert.equal(els.get('startWorkoutBtn')['aria-disabled'], 'false');
+});
