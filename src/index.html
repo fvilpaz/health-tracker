@@ -157,7 +157,7 @@
       <div class="card" id="gymCard">
         <div class="card-title" role="heading" aria-level="2">Sesión del gimnasio</div>
         <div class="gym-dias" id="gymDias"></div>
-        <label class="gym-fecha">¿Qué día lo hiciste? <input type="date" id="gymFecha"></label>
+        <label class="campo-fecha">¿Qué día lo hiciste? <input type="date" id="gymFecha"></label>
         <div class="gym-info" id="gymInfo"></div>
         <div class="gym-lista" id="gymEjercicios"></div>
       </div>
@@ -458,6 +458,7 @@
     <section id="progreso" class="section">
       <div class="card">
         <div class="card-title" role="heading" aria-level="2">Registrar medidas</div>
+        <label class="campo-fecha">¿De qué día es la medida? <input type="date" id="medidaFecha"></label>
         <div class="weight-input-row">
           <input type="number" id="weightInput" placeholder="Peso (kg)" aria-label="Peso en kg" inputmode="decimal" step="0.1" min="30" max="300">
           <button class="btn btn-primary" id="saveWeightBtn">Peso</button>

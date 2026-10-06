@@ -25,13 +25,25 @@ function anotarMedida(lista, campo, valor, fecha) {
   return lista.sort((a, b) => esAIso(a.date).localeCompare(esAIso(b.date)));
 }
 
+// Día de la medida: el del campo de fecha (hoy por defecto; uno anterior sirve para apuntar una medida que se te pasó).
+// Devuelve «d/m/aaaa» o null si la fecha no vale (vacía, que no existe o futura).
+const campoFechaMedida = document.getElementById('medidaFecha');
+if (campoFechaMedida) campoFechaMedida.max = campoFechaMedida.value = isoDate(new Date());
+function fechaMedida() {
+  const iso = campoFechaMedida?.value || isoDate(new Date());
+  if (!esFechaIso(iso) || iso > isoDate(new Date())) { showToast('Pon el día de la medida (hoy o uno anterior)'); return null; }
+  return fechaEs(new Date(iso + 'T12:00'));
+}
+
 /* ===== PESO ===== */
 document.getElementById('saveWeightBtn').addEventListener('click', () => {
   const input = document.getElementById('weightInput');
   const val = parseFloat(input.value);
   if (!medidaValida('weight', val)) return;
+  const fecha = fechaMedida();
+  if (!fecha) return;
 
-  const weights = anotarMedida(Storage.get('weights', []), 'weight', val, fechaEs(new Date()));
+  const weights = anotarMedida(Storage.get('weights', []), 'weight', val, fecha);
 
   if (!Storage.get('startDate')) Storage.set('startDate', new Date().toISOString());
 
@@ -66,8 +78,10 @@ document.getElementById('saveWaistBtn').addEventListener('click', () => {
   const input = document.getElementById('waistInput');
   const val = parseFloat(input.value);
   if (!medidaValida('waist', val)) return;
+  const fecha = fechaMedida();
+  if (!fecha) return;
 
-  const waists = anotarMedida(Storage.get('waists', []), 'waist', val, fechaEs(new Date()));
+  const waists = anotarMedida(Storage.get('waists', []), 'waist', val, fecha);
 
   Storage.set('waists', waists);
   input.value = '';
@@ -83,7 +97,9 @@ document.getElementById('saveBellyBtn').addEventListener('click', () => {
   const input = document.getElementById('bellyInput');
   const val = parseFloat(input.value);
   if (!medidaValida('belly', val)) return;
-  Storage.set('bellies', anotarMedida(Storage.get('bellies', []), 'belly', val, fechaEs(new Date())));
+  const fecha = fechaMedida();
+  if (!fecha) return;
+  Storage.set('bellies', anotarMedida(Storage.get('bellies', []), 'belly', val, fecha));
   input.value = '';
   updateDashboard();
   renderMedidasLog();
