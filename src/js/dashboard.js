@@ -40,7 +40,9 @@ function updateDashboard() {
   // eslint-disable-next-line no-unsanitized/property -- solo constantes e iconos del propio código y un número
   if (streakEl) streakEl.innerHTML = duo('llama', 'estado racha') + ' ' + (streak ? `${plural(streak, 'semana cumplida', 'semanas cumplidas')} seguidas` : `Cumple ${objetivoSemana()} sesiones esta semana para empezar la racha`);
 
-  // Progreso del plan
+  // Progreso del plan (el título dice las semanas de TU plan, no un número fijo)
+  const tituloPlan = document.getElementById('planTitulo');
+  if (tituloPlan) tituloPlan.textContent = `Plan de ${plural(totalWeeks, 'semana', 'semanas')}`;
   if (startDate && currentWeight && startWeight) {
     const weeksEl = document.getElementById('weeksProgress');
     const fillEl = document.getElementById('weeksFill');

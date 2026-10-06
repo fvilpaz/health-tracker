@@ -1,6 +1,6 @@
 /* eslint-disable security/detect-object-injection -- las claves son nombres del propio código (catálogos, campos) o ya validadas; nunca texto de fuera sin comprobar (revisado 28-sep-2026) */
-/* Plan de 12 semanas: objetivo de peso y cintura de cada semana, lo real (sale de Progreso) y las casillas
-   de bloques hechos (salen de Mi semana). Se movió tal cual desde app.js (28-sep-2026). */
+/* Plan de N semanas (las de tu perfil; 12 si no pones otra): objetivo de peso y cintura de cada semana, lo real (sale
+   de Progreso) y las casillas de sesiones hechas (salen de Mi semana). Se movió tal cual desde app.js (28-sep-2026). */
 
 /* ===== PLAN TABLE ===== */
 // Número de la semana del plan (1, 2, …) en la que cae «ref». La 1 es la semana (lunes a domingo) del día de inicio.
@@ -93,8 +93,8 @@ function renderPlanTable() {
     const realWeight = ultimaDeSemana(weights, 'weight', weekDate);
     const realWaist = ultimaDeSemana(waists, 'waist', weekDate);
     const realBelly = ultimaDeSemana(bellies, 'belly', weekDate);
-    const hechos = sessionsInWeek(weekDate).length;   // las casillas salen solas de los bloques hechos esa semana
-    const checks = [0, 1, 2].map(i => i < hechos);
+    const hechos = sessionsInWeek(weekDate).length;   // las casillas salen solas de las sesiones hechas esa semana
+    const checks = Array.from({ length: idealSemana() }, (_, i) => i < hechos);   // una por sesión del plan (5); las del mínimo (3) primero
     const isCurrent = w === currentWeekNum;
     const isPast = w < currentWeekNum;
 
@@ -102,23 +102,11 @@ function renderPlanTable() {
 
     html += `<div class="${cardClass}" data-week="${w}">`;
 
-    // Tres líneas: la semana; los entrenos (1 2 3); y peso, cintura y barriga, cada una en un tercio
+    // Dos partes: la cabecera (la semana a la izquierda; peso, cintura y barriga a la derecha) y debajo los entrenos,
+    // una casilla por sesión del plan
     html += `<div class="plan-week-header">`;
-    html += `<span class="plan-week-label">Semana ${w}</span>`;
-    html += `<span class="plan-date">${dateLabel}</span>`;
-    html += `</div>`;
-    // Entrenos: las 3 casillas tan anchas como los recuadros de abajo, cada una encima de uno
-    // «ENTRENOS» encima de la casilla 1, a la par de «PESO»; las otras dos llevan un hueco del mismo alto
-    html += `<div class="plan-entrenos"><div class="plan-inputs">`;
-    [1, 2, 3].forEach((num, i) => {
-      // Las casillas 2 y 3 llevan la misma etiqueta invisible: mismo alto exacto y las tres quedan en línea
-      const etiqueta = `<span class="plan-mini${i ? ' plan-mini-hueco' : ''}"${i ? ' aria-hidden="true"' : ''}>${duo('pesa', 'mini-ico')}ENTRENOS</span>`;
-      html += `<div class="plan-input-group">${etiqueta}<span class="plan-check ${checks[i] ? 'checked' : ''}">${checks[i] ? '✓' : num}</span></div>`;
-    });
-    html += `</div></div>`;
-
-    html += `<div class="plan-row-bottom">`;
-    html += `<div class="plan-inputs">`;
+    html += `<div class="plan-week-titulo"><span class="plan-week-label">Semana ${w}</span><span class="plan-date">${dateLabel}</span></div>`;
+    html += `<div class="plan-inputs plan-medidas">`;
     // Color = cómo estás: el peso por el IMC (OMS) y la cintura por cintura/altura, como en el Panel
     const alt = getHeightCm();
     html += planValor(targetWeight, realWeight, 'kg', 'PESO', 'balanza', realWeight != null && alt ? colorImc(realWeight / (alt / 100) ** 2) : '');
@@ -127,6 +115,10 @@ function renderPlanTable() {
     html += planValor(objetivoDeLaSemana(startBelly, null, totalWeeks, w), realBelly, 'cm', 'BARRIGA', 'regla');
     html += `</div>`;
     html += `</div>`;
+    // Entrenos: «ENTRENOS» una vez y debajo las casillas en fila; las que pasan del mínimo, con borde discontinuo
+    html += `<div class="plan-entrenos"><span class="plan-mini">${duo('pesa', 'mini-ico')}ENTRENOS</span><div class="plan-checks-fila">`;
+    checks.forEach((hecha, i) => { html += `<span class="plan-check${hecha ? ' checked' : ''}${i >= objetivoSemana() ? ' extra' : ''}">${hecha ? '✓' : i + 1}</span>`; });
+    html += `</div></div>`;
 
     html += `</div>`;
   }
