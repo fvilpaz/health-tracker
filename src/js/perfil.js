@@ -283,8 +283,6 @@ async function abrirCuestionario({ nuevo }) {
     }
     overlay.remove();
     if (nuevo) initApp(); else { updateDashboard(); aplicarPerfilFichas(); showToast('Perfil guardado ✓'); }
-    // Los bloques salen del perfil: si ya estaban cargados, se rehacen (nivel, molestias, minutos…)
-    if (workoutData) aplicarRutina().then(() => { currentBlock = nextBlock(); renderWorkoutPhase(currentPhase); });
   }
 
   // Sí/no: la lista de debajo solo con «sí»; con un «sí» en seguridad, el aviso de ir al médico

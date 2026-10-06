@@ -53,6 +53,9 @@ test('cardioDeCasillas: opcional, acepta coma decimal y avisa de lo mal escrito'
   assert.equal(c({ minutes: ' ', km: '', note: '  ' }), null);
   assert.deepEqual(plano(c({ minutes: '54', km: '5,06', note: ' caminata ' })), { minutes: 54, km: 5.06, note: 'caminata' });
   assert.deepEqual(plano(c({ km: '0.69' })), { km: 0.69 });
+  assert.deepEqual(plano(c({ minutes: '10:38', km: '0,69' })), { minutes: 10.63, km: 0.69 });   // como lo da la cinta (min:seg)
+  assert.deepEqual(plano(c({ minutes: '54:15' })), { minutes: 54.25 });
+  for (const mal of ['10:75', '10:5', ':30', '0:00', '700:00']) assert.ok(c({ minutes: mal }).error, mal);
   for (const mal of [{ minutes: 'abc' }, { minutes: '0' }, { minutes: '601' }, { km: '-1' }, { km: '201' }, { note: 'x'.repeat(121) }]) assert.ok(c(mal).error, JSON.stringify(mal));
 });
 
@@ -62,6 +65,8 @@ test('sesionGym: ejercicios en el orden del plan, cardio solo si hay algo, y sin
   assert.deepEqual(s({ day: '1', done: [dia1[2], dia1[0]], cardio: {} }), { date: '2026-10-06', block: null, day: '1', exercises: [dia1[0], dia1[2]] });
   const con = s({ day: '1', done: [dia1[0]], cardio: { start: { minutes: '10,5' }, end: { minutes: '', km: '' } } });
   assert.deepEqual(con.cardio, { start: { minutes: 10.5 } });
+  assert.equal(s({ day: '1', done: [dia1[0]] }, '2026-10-05').date, '2026-10-05');   // lo de ayer, apuntado hoy
+  for (const mala of ['2999-01-01', '2026-02-31', '', '5/10/2026']) assert.ok(s({ day: '1', done: [dia1[0]] }, mala).error, mala);   // futura, que no existe, vacía o mal escrita
   assert.equal(s({ day: '1', done: [] }).error, 'Marca al menos un ejercicio');
   assert.equal(s({ day: '1', done: ['Otro que no es del día 1'] }).error, 'Marca al menos un ejercicio');
   assert.ok(s({ day: '1', done: [dia1[0]], cardio: { end: { km: 'mucho' } } }).error.startsWith('Cardio al acabar'));
@@ -104,6 +109,16 @@ test('textoCardio: una línea con lo que haya, vacío sin cardio, y todo escapad
   assert.equal(t(undefined), '');
   assert.equal(t({ start: {} }), '');
   assert.ok(!t({ end: { note: '<img src=x onerror="alert(1)">' } }).includes('<'));
+});
+
+test('rellenoReloj: lleno al estar parado, se vacía al descansar y nunca sale de 0 a 1', () => {
+  const r = crearApp().get('rellenoReloj');
+  assert.equal(r(undefined, 90), 1);
+  assert.equal(r(90, 90), 1);
+  assert.equal(r(45, 90), 0.5);
+  assert.equal(r(0, 90), 0);
+  assert.equal(r(-3, 90), 0);
+  assert.equal(r(120, 90), 1);
 });
 
 test('el borrador de la sesión (gymDraft) se ignora al importar, sin contarlo como error', () => {

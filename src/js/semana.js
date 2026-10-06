@@ -1,7 +1,7 @@
 /* eslint-disable security/detect-object-injection -- las claves son nombres del propio código (catálogos, campos) o ya validadas; nunca texto de fuera sin comprobar (revisado 28-sep-2026) */
-/* ===== SESIONES: bloques de fuerza (antiguos) y sesiones del gimnasio =====
+/* ===== SESIONES: las del gimnasio y los bloques de fuerza (antiguos, ya solo se leen) =====
    Storage 'sessions': [{ date: 'AAAA-MM-DD', block: '1' | '2' | '3' | null, day?: '1'-'5', minutes?, exercises: [nombres], cardio? }]
-   Un bloque antiguo solo se guarda COMPLETO (todas las vueltas); una sesión del gimnasio (gym.js), con lo que marcaste.
+   Las sesiones nuevas las guarda gym.js con lo que marcaste; los bloques con «block» son entrenos de antes.
    Caminar suelto no se registra (va en consejos); el cardio va dentro de la sesión. */
 // Mínimo por semana (lunes a domingo): objetivoSemana() en rutina.js (los días del perfil; sin perfil, 3).
 // Ideal: los días del plan del gimnasio, idealSemana() en gym.js.
@@ -11,12 +11,6 @@ const fechaEs = d => `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
 const esAIso = s => { const [d, m, y] = String(s).split('/'); return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`; };
 
 const isoDate = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-
-function saveSession(block, minutes, exercises) {
-  const sessions = Storage.get('sessions', []);
-  sessions.push({ date: isoDate(new Date()), block, minutes, exercises });
-  Storage.set('sessions', sessions);
-}
 
 // Todas las sesiones, más los entrenos antiguos ('trainings', solo la fecha «d/m/aaaa») para no perder historia
 function getSessions() {
@@ -36,12 +30,6 @@ function sessionsInWeek(ref = new Date(), sesiones = getSessions()) {
   domingo.setDate(lunes.getDate() + 6);
   const desde = isoDate(lunes), hasta = isoDate(domingo);
   return sesiones.filter(s => s.date >= desde && s.date <= hasta);
-}
-
-// Qué bloque toca: el siguiente al último hecho (1 → 2 → 3 → 1)
-function nextBlock() {
-  const ultimo = getSessions().filter(s => s.block).pop();
-  return ultimo ? String(Number(ultimo.block) % 3 + 1) : '1';
 }
 
 /* ===== MI SEMANA: aviso, días y semanas anteriores ===== */

@@ -7,9 +7,9 @@ const CACHE = PREFIJO + '__VERSION__';
 // Lo que hace falta para abrir la app sin conexión desde la primera visita (pdf.js no: pesa 1,7 MB y solo se usa
 // al subir un PDF; se guarda la primera vez que se usa).
 const ESENCIAL = [
-  './', 'index.html', 'manifest.webmanifest', 'css/styles.css', 'data/workouts.json', 'data/gym.json',
-  'js/iconos.js', 'js/storage.js', 'js/copia.js', 'js/timer.js', 'js/charts.js', 'js/workout.js', 'js/semana.js',
-  'js/analisis.js', 'js/dashboard.js', 'js/plan.js', 'js/medidas.js', 'js/logros.js', 'js/perfil.js', 'js/rutina.js', 'js/nutricion.js', 'js/gym.js', 'js/app.js', 'data/health.json', 'data/exercises.json', 'data/nutrition.json',
+  './', 'index.html', 'manifest.webmanifest', 'css/styles.css', 'data/gym.json',
+  'js/iconos.js', 'js/storage.js', 'js/copia.js', 'js/timer.js', 'js/charts.js', 'js/semana.js',
+  'js/analisis.js', 'js/dashboard.js', 'js/plan.js', 'js/medidas.js', 'js/logros.js', 'js/perfil.js', 'js/rutina.js', 'js/nutricion.js', 'js/gym.js', 'js/app.js', 'data/health.json', 'data/nutrition.json',
   'js/tema.js', 'vendor/chart.umd.js', 'vendor/inter/inter-latin-wght-normal.woff2', 'icons/icon-192.png', 'icons/icon-512.png',
 ];
 
