@@ -49,6 +49,9 @@
 
 **6-oct-2026**
 - [x] Sesión del gimnasio (`gym.js`, `data/gym.json`): plan de 5 días en rotación, ejercicios hechos y cardio opcional al empezar y al acabar; «Mi semana» con mínimo 3 e ideal 5. Las sesiones guardan `day` y `cardio`, y `copia.js` ya no los pierde al importar
+- [x] Sesión del gimnasio con otro aspecto (tarjetas con su número, casilla redonda, reloj circular de descanso de 90 s con sonidos y vibración), fecha elegible para apuntar lo de ayer y minutos del cardio como los da la máquina (`10:38`)
+- [x] Panel: título «Plan de N semanas» con las del plan, 5 casillas de entreno y las medidas junto a «Semana N». «Mi perfil» → «Tu plan» cambia la fecha de inicio y la duración (antes solo se podían poner al crear el perfil)
+- [x] Fuera el entreno guiado de calistenia (bloques, calentamiento, calma, temporizador viejo y catálogo de 59 ejercicios) y el código que solo servía para eso; queda guardado con la etiqueta de git `calistenia-en-casa`
 - [x] Fuera «Hábitos de hoy» (`habitos.js`, su tarjeta, estilos y pruebas): no aportaba. `habits` pasa a ser una clave vieja que la copia ignora sin contarla; los hábitos que tuvieras guardados siguen en tu navegador, sin usarse (las reglas H1–H4 de `docs/FUENTES.md` quedan sin uso)
 
 **29-sep-2026**
