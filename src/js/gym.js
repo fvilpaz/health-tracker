@@ -217,10 +217,39 @@ function pintarDescanso(restante) {
   document.getElementById('gymRelojNum').textContent = restante ?? planGym.rest;
   document.getElementById('gymRelojTxt').textContent = restante === undefined ? 'Serie hecha: toca para descansar' : 'Descansando: toca para parar';
   document.getElementById('gymRelojArco').style.strokeDashoffset = CIRCUNFERENCIA_RELOJ * (1 - rellenoReloj(restante, planGym.rest));
+  marcarRelojes();
+}
+
+// Timer es UNO: lo usan el reloj del gimnasio y el entreno en casa. Quién puede usarlo ahora (nunca se para uno al arrancar el otro):
+// «gym» = tocar el reloj del gimnasio; «casa» = «Iniciar entrenamiento». «corre» = Timer.isRunning(); «casaActivo» = workoutActive.
+function decisionReloj(quien, { corre, casaActivo }) {
+  if (quien === 'gym') {
+    if (casaActivo) return { accion: 'nada', aviso: 'Termina o para el entreno en casa para usar este reloj' };
+    return { accion: corre ? 'parar' : 'arrancar' };
+  }
+  if (!casaActivo && corre) return { accion: 'nada', aviso: 'Para el descanso del gimnasio antes de empezar' };
+  return { accion: 'arrancar' };
+}
+
+// Los dos botones del Timer único se ven inertes (aria-disabled, no disabled: así reciben foco y explican por qué) mientras el otro lo usa
+function marcarRelojes() {
+  const gym = document.getElementById('gymDescanso'), casa = document.getElementById('startWorkoutBtn');
+  if (gym) gym.setAttribute('aria-disabled', String(!!workoutActive));
+  if (casa) casa.setAttribute('aria-disabled', String(Timer.isRunning() && !workoutActive));
+}
+
+// Texto visible (role=status) junto al botón que no ha hecho nada; se borra solo
+function avisarReloj(id, texto) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = texto;
+  setTimeout(() => { if (el.textContent === texto) el.textContent = ''; }, 6000);
 }
 
 document.getElementById('gymDescanso')?.addEventListener('click', () => {
   if (!planGym) return;
+  const d = decisionReloj('gym', { corre: Timer.isRunning(), casaActivo: workoutActive });
+  if (d.aviso) { avisarReloj('gymRelojAviso', d.aviso); return; }
   if (Timer.isRunning()) { Timer.stop(); mantenerPantalla(false); pintarDescanso(); return; }   // tocar durante el descanso lo para
   mantenerPantalla(true);
   avisoCambio('descanso');
