@@ -88,3 +88,22 @@ test('sesión libre (fecha y nota) se importa; una nota vacía, larga o que no e
   assert.deepEqual(sesiones([{ date: '2026-10-05', block: null, note: 'a'.repeat(121) }]), []);
   assert.deepEqual(sesiones([{ date: '2026-10-05', block: null, note: 5 }]), []);
 });
+
+test('cardio en lista: hasta 4 filas válidas entran enteras; 5, una mala o algo que no es objeto, fuera; el viejo {start, end} sigue entrando igual', () => {
+  const limpiar = crearApp().get('limpiarCopia');
+  const ses = cardio => ({ date: '2026-01-06', day: '1', exercises: ['x'], cardio });
+  const buena = [{ minutes: 10, km: 0.69, note: 'cinta' }, { minutes: 54 }, { km: 5 }, { note: 'solo nota' }];
+  const r = limpiar({ sessions: [ses(buena)] });
+  assert.equal(r.descartados, 0);
+  assert.deepEqual(plano(r.datos.sessions[0].cardio), buena);
+  const viejo = { start: { minutes: 10 }, end: { km: 5 } };
+  const rv = limpiar({ sessions: [ses(viejo)] });
+  assert.equal(rv.descartados, 0);
+  assert.deepEqual(plano(rv.datos.sessions[0].cardio), viejo);                             // el formato de antes no se toca al importar
+  for (const mala of [[...buena, { minutes: 1 }], [{ minutes: ataque }], [{ km: -2 }], [{ note: ataque.repeat(10) }], [null], ['x'], 'texto']) {
+    const rm = limpiar({ sessions: [ses(mala)] });
+    assert.equal(rm.datos.sessions.length, 0, JSON.stringify(mala).slice(0, 40));
+    assert.equal(rm.descartados, 1);
+  }
+  assert.deepEqual(plano(limpiar({ sessions: [ses([{ minutes: 5, raro: 'colado' }])] }).datos.sessions[0].cardio), [{ minutes: 5 }]);   // solo los tres campos
+});

@@ -2,7 +2,7 @@
 /* ===== SESIONES: las del gimnasio y los bloques de fuerza (antiguos, ya solo se leen) =====
    Storage 'sessions': [{ date: 'AAAA-MM-DD', block: '1' | '2' | '3' | null, day?: '1'-'5', minutes?, exercises: [nombres], cardio? }]
    Las sesiones nuevas las guarda gym.js con lo que marcaste; los bloques con «block» son entrenos de antes.
-   Caminar suelto no se registra (va en consejos); el cardio va dentro de la sesión. */
+   Caminar suelto no se registra (va en consejos); el cardio va dentro de la sesión: lista [{minutes?, km?, note?}] (hasta 4) o, en lo antiguo, {start?, end?}. */
 // Mínimo por semana (lunes a domingo): objetivoSemana() en rutina.js (los días del perfil; sin perfil, 3).
 // Ideal: los días del plan del gimnasio, idealSemana() en gym.js.
 
@@ -109,8 +109,13 @@ function renderSemana() {
 
 // El cardio de una sesión del gimnasio en una línea («Al empezar: 10.6 min · 0.69 km · cinta — Al acabar: 54 min · 5.06 km»); sin cardio, ''
 // Todo con esc(): viene del almacén (o de una copia importada).
-const textoCardio = c => !c ? '' : [['start', 'Al empezar'], ['end', 'Al acabar']].filter(([k]) => c[k] && Object.keys(c[k]).length).map(([k, t]) =>
-  `${t}: ${[c[k].minutes !== undefined && `${esc(c[k].minutes)} min`, c[k].km !== undefined && `${esc(c[k].km)} km`, c[k].note && esc(c[k].note)].filter(Boolean).join(' · ')}`).join(' — ');
+// El cardio puede venir en dos formatos y los dos se leen SIEMPRE: la LISTA nueva [{minutes?, km?, note?}] (en el orden en que lo hiciste)
+// y el formato viejo {start?, end?} («Al empezar» / «Al acabar»), que sigue en las sesiones ya guardadas y en las copias antiguas.
+const cardioComoLista = c => Array.isArray(c) ? c : (c && typeof c === 'object' ? ['start', 'end'].map(k => c[k]).filter(x => x && typeof x === 'object' && Object.keys(x).length) : []);
+const resumenCardio = x => [x.minutes !== undefined && `${esc(x.minutes)} min`, x.km !== undefined && `${esc(x.km)} km`, x.note && esc(x.note)].filter(Boolean).join(' · ');
+const textoCardio = c => !c ? '' : Array.isArray(c)
+  ? c.filter(x => x && typeof x === 'object' && Object.keys(x).length).map(resumenCardio).filter(Boolean).join(' — ')
+  : [['start', 'Al empezar'], ['end', 'Al acabar']].filter(([k]) => c[k] && Object.keys(c[k]).length).map(([k, t]) => `${t}: ${resumenCardio(c[k])}`).join(' — ');
 
 // «Apuntar sesión»: te lleva a la pantalla de la sesión del gimnasio (arriba en Entreno)
 document.getElementById('semanaActual')?.addEventListener('click', e => {

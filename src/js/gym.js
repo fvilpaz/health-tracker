@@ -1,7 +1,7 @@
 /* eslint-disable security/detect-object-injection -- las claves son 'start' / 'end' y los campos de casillas, nombres del propio código (revisado 6-oct-2026) */
 /* Sesión del gimnasio: la app solo APUNTA lo que hiciste (los vídeos y el plan están en la app del gimnasio).
    El plan (data/gym.json) son 5 días que rotan. Se guarda en 'sessions' como
-   { date, block: null, day: '1'-'5', exercises: [nombres hechos], cardio?: { start?, end?: { minutes?, km?, note? } } }.
+   { date, block: null, day: '1'-'5', exercises: [nombres hechos], cardio?: [{ minutes?, km?, note? }, …] (hasta 4, en el orden hecho; lo antiguo era { start?, end? }) }.
    Mientras marcas, lo hecho se guarda en 'gymDraft' (solo el de hoy) para no perderlo si cierras la app. */
 let planGym = null;
 async function cargarPlanGym() {
@@ -22,7 +22,7 @@ function nextGymDay(sesiones = getSessions(), total = 5) {
   return ultimo ? String(Number(ultimo.day) % total + 1) : '1';
 }
 
-const CARDIOS_GYM = [['start', 'Cardio al empezar', 'cardio_start'], ['end', 'Cardio al acabar', 'cardio_end']];
+const MAX_CARDIOS = 4;   // cuántos cardios caben en una sesión
 
 // Minutos como los da la máquina («10:38», min:seg) o a mano («10,6»); en el almacén siempre decimales (10.63)
 const minutosDe = t => { const r = /^(\d{1,3}):([0-5]\d)$/.exec(t); return r ? Math.round((+r[1] + +r[2] / 60) * 100) / 100 : Number(t); };
@@ -47,16 +47,20 @@ function sesionGym(plan, borrador, fecha = isoDate(new Date())) {
   const dia = plan.days.find(d => d.id === borrador.day);
   const hechos = dia.exercises.map(e => e.name).filter(n => borrador.done.includes(n));
   if (!hechos.length) return { error: 'Marca al menos un ejercicio' };
-  const cardio = {};
-  for (const [k, titulo] of CARDIOS_GYM) {
-    const c = cardioDeCasillas(borrador.cardio?.[k] || {});
-    if (c?.error) return { error: `${titulo}: ${c.error}` };
-    if (c) cardio[k] = c;
+  // El cardio es una lista (hasta 4) en el orden en que lo hiciste; las filas vacías no cuentan. El borrador de antes ({start, end}) se lee igual.
+  const cardio = [];
+  const filas = cardioComoLista(borrador.cardio);
+  if (filas.length > MAX_CARDIOS) return { error: `Cardio: como mucho ${MAX_CARDIOS}` };
+  for (const [i, fila] of filas.entries()) {
+    const c = cardioDeCasillas(fila || {});
+    if (c?.error) return { error: `Cardio ${i + 1}: ${c.error}` };
+    if (c) cardio.push(c);
   }
-  return { date: fecha, block: null, day: dia.id, exercises: hechos, ...(Object.keys(cardio).length && { cardio }) };
+  return { date: fecha, block: null, day: dia.id, exercises: hechos, ...(cardio.length && { cardio }) };
 }
 
-const borradorGym = () => { const b = Storage.get('gymDraft'); return b && b.date === isoDate(new Date()) && Array.isArray(b.done) ? b : null; };
+// El borrador es solo el de hoy; si traía el cardio en el formato viejo ({start, end}), se pasa a lista sin perder lo escrito
+const borradorGym = () => { const b = Storage.get('gymDraft'); return b && b.date === isoDate(new Date()) && Array.isArray(b.done) ? { ...b, cardio: cardioComoLista(b.cardio) } : null; };
 
 // La sesión libre (plan cerrado por la puerta): solo fecha y una nota corta, sin ejercicios ni cardio
 function sesionLibre(fecha, nota, hoy = isoDate(new Date())) {
@@ -176,7 +180,7 @@ function filaEjercicio({ e, i, hecha, meta, alCambiar, cargarExplicacion }) {
   label.append(nuevo('span', 'gym-ej-num', String(i + 1)), cuerpo, casilla);
   fila.append(label);
   if (e.ref && cargarExplicacion) {
-    const boton = nuevo('button', 'gym-info-btn', 'Cómo se hace '), region = nuevo('div', 'gym-tip');
+    const boton = nuevo('button', 'gym-info-btn'), region = nuevo('div', 'gym-tip');
     const flecha = nuevo('span', 'gym-flecha', '▾');
     flecha.setAttribute('aria-hidden', 'true');
     boton.append(flecha);
@@ -184,7 +188,8 @@ function filaEjercicio({ e, i, hecha, meta, alCambiar, cargarExplicacion }) {
     boton.type = 'button';
     region.id = `gym-tip-${e.id}`;
     region.hidden = true;
-    boton.setAttribute('aria-label', `Cómo se hace: ${e.name}`);   // empieza por el texto visible; distingue un botón de otro
+    boton.setAttribute('aria-label', `Cómo se hace: ${e.name}`);   // solo flecha a la vista: el nombre accesible dice qué ejercicio es
+    boton.title = 'Cómo se hace';
     boton.setAttribute('aria-controls', region.id);
     boton.setAttribute('aria-expanded', 'false');
     boton.addEventListener('click', async () => {
@@ -216,7 +221,8 @@ async function renderGym() {
   try { plan = await cargarPlanGym(); } catch { lista.textContent = 'No se ha podido cargar el plan. Revisa la conexión y vuelve a abrir la app.'; return; }
   if (primera) updateDashboard();   // ya se conoce el ideal (días del plan): «Mi semana» y las casillas del plan lo enseñan
   const toca = nextGymDay(getSessions(), plan.days.length);
-  const b = borradorGym() || { date: isoDate(new Date()), day: toca, done: [], cardio: {} };
+  const b = borradorGym() || { date: isoDate(new Date()), day: toca, done: [], cardio: [] };
+  if (!b.cardio.length) b.cardio = [{}];   // siempre hay una fila a la vista; vacía no cuenta
   const guardar = () => Storage.set('gymDraft', b);
   const nuevo = (tag, clase, texto) => { const el = document.createElement(tag); if (clase) el.className = clase; if (texto !== undefined) el.textContent = texto; return el; };
 
@@ -238,23 +244,49 @@ async function renderGym() {
     cargarExplicacion: () => cargarExplicaciones().then(c => c[e.ref] ?? null),
   })));
 
-  // Cardio opcional: los minutos del plan salen solo como pista en gris, nunca como obligación
-  document.getElementById('gymCardio').replaceChildren(...CARDIOS_GYM.map(([k, titulo, clavePlan]) => {
-    const caja = nuevo('div', 'gym-cardio'), campos = nuevo('div', 'gym-cardio-campos');
-    const campo = (nombre, pista, modo) => {
-      const el = nuevo('input', nombre === 'note' ? 'gym-cardio-nota' : '');
-      el.type = 'text'; el.inputMode = modo; el.placeholder = pista; el.maxLength = 120;
-      el.setAttribute('aria-label', `${titulo}: ${pista}`);
-      el.value = b.cardio[k]?.[nombre] ?? '';
-      el.addEventListener('input', () => { b.cardio[k] = { ...b.cardio[k], [nombre]: el.value }; guardar(); });
-      return el;
-    };
-    campos.append(campo('minutes', 'min o min:seg', 'text'), campo('km', 'km', 'decimal'), campo('note', 'nota (cinta, caminata…)', 'text'));
-    const tit = nuevo('div', 'gym-cardio-tit', titulo);
-    tit.append(nuevo('span', 'gym-cardio-plan', `plan: ${plan[clavePlan].minutes} min`));
-    caja.append(tit, campos);
-    return caja;
-  }));
+  // Cardio opcional: una lista de filas (minutos, km y nota) en el orden hecho, hasta 4; «+ Añadir otro cardio» y «Quitar» (con confirmación si la fila tiene algo)
+  const zonaCardio = document.getElementById('gymCardio');
+  let confirmando = -1;
+  const pintarCardio = enfocar => {
+    const filas = b.cardio.map((fila, i) => {
+      const caja = nuevo('div', 'gym-cardio'), cab = nuevo('div', 'gym-cardio-cab'), campos = nuevo('div', 'gym-cardio-campos');
+      const titulo = `Cardio ${i + 1}`;
+      const campo = (nombre, pista, modo) => {
+        const el = nuevo('input', nombre === 'note' ? 'gym-cardio-nota' : '');
+        el.type = 'text'; el.inputMode = modo; el.placeholder = pista; el.maxLength = 120;
+        el.setAttribute('aria-label', `${titulo}: ${pista}`);
+        el.value = fila[nombre] ?? '';
+        el.addEventListener('input', () => { b.cardio[i] = { ...b.cardio[i], [nombre]: el.value }; guardar(); });
+        return el;
+      };
+      campos.append(campo('minutes', 'min o min:seg', 'text'), campo('km', 'km', 'decimal'), campo('note', 'nota (cinta, caminata…)', 'text'));
+      cab.append(nuevo('div', 'gym-cardio-tit', titulo));
+      const tieneAlgo = Object.values(b.cardio[i] || {}).some(v => String(v).trim());
+      if (b.cardio.length > 1 || tieneAlgo) {
+        const quitar = nuevo('button', 'gym-cardio-quitar', confirmando === i ? '¿Quitar? Pulsa otra vez' : 'Quitar');
+        quitar.type = 'button';
+        quitar.setAttribute('aria-label', `${confirmando === i ? 'Confirmar: quitar' : 'Quitar'} ${titulo}`);
+        quitar.addEventListener('click', () => {
+          if (tieneAlgo && confirmando !== i) { confirmando = i; pintarCardio(); return; }   // con datos, se pide confirmar en la propia fila
+          confirmando = -1;
+          b.cardio.splice(i, 1);
+          if (!b.cardio.length) b.cardio = [{}];
+          guardar();
+          pintarCardio();
+        });
+        cab.append(quitar);
+      }
+      caja.append(cab, campos);
+      return caja;
+    });
+    const mas = nuevo('button', 'gym-cardio-mas', '+ Añadir otro cardio');
+    mas.type = 'button';
+    mas.hidden = b.cardio.length >= MAX_CARDIOS;
+    mas.addEventListener('click', () => { confirmando = -1; b.cardio.push({}); guardar(); pintarCardio(true); });
+    zonaCardio.replaceChildren(...filas, mas);
+    if (enfocar) zonaCardio.querySelectorAll('.gym-cardio')[b.cardio.length - 1]?.querySelector('input')?.focus();
+  };
+  pintarCardio();
   pintarDescanso();
 }
 
