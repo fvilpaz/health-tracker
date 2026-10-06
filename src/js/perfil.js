@@ -10,6 +10,14 @@ function numero(texto) {
   return t === '' ? NaN : Number(t);
 }
 
+// «Tu plan» (solo en «Mi perfil»): cuándo empezó y cuántas semanas dura. Devuelve { date, weeks } o { error }.
+function leerPlan(fecha, semanasTexto) {
+  const semanas = numero(semanasTexto);
+  if (!esFechaIso(fecha)) return { error: 'Pon la fecha en la que empezó tu plan' };
+  if (!Number.isInteger(semanas) || semanas < 4 || semanas > 24) return { error: 'El plan tiene que durar entre 4 y 24 semanas' };
+  return { date: fecha, weeks: semanas };
+}
+
 // Años cumplidos en «hoy» (el día del cumpleaños ya cuenta)
 function edad(nacimiento, hoy = new Date()) {
   const [a, m, d] = nacimiento.split('-').map(Number);
@@ -128,6 +136,10 @@ async function abrirCuestionario({ nuevo }) {
       `<div class="setup-field"><label for="pfNacimiento">Fecha de nacimiento</label><input type="date" id="pfNacimiento" value="${esc(p.birthDate ?? '')}"></div>` +
       grupo('Sexo (cambia los límites de riesgo de la cintura y de algunos análisis)', opciones('pfSexo', [{ id: 'male', name: 'Hombre' }, { id: 'female', name: 'Mujer' }], p.sex, 'radio')) +
       campoTexto('pfAltura', 'Altura (cm)', settings.height, 'Ej: 175', 'numeric') },
+    { titulo: 'Tu plan', soloEditar: true, html: () =>
+      `<div class="setup-field"><label for="pfInicio">¿Cuándo empezó tu plan?</label><input type="date" id="pfInicio" value="${esc(String(settings.startDate ?? '').slice(0, 10))}"></div>` +
+      campoTexto('pfSemanas', 'Duración del plan (semanas)', settings.totalWeeks ?? 12, '12', 'numeric') +
+      '<p class="setup-note">La semana 1 parte de tu última medida de ese día o anterior. El objetivo de peso se reparte en las semanas que pongas.</p>' },
     { titulo: 'Medidas de hoy', soloNuevo: true, html: () =>
       `<div class="setup-field"><label for="pfInicio">¿Cuándo empiezas? (vacío = hoy)</label><input type="date" id="pfInicio"></div>` +
       campoTexto('pfSemanas', 'Duración del plan (semanas)', '', '12 si lo dejas vacío', 'numeric') +
@@ -163,7 +175,7 @@ async function abrirCuestionario({ nuevo }) {
       grupo('¿Cómo comes?', opciones('pfDieta', cat.diets, p.diet, 'radio')) +
       grupo('Alergias o intolerancias', opciones('pfAlergias', cat.allergies, p.allergies ?? [])) +
       campoTexto('pfNoMeGusta', 'Lo que no comes o no te gusta (se quita de tus ideas)', p.dislikes, 'Ej: queso, chorizo, brócoli') },
-  ].filter(paso => nuevo || !paso.soloNuevo);
+  ].filter(paso => nuevo ? !paso.soloEditar : !paso.soloNuevo);
 
   // eslint-disable-next-line no-unsanitized/property -- constantes del código y del catálogo propio; lo del usuario va con esc()
   overlay.innerHTML = `
@@ -197,6 +209,7 @@ async function abrirCuestionario({ nuevo }) {
       if (!p.sex) return 'Elige hombre o mujer';
       if (!medidaValida('height', numero($('pfAltura').value))) return '';
     }
+    if (t === 'Tu plan') { const r = leerPlan($('pfInicio').value, $('pfSemanas').value); if (r.error) return r.error; }
     if (t === 'Medidas de hoy') {
       const semanas = $('pfSemanas').value.trim() === '' ? 12 : numero($('pfSemanas').value);
       if (!Number.isInteger(semanas) || semanas < 4 || semanas > 24) return 'El plan tiene que durar entre 4 y 24 semanas';
@@ -262,6 +275,9 @@ async function abrirCuestionario({ nuevo }) {
       });
     } else {
       const s = { ...Storage.get('settings', {}), height: altura };
+      const plan = leerPlan($('pfInicio').value, $('pfSemanas').value);   // ya comprobado en el paso «Tu plan»
+      s.startDate = plan.date; s.totalWeeks = plan.weeks;
+      Storage.set('startDate', new Date(plan.date + 'T00:00:00').toISOString());
       if (menor) delete s.goalWeight;   // si la fecha dice que es menor, fuera la meta de peso
       Storage.set('settings', s);
     }

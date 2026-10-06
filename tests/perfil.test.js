@@ -141,3 +141,11 @@ test('cada enfermedad del cuestionario tiene al menos una ficha en Meds (nadie s
   const claves = new Set([...meds.matchAll(/data-si="([^"]+)"/g)].flatMap(m => m[1].split(' ')));
   assert.deepEqual(h.conditions.map(c => c.id).filter(id => !claves.has('c:' + id)), []);
 });
+
+test('leerPlan («Tu plan» en Mi perfil): fecha real y entre 4 y 24 semanas; la coma y los espacios no estorban', () => {
+  const leerPlan = crearApp().get('leerPlan');
+  assert.deepEqual(plano(leerPlan('2026-10-05', ' 4 ')), { date: '2026-10-05', weeks: 4 });
+  assert.deepEqual(plano(leerPlan('2026-09-28', '12')), { date: '2026-09-28', weeks: 12 });
+  for (const [fecha, semanas] of [['2026-10-05', '3'], ['2026-10-05', '25'], ['2026-10-05', '4,5'], ['2026-10-05', ''], ['2026-10-05', 'abc']]) assert.ok(leerPlan(fecha, semanas).error, `${semanas}`);
+  for (const fecha of ['', '2026-02-31', '1999-01-01', '5/10/2026']) assert.ok(leerPlan(fecha, '4').error, fecha);   // fecha vacía, que no existe, antigua o mal escrita
+});
