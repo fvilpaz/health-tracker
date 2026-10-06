@@ -9,6 +9,7 @@ const Timer = (() => {
   let onTick = null;
   let onDone = null;
   let running = false;
+  let enPausa = 0;         // ms que quedaban al pausar
 
   const restante = () => Math.max(0, Math.ceil((fin - Date.now()) / 1000));
 
@@ -36,13 +37,32 @@ const Timer = (() => {
     }
   }
 
-  function stop() {
+  function pause() {
+    if (!running) return;
+    tick();                  // si con la pantalla apagada ya se había acabado el tiempo, se termina (antes se quedaba colgado)
+    if (!running) return;
+    enPausa = fin - Date.now();
     clearInterval(intervalId);
     intervalId = null;
     running = false;
   }
 
+  function resume() {
+    if (running || enPausa <= 0) return;
+    fin = Date.now() + enPausa;
+    enPausa = 0;
+    running = true;
+    intervalId = setInterval(tick, 1000);
+  }
+
+  function stop() {
+    clearInterval(intervalId);
+    intervalId = null;
+    running = false;
+    enPausa = 0;
+  }
+
   function isRunning() { return running; }
 
-  return { start, stop, isRunning };
+  return { start, pause, resume, stop, isRunning };
 })();

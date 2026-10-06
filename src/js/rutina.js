@@ -90,6 +90,20 @@ async function cargarCatalogoEjercicios() {
   return catalogoEjercicios;
 }
 
+/* ===== Bloques del perfil en «En casa» ===== */
+// Pone en workoutData.strength los bloques que tocan. Los de siempre se guardan aparte (strengthClassic).
+// Durante un entreno no cambia nada: se aplica al terminar o al volver a abrir.
+async function aplicarRutina() {
+  if (!workoutData || workoutActive) return;
+  if (!workoutData.strengthClassic) workoutData.strengthClassic = workoutData.strength;
+  const perfil = Storage.get('profile');
+  try {
+    workoutData.strength = perfil ? armarBloques(perfil, await cargarCatalogoEjercicios()) : workoutData.strengthClassic;
+  } catch {
+    workoutData.strength = workoutData.strengthClassic;   // sin catálogo (sin conexión la primera vez): los de siempre
+  }
+}
+
 // «En casa» necesita nivel y minutos, que el cuestionario solo pregunta con «En casa» marcado. Sin ellos no se arma
 // ningún entreno (no se inventa un nivel: aquí decide la carga). Molestias y zonas son opcionales.
 function faltanDatosCasa(perfil) {
@@ -130,6 +144,26 @@ function modosAlPulsar(modos, modo) {
   const quedan = modos.includes(modo) ? modos.filter(m => m !== modo) : MODOS.filter(m => m === modo || modos.includes(m));
   return quedan.length ? { modes: quedan } : { error: 'Tiene que quedar al menos un modo activo' };
 }
+
+// «En casa»: sin nivel y minutos no se arma nada (aviso + botón al perfil); con ellos, los bloques del perfil.
+// Durante un entreno no se toca nada (aplicarRutina ya lo respeta).
+async function renderCasa() {
+  const datos = document.getElementById('casaDatos'), entreno = document.getElementById('casaEntreno');
+  if (!datos || !entreno || !modosActivos().includes('home')) return;
+  const falta = faltanDatosCasa(Storage.get('profile'));
+  datos.hidden = !falta;
+  entreno.hidden = falta;
+  if (falta || workoutActive) return;
+  try {
+    await loadWorkoutData();
+    await aplicarRutina();
+    currentBlock = nextBlock();
+    await renderWorkoutPhase(currentPhase);
+  } catch {
+    document.getElementById('exerciseList').textContent = 'No se han podido cargar los ejercicios. Revisa la conexión y vuelve a abrir la app.';
+  }
+}
+document.getElementById('casaCompletar')?.addEventListener('click', () => abrirCuestionario({ nuevo: false, paso: 'Ejercicio' }));
 
 function renderModos(foco) {
   const fila = document.getElementById('modosFila');
@@ -172,5 +206,6 @@ function renderModos(foco) {
     if (!igual) el.open = !v.acordeon || v.abierto === m;
     el.dataset.acordeon = String(v.acordeon);
   }
+  renderCasa();
 }
 document.getElementById('entrenoCrearPerfil')?.addEventListener('click', () => abrirCuestionario({ nuevo: true }));

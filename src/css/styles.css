@@ -177,7 +177,7 @@ a { color: inherit; text-decoration: none; }
 /* Iconos: tamaño base de los de línea (.ico) y de los macizos (.duo); los estados llevan su color */
 .ico, .duo { width: 1.15em; height: 1.15em; vertical-align: -0.2em; flex: none; }
 .estado.ok { color: var(--green); } .estado.alerta { color: var(--orange); } .estado.mal { color: var(--red); }
-.estado.info { color: var(--blue); } .estado.racha { color: var(--orange); } .estado.idea { color: var(--yellow); }
+.estado.info { color: var(--blue); } .estado.racha { color: var(--orange); } .estado.idea, .estado.fiesta { color: var(--yellow); }
 .setup-duo { width: 56px; height: 56px; color: var(--blue); }
 .vacio-ico { width: 44px; height: 44px; color: var(--blue); margin-bottom: 8px; }
 .logro-icon .duo { width: 28px; height: 28px; color: var(--blue); }
@@ -686,6 +686,140 @@ table.labs td.fuera { color: var(--red); }
 .pf-sub { margin-top: 12px; }
 .meal-todas summary { cursor: pointer; font-size: 0.8rem; font-weight: 600; color: var(--blue); padding: 8px 0; min-height: 44px; display: flex; align-items: center; }
 .pf-riesgo { color: var(--red); }
+/* ===== En casa: entreno guiado (restaurado de la etiqueta calistenia-en-casa) ===== */
+.phase-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-bottom: 16px;
+}
+/* Bloques de fuerza (1, 2, 3): mismo estilo que las pestañas de fase */
+.block-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
+.block-btn {
+  padding: 7px 4px; min-height: 44px; border: 2px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--surface); color: inherit; font: inherit; font-size: 0.75rem; font-weight: 600; cursor: pointer;
+}
+.block-btn.active { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+.phase-tab:disabled, .block-btn:disabled { opacity: 0.45; cursor: not-allowed; }   /* entreno en marcha */
+.phase-tab {
+  padding: 8px 4px;
+  min-height: 44px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--text-muted);
+  transition: all var(--transition);
+}
+.phase-tab.active { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+
+.exercise-list { display: flex; flex-direction: column; gap: 10px; }
+/* Cada ejercicio es un desplegable: cerrado, «1 Nombre ▾»; abierto, la explicación, los tiempos y el vídeo */
+.exercise-item {
+  padding: 12px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition);
+}
+.exercise-item.active-exercise { background: var(--blue-light); border-color: var(--blue); }
+.exercise-item.done-exercise { opacity: 0.5; }
+.exercise-num {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--blue-light);
+  color: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.85rem;
+  flex-shrink: 0;
+}
+.exercise-item summary { list-style: none; display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; }
+.exercise-item summary::-webkit-details-marker { display: none; }
+.exercise-item[open] .lab-flecha:before { transform: translateY(2px) rotate(225deg); border-color: var(--blue); }
+.exercise-name { flex: 1; min-width: 0; font-weight: 600; font-size: 0.9rem; }
+.exercise-cuerpo { margin: 10px 0 0 44px; }
+.exercise-tip { font-size: 0.8rem; color: var(--text-muted); }
+.exercise-pie { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; }
+.exercise-time {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--blue);
+  white-space: nowrap;
+}
+.exercise-video {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--red-light);
+  color: var(--red);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.exercise-video:hover { background: var(--red); color: white; transform: scale(1.1); }
+
+/* TIMER */
+.timer-display {
+  text-align: center;
+  padding: 30px 20px;
+}
+.timer-phase-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.timer-exercise-name {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  min-height: 2rem;
+}
+.timer-circle-wrap {
+  position: relative;
+  width: 180px; height: 180px;
+  margin: 0 auto 20px;
+}
+.timer-circle-wrap svg { transform: rotate(-90deg); }
+.timer-circle-bg { fill: none; stroke: var(--border); stroke-width: 8; }
+.timer-circle-fg {
+  fill: none;
+  stroke: var(--blue);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s linear, stroke 0.3s;
+}
+.timer-circle-fg.rest { stroke: var(--green); }
+.timer-number {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--text);
+}
+.timer-controls { display: flex; gap: 12px; justify-content: center; }
+.timer-btn {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  border: none;
+  font-size: 1.4rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform var(--transition);
+}
+.timer-btn:active { transform: scale(0.92); }
+.timer-btn.play { background: var(--btn-blue); color: white; width: 68px; height: 68px; font-size: 1.6rem; }
+.timer-btn.stop { background: var(--red-light); color: var(--red); }
+.timer-status { font-size: 0.8rem; color: var(--text-muted); margin-top: 12px; }
+.timer-btn .ico { width: 24px; height: 24px; }
+.timer-btn.play .ico { width: 28px; height: 28px; }
+
 /* Modos de entreno: píldoras «Mis modos» (activan) y acordeones (pliegan) */
 .modos { margin-bottom: 14px; }
 .modos-titulo { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }

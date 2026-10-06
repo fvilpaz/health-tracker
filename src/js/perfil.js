@@ -172,7 +172,7 @@ const siNoDe = v => (v === true ? 'si' : v === false ? 'no' : undefined);
 const grupo = (titulo, html) => `<fieldset class="setup-field setup-grupo"><legend>${titulo}</legend>${html}</fieldset>`;
 
 // nuevo = true: primera vez (con medidas y plan). false: «Mi perfil» (sin medidas: esas van en Progreso).
-async function abrirCuestionario({ nuevo }) {
+async function abrirCuestionario({ nuevo, paso }) {   // «paso»: título del paso donde abrir (por defecto, el primero)
   let cat;
   try { cat = await cargarCatalogoSalud(); } catch { return showToast('No se ha podido cargar el cuestionario. Revisa la conexión.'); }
   const p = { ...Storage.get('profile', {}) };
@@ -377,7 +377,7 @@ async function abrirCuestionario({ nuevo }) {
   const cerrar = () => { overlay.remove(); if (nuevo) initApp(); };
   $('pfCerrar').addEventListener('click', cerrar);
   $('pfLuego')?.addEventListener('click', cerrar);
-  mostrar(0);
+  mostrar(Math.max(0, PASOS.findIndex(x => x.titulo === paso)));
   $('pfNombre').focus({ preventScroll: true });
 }
 

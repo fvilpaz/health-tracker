@@ -197,7 +197,54 @@
       </details>
       <details class="modo" id="modoCasa" hidden>
         <summary class="modo-cab">En casa<span class="lab-flecha"></span></summary>
-        <div class="card"><p class="meta-aviso">El entreno guiado en casa llega en la siguiente tarea.</p></div>
+        <div class="card" id="casaDatos" hidden>
+          <div class="card-title" role="heading" aria-level="2">Para armar tu entreno en casa necesito unos datos</div>
+          <p class="meta-aviso">Tu nivel y cuántos minutos puedes cada día. Sin ellos no te preparo ningún entreno.</p>
+          <button class="btn btn-green btn-full" id="casaCompletar">Completar mis datos</button>
+        </div>
+        <div id="casaEntreno">
+      <div class="phase-tabs">
+        <button class="phase-tab active" data-phase="warmup"><span data-duo="llama"></span> Calent.</button>
+        <button class="phase-tab" data-phase="strength"><span data-duo="pesa"></span> Fuerza</button>
+        <button class="phase-tab" data-phase="cooldown"><span data-duo="calma"></span> Calma</button>
+      </div>
+
+      <div class="card">
+        <div class="block-picker" id="blockPicker" style="display: none;">
+          <button class="block-btn" data-block="1">Bloque 1</button>
+          <button class="block-btn" data-block="2">Bloque 2</button>
+          <button class="block-btn" data-block="3">Bloque 3</button>
+        </div>
+        <div class="card-title" role="heading" aria-level="2" id="roundInfo"></div>
+        <div class="exercise-list" id="exerciseList"></div>
+      </div>
+
+      <div id="workoutSetup">
+        <button class="btn btn-green btn-full" id="startWorkoutBtn"><span data-ico="jugar"></span>Iniciar entrenamiento</button>
+      </div>
+
+      <div id="timerView" style="display: none;">
+        <div class="card">
+          <div class="timer-display">
+            <div class="timer-phase-label" id="timerPhaseLabel"></div>
+            <div class="timer-exercise-name" id="timerExerciseName"></div>
+            <div class="timer-circle-wrap">
+              <svg width="180" height="180" viewBox="0 0 180 180">
+                <circle class="timer-circle-bg" cx="90" cy="90" r="80"></circle>
+                <circle class="timer-circle-fg" id="timerCircleFg" cx="90" cy="90" r="80"
+                  stroke-dasharray="502.65" stroke-dashoffset="0"></circle>
+              </svg>
+              <div class="timer-number" id="timerNumber">0</div>
+            </div>
+            <div class="timer-controls">
+              <button class="timer-btn stop" id="stopBtn" aria-label="Detener"><span data-ico="parar"></span></button>
+              <button class="timer-btn play" id="pauseBtn" aria-label="Pausar"><span data-ico="pausa"></span></button>
+            </div>
+            <div class="timer-status" id="timerStatus"></div>
+          </div>
+        </div>
+      </div>
+        </div>
       </details>
     </section>
 
@@ -564,6 +611,7 @@
   <script src="js/copia.js"></script>
   <script src="js/timer.js"></script>
   <script src="js/charts.js"></script>
+  <script src="js/workout.js"></script>
   <script src="js/semana.js"></script>
   <script src="js/analisis.js"></script>
   <script src="js/dashboard.js"></script>

@@ -154,7 +154,7 @@ if ('serviceWorker' in navigator) {
   // Versión nueva publicada: se recarga sola, salvo en mitad de un descanso (se cortaría la cuenta atrás);
   // en ese caso la versión nueva sale la próxima vez que se abra.
   navigator.serviceWorker.addEventListener('message', e => {
-    if (e.data?.type === 'SW_UPDATED' && !Timer.isRunning()) window.location.reload();
+    if (e.data?.type === 'SW_UPDATED' && !Timer.isRunning() && !workoutActive) window.location.reload();
   });
 }
 

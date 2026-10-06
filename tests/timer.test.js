@@ -48,6 +48,17 @@ test('cuenta atrás de un segundo en uno y avisa al llegar a cero (una sola vez)
   reloj.pasar(3000); assert.equal(fin.veces, 1);
 });
 
+test('pausa y sigue donde estaba', () => {
+  const { Timer, reloj, vistos } = arrancar(10);
+  reloj.pasar(3000);                        // 10 → 7
+  Timer.pause();
+  assert.equal(Timer.isRunning(), false);
+  reloj.pasar(20000);                       // en pausa no cuenta
+  Timer.resume();
+  reloj.pasar(2000);                        // 7 → 5
+  assert.equal(vistos[vistos.length - 1], 5);
+});
+
 test('parar: deja de contar y no avisa de que ha terminado', () => {
   const { Timer, reloj, fin } = arrancar(5);
   reloj.pasar(2000);
@@ -73,6 +84,15 @@ test('si ya tenía que haber acabado (pantalla apagada mucho rato), al volver se
   assert.equal(Timer.isRunning(), false);
 });
 
+test('pausar cuando ya tenía que haber acabado (pantalla apagada mucho rato) no lo deja colgado', () => {
+  const { Timer, reloj, fin } = arrancar(30);
+  reloj.pasar(40000, 0);                    // 40 s sin que salte el intervalo
+  Timer.pause();                            // al volver, lo primero que tocas es «pausa»
+  Timer.resume();
+  reloj.pasar(2000);
+  assert.equal(fin.veces, 1);               // tenía que dar el ejercicio por terminado, no quedarse parado
+});
+
 test('avisos del descanso: al empezar (2 graves) y al acabar (1 agudo) suenan y vibran distinto', () => {
   const { crearApp } = require('./entorno.js');
   const patron = crearApp().get('patronAviso');
@@ -82,7 +102,14 @@ test('avisos del descanso: al empezar (2 graves) y al acabar (1 agudo) suenan y 
   assert.equal(patron('descanso').tonos.length, 2);
   assert.equal(patron('ejercicio').tonos.length, 1);
   for (const t of tipos) assert.ok(patron(t).vibracion.length >= 1, t);
-  assert.equal(patron('vuelta'), undefined);   // los avisos del entreno guiado ya no existen
   // Sin sonido ni vibración en el aparato (o en las pruebas): no rompe nada
   assert.doesNotThrow(() => crearApp().get('avisoCambio')('ejercicio'));
+});
+
+test('avisos del entreno en casa: ejercicio, descanso, vuelta y fin suenan y vibran distinto', () => {
+  const patron = require('./entorno.js').crearApp().get('patronAviso');
+  const tipos = ['ejercicio', 'descanso', 'vuelta', 'fin'];
+  assert.equal(new Set(tipos.map(t => JSON.stringify(patron(t)))).size, 4, 'cada momento con su propio aviso');
+  assert.equal(patron('vuelta').tonos.length, 3);
+  for (const t of tipos) assert.ok(patron(t).vibracion.length >= 1, t);
 });
