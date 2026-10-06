@@ -1,8 +1,10 @@
 /* eslint-disable security/detect-object-injection -- las claves son nombres del propio código (catálogos, campos) o ya validadas; nunca texto de fuera sin comprobar (revisado 28-sep-2026) */
-/* ===== SESIONES: bloques de fuerza completados =====
-   Storage 'sessions': [{ date: 'AAAA-MM-DD', block: '1' | '2' | '3', minutes, exercises: [nombres] }]
-   Solo se guarda un bloque COMPLETO (todas las vueltas). Caminar no se registra (va en consejos). */
-// Bloques por semana (lunes a domingo): objetivoSemana() en rutina.js (los días del perfil; sin perfil, 3)
+/* ===== SESIONES: bloques de fuerza (antiguos) y sesiones del gimnasio =====
+   Storage 'sessions': [{ date: 'AAAA-MM-DD', block: '1' | '2' | '3' | null, day?: '1'-'5', minutes?, exercises: [nombres], cardio? }]
+   Un bloque antiguo solo se guarda COMPLETO (todas las vueltas); una sesión del gimnasio (gym.js), con lo que marcaste.
+   Caminar suelto no se registra (va en consejos); el cardio va dentro de la sesión. */
+// Mínimo por semana (lunes a domingo): objetivoSemana() en rutina.js (los días del perfil; sin perfil, 3).
+// Ideal: los días del plan del gimnasio, idealSemana() en gym.js.
 
 // Fechas de medidas: «d/m/aaaa» escrito a mano (toLocaleDateString depende del idioma del navegador)
 const fechaEs = d => `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
@@ -45,13 +47,16 @@ function nextBlock() {
 /* ===== MI SEMANA: aviso, días y semanas anteriores ===== */
 const plural = (n, una, varias) => `${n} ${n === 1 ? una : varias}`;
 
-// 🟢 cumplida o vas bien · 🟠 vas justo · 🔴 ya no llegas, o es domingo con bloques pendientes
+// 🟢 cumplida o vas bien · 🟠 vas justo · 🔴 ya no llegas, o es domingo con sesiones pendientes (el mínimo, no el ideal)
 function weekStatus(ref = new Date()) {
-  const hechos = sessionsInWeek(ref).length, faltan = Math.max(0, objetivoSemana() - hechos);
+  const hechos = sessionsInWeek(ref).length, faltan = Math.max(0, objetivoSemana() - hechos), ideal = idealSemana();
   const hoyHecho = getSessions().some(s => s.date === isoDate(ref));
   const dias = 7 - (ref.getDay() + 6) % 7 - (hoyHecho ? 1 : 0);   // días que quedan para entrenar (hoy cuenta si aún no has entrenado)
-  const b = n => plural(n, 'bloque', 'bloques'), d = n => plural(n, 'día', 'días');
+  const b = n => plural(n, 'sesión', 'sesiones'), d = n => plural(n, 'día', 'días');
   const falta = faltan === 1 ? 'falta' : 'faltan', queda = dias === 1 ? 'queda' : 'quedan';
+  if (!faltan && ideal > objetivoSemana()) {
+    return { hechos, color: 'verde', texto: hechos >= ideal ? `${estado('ok')} Plan completo: ${hechos} de ${ideal}. ¡Muy bien!` : `${estado('ok')} Semana cumplida (mínimo ${objetivoSemana()}). El plan completo son ${ideal}.` };
+  }
   if (!faltan) return { hechos, color: 'verde', texto: `${estado('ok')} Semana cumplida. ¡Bien hecho!` };
   if (faltan > dias) return { hechos, color: 'rojo', texto: `${estado('mal')} Esta semana ya no llegas: te ${falta} ${b(faltan)} y ${dias ? `solo ${queda} ${d(dias)}` : 'no quedan días'}.` };
   if (ref.getDay() === 0) return { hechos, color: 'rojo', texto: `${estado('mal')} Es domingo y te ${falta} ${b(faltan)}: hoy es el último día.` };
@@ -65,11 +70,12 @@ function renderSemana() {
   const hoy = new Date(), lunes = getWeekStart(hoy), est = weekStatus(hoy), sesiones = getSessions();
   const dia = (base, n) => { const d = new Date(base); d.setDate(base.getDate() + n); return d; };
   const corta = d => d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
-  const etiqueta = s => `${s.block ? `Bloque ${esc(s.block)}` : 'Entreno'}${s.minutes ? ` · ${esc(s.minutes)} min` : ''}`;
+  const etiqueta = s => `${s.day ? `Día ${esc(s.day)}` : s.block ? `Bloque ${esc(s.block)}` : 'Entreno'}${s.minutes ? ` · ${esc(s.minutes)} min` : ''}`;
+  const ideal = idealSemana();
 
   // eslint-disable-next-line no-unsanitized/property -- lo del almacén o del PDF va por esc()/labNum() o son números; probado con una copia manipulada
   actual.innerHTML =
-    `<div class="semana-cab"><span>${corta(lunes)} – ${corta(dia(lunes, 6))}</span><strong class="semana-cuenta ${est.color}">${est.hechos} / ${objetivoSemana()}</strong></div>` +
+    `<div class="semana-cab"><span>${corta(lunes)} – ${corta(dia(lunes, 6))}</span><strong class="semana-cuenta ${est.color}">${est.hechos} / ${objetivoSemana()}${ideal > objetivoSemana() ? ` · ideal ${ideal}` : ''}</strong></div>` +
     `<div class="semana-aviso ${est.color}">${est.texto}</div>` +
     '<div class="semana-dias">' + [0, 1, 2, 3, 4, 5, 6].map(n => {
       const f = isoDate(dia(lunes, n)), delDia = sesiones.filter(s => s.date === f), esHoy = f === isoDate(hoy);
@@ -77,8 +83,8 @@ function renderSemana() {
         `<span class="semana-letra">${'LMXJVSD'[n]}<small>${dia(lunes, n).getDate()}</small></span>` +
         `<span>${delDia.length ? delDia.map(s => estado('ok') + ' ' + etiqueta(s)).join('<br>') : esHoy ? 'hoy' : ''}</span></div>`;
     }).join('') + '</div>' +
-    (est.hechos < objetivoSemana() ? `<button class="btn btn-green btn-full" id="semanaEntrenar">${ICONO.jugar}Entrenar · toca el Bloque ${nextBlock()}</button>` : '') +
-    '<div class="meta-aviso">Consejo: deja un día de descanso entre bloques. Caminar no se apunta aquí (va en los consejos).</div>';
+    (est.hechos < ideal ? `<button class="btn btn-green btn-full" id="semanaEntrenar">${ICONO.jugar}Apuntar sesión · toca el día ${nextGymDay()}</button>` : '') +
+    '<div class="meta-aviso">El cardio se apunta dentro de cada sesión. Caminar suelto no cuenta aquí (va en los consejos).</div>';
 
   // Semanas anteriores: desde la del primer entreno hasta la pasada, también las que quedaron a cero
   const pasadas = sesiones.filter(s => s.date < isoDate(lunes));
@@ -95,21 +101,25 @@ function renderSemana() {
       `<small>${suyas.length} / ${objetivoSemana()} ${ok ? `${estado('ok')} cumplida` : '· no cumplida'}</small></div><span class="lab-flecha"></span></summary>` +
       '<div class="lab-cuerpo">' + (suyas.length ? suyas.map(s =>
         `<div class="lab-fila"><div class="lab-fila-top"><span>${new Date(s.date + 'T12:00').toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric' })}</span><strong>${etiqueta(s)}</strong></div>` +
-        (s.exercises ? `<div class="lab-fila-que">${s.exercises.map(esc).join(' · ')}</div>` : '') + '</div>').join('')
+        (s.exercises ? `<div class="lab-fila-que">${s.exercises.map(esc).join(' · ')}</div>` : '') +
+        (textoCardio(s.cardio) ? `<div class="lab-fila-que">Cardio · ${textoCardio(s.cardio)}</div>` : '') + '</div>').join('')
         : '<div class="meta-aviso">Sin entrenos esta semana.</div>') + '</div></details>';
   }).join('');
 }
 
-// «Entrenar»: al Entreno, con el bloque que toca y empezando por el calentamiento
+// El cardio de una sesión del gimnasio en una línea («Al empezar: 10.6 min · 0.69 km · cinta — Al acabar: 54 min · 5.06 km»); sin cardio, ''
+// Todo con esc(): viene del almacén (o de una copia importada).
+const textoCardio = c => !c ? '' : [['start', 'Al empezar'], ['end', 'Al acabar']].filter(([k]) => c[k] && Object.keys(c[k]).length).map(([k, t]) =>
+  `${t}: ${[c[k].minutes !== undefined && `${esc(c[k].minutes)} min`, c[k].km !== undefined && `${esc(c[k].km)} km`, c[k].note && esc(c[k].note)].filter(Boolean).join(' · ')}`).join(' — ');
+
+// «Apuntar sesión»: te lleva a la pantalla de la sesión del gimnasio (arriba en Entreno)
 document.getElementById('semanaActual')?.addEventListener('click', e => {
   if (!e.target.closest('#semanaEntrenar')) return;   // también si tocas el icono (antes solo el texto)
   document.querySelector('[data-section="entrenamiento"]').click();
-  if (workoutActive) return;                           // con un entreno en marcha, solo te lleva a él
-  currentBlock = nextBlock();
-  renderWorkoutPhase('warmup');
+  document.getElementById('gymCard')?.scrollIntoView();
 });
 
-/* ===== RACHA: semanas cumplidas (3 bloques o más) ===== */
+/* ===== RACHA: semanas cumplidas (el mínimo de sesiones o más) ===== */
 function completedWeeks() {
   const porSemana = {};
   getSessions().forEach(s => { const k = isoDate(getWeekStart(new Date(s.date + 'T12:00'))); porSemana[k] = (porSemana[k] || 0) + 1; });

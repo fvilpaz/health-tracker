@@ -13,6 +13,9 @@ async function cargarPlanGym() {
   return planGym;
 }
 
+// Sesiones por semana del plan completo (ideal; el mínimo es objetivoSemana()). Hasta cargar el plan, = el mínimo.
+const idealSemana = () => Math.max(objetivoSemana(), planGym?.days.length || 0);
+
 // Día que toca: el siguiente al último que hiciste (1 → 2 → … → 5 → 1); sin ninguno, el 1
 function nextGymDay(sesiones = getSessions(), total = 5) {
   const ultimo = sesiones.filter(s => s.day).pop();
@@ -55,6 +58,7 @@ async function renderGym() {
   if (!lista) return;
   let plan;
   try { plan = await cargarPlanGym(); } catch { lista.textContent = 'No se ha podido cargar el plan. Revisa la conexión y vuelve a abrir la app.'; return; }
+  renderSemana();   // ya se conoce el ideal (días del plan): «Mi semana» lo enseña
   const toca = nextGymDay(getSessions(), plan.days.length);
   const b = borradorGym() || { date: isoDate(new Date()), day: toca, done: [], cardio: {} };
   const guardar = () => Storage.set('gymDraft', b);
