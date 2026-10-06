@@ -92,9 +92,54 @@ function guardarLibre() {
   checkLogros();
 }
 
-// La fila de un ejercicio: <div> con el <label> que marca (número, nombre, meta y casilla) y, solo si el ejercicio trae
-// explicación (e.tip), un botón APARTE, hermano del label (tocarlo no marca), que despliega la explicación hacia abajo.
-function filaEjercicio({ e, i, hecha, meta, alCambiar }) {
+// Explicaciones de los ejercicios (data/ejercicios-gym.json, por «ref»): aparte del plan para que el editor del plan no las toque.
+// Se cargan solo al abrir la primera explicación.
+let explicacionesGym = null;
+async function cargarExplicaciones() {
+  if (!explicacionesGym) {
+    const res = await fetch('data/ejercicios-gym.json');
+    if (!res.ok) throw new Error('ejercicios-gym.json ' + res.status);
+    explicacionesGym = (await res.json()).ejercicios || {};
+  }
+  return explicacionesGym;
+}
+
+// Pinta una explicación dentro de «region»: Trabaja, pasos numerados, Ojo y las dos fotos (Inicio / Final). Todo con textContent.
+// Las fotos solo se crean aquí (al abrir): nombres de archivo seguros, tamaño fijo y carga diferida. Sin foto, solo texto.
+const FOTO_SEGURA = /^[a-z0-9-]{1,40}\.webp$/;
+function construirExplicacion(exp, nombre, region) {
+  const nuevo = (tag, clase, texto) => { const el = document.createElement(tag); if (clase) el.className = clase; if (texto !== undefined) el.textContent = texto; return el; };
+  const partes = [];
+  if (Array.isArray(exp.trabaja) && exp.trabaja.length) partes.push(nuevo('p', 'gym-tip-trabaja', 'Trabaja: ' + exp.trabaja.join(', ')));
+  if (Array.isArray(exp.pasos) && exp.pasos.length) {
+    const ol = nuevo('ol', 'gym-tip-pasos');
+    ol.append(...exp.pasos.map(p => nuevo('li', '', p)));
+    partes.push(ol);
+  }
+  if (exp.ojo) partes.push(nuevo('p', 'gym-tip-ojo', 'Ojo: ' + exp.ojo));
+  const fotos = [['inicio', 'Inicio'], ['final', 'Final']].filter(([k]) => exp.fotos && FOTO_SEGURA.test(String(exp.fotos[k])));
+  if (fotos.length) {
+    const fig = nuevo('div', 'gym-tip-fotos');
+    for (const [k, titulo] of fotos) {
+      const figura = nuevo('figure', 'gym-tip-figura'), img = nuevo('img', 'gym-tip-foto');
+      img.src = 'img/gym/' + exp.fotos[k];
+      img.alt = `${nombre}: posición de ${titulo.toLowerCase()}`;
+      img.width = 300; img.height = 200;
+      img.loading = 'lazy';
+      figura.append(img, nuevo('figcaption', '', titulo));
+      fig.append(figura);
+    }
+    partes.push(fig);
+    if (exp.fotos.aproximada) partes.push(nuevo('p', 'gym-tip-aviso', 'Foto orientativa: tu máquina puede ser distinta.'));
+  }
+  if (!partes.length) partes.push(nuevo('p', 'gym-tip-aviso', 'Todavía no hay explicación de este ejercicio.'));
+  region.replaceChildren(...partes);
+}
+
+// La fila de un ejercicio: <div> con el <label> que marca (número, nombre, meta y casilla) y, solo si el ejercicio tiene
+// explicación (e.ref), un botón APARTE, hermano del label (tocarlo no marca), que despliega la explicación hacia abajo.
+// «cargarExplicacion» devuelve la explicación (o null) y solo se llama la primera vez que se abre.
+function filaEjercicio({ e, i, hecha, meta, alCambiar, cargarExplicacion }) {
   const nuevo = (tag, clase, texto) => { const el = document.createElement(tag); if (clase) el.className = clase; if (texto !== undefined) el.textContent = texto; return el; };
   const fila = nuevo('div', 'gym-fila-ej'), label = nuevo('label', 'gym-ej' + (hecha ? ' hecho' : ''));
   const cuerpo = nuevo('span', 'gym-ej-cuerpo'), casilla = nuevo('input', 'gym-check');
@@ -104,15 +149,24 @@ function filaEjercicio({ e, i, hecha, meta, alCambiar }) {
   cuerpo.append(nuevo('span', 'gym-ej-nombre', e.name), nuevo('span', 'gym-ej-meta', meta));
   label.append(nuevo('span', 'gym-ej-num', String(i + 1)), cuerpo, casilla);
   fila.append(label);
-  if (e.tip) {
-    const boton = nuevo('button', 'gym-info-btn', 'i'), region = nuevo('div', 'gym-tip', e.tip);
+  if (e.ref && cargarExplicacion) {
+    const boton = nuevo('button', 'gym-info-btn', 'i'), region = nuevo('div', 'gym-tip');
+    let pintada = false;
     boton.type = 'button';
     region.id = `gym-tip-${e.id}`;
     region.hidden = true;
     boton.setAttribute('aria-label', `Cómo se hace: ${e.name}`);
     boton.setAttribute('aria-controls', region.id);
     boton.setAttribute('aria-expanded', 'false');
-    boton.addEventListener('click', () => { region.hidden = !region.hidden; boton.setAttribute('aria-expanded', String(!region.hidden)); });
+    boton.addEventListener('click', async () => {
+      region.hidden = !region.hidden;
+      boton.setAttribute('aria-expanded', String(!region.hidden));
+      if (region.hidden || pintada) return;
+      pintada = true;
+      let exp = null;
+      try { exp = await cargarExplicacion(); } catch { pintada = false; }   // sin conexión: se reintenta al abrir otra vez
+      construirExplicacion(exp || {}, e.name, region);
+    });
     fila.append(boton, region);
   }
   return fila;
@@ -146,6 +200,7 @@ async function renderGym() {
   lista.replaceChildren(...plan.days.find(d => d.id === b.day).exercises.map((e, i) => filaEjercicio({
     e, i, hecha: b.done.includes(e.name), meta: `${e.sets || plan.sets} series × ${plan.reps} reps`,
     alCambiar: marcado => { b.done = marcado ? [...b.done, e.name] : b.done.filter(n => n !== e.name); guardar(); },
+    cargarExplicacion: () => cargarExplicaciones().then(c => c[e.ref] ?? null),
   })));
 
   // Cardio opcional: los minutos del plan salen solo como pista en gris, nunca como obligación
