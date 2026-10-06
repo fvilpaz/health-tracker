@@ -161,8 +161,17 @@
       </div>
       <details class="modo" id="modoGym" open>
         <summary class="modo-cab">Gimnasio<span class="lab-flecha"></span></summary>
+      <div class="card" id="gymPuerta" hidden>
+        <div class="card-title" role="heading" aria-level="2">Sesión del gimnasio</div>
+        <p class="meta-aviso" id="gymPuertaTexto"></p>
+        <label class="campo-fecha">¿Qué día lo hiciste? <input type="date" id="gymLibreFecha"></label>
+        <label class="campo-fecha">Nota (opcional) <input type="text" id="gymLibreNota" maxlength="120" placeholder="qué hiciste"></label>
+        <button class="btn btn-green btn-full" id="gymLibreGuardar">Apuntar sesión</button>
+      </div>
+      <div id="gymPlanBloque">
       <div class="card" id="gymCard">
         <div class="card-title" role="heading" aria-level="2">Sesión del gimnasio</div>
+        <p class="meta-aviso" id="gymDescargo">Plan de partida de una entrenadora, no una prescripción. Ajústalo a tu caso; si tienes dudas o dolor, consúltalo con tu médico o entrenador.</p>
         <div class="gym-dias" id="gymDias"></div>
         <label class="campo-fecha">¿Qué día lo hiciste? <input type="date" id="gymFecha"></label>
         <div class="gym-info" id="gymInfo"></div>
@@ -184,6 +193,7 @@
         <div id="gymCardio"></div>
       </div>
       <button class="btn btn-green btn-full" id="gymGuardar">Guardar sesión</button>
+      </div>
       </details>
       <details class="modo" id="modoCasa" hidden>
         <summary class="modo-cab">En casa<span class="lab-flecha"></span></summary>

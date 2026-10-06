@@ -137,6 +137,7 @@ function aplicarPerfilFichas() {
   document.querySelectorAll('[data-si]').forEach(el => { el.hidden = !seVe(el.dataset.si, perfil); });
   renderAvisosEntreno();   // rutina.js
   renderModos();           // rutina.js: píldoras, estados vacíos y acordeones de Entreno
+  renderGym();             // gym.js: la puerta del plan puede haber cambiado con el perfil
   renderNutricion();       // nutricion.js
   const vacio = document.getElementById('medsVacio');
   if (vacio) vacio.hidden = !perfil || [...document.querySelectorAll('#medicacion [data-si]')].some(el => !el.hidden);

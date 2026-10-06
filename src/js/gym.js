@@ -58,9 +58,44 @@ function sesionGym(plan, borrador, fecha = isoDate(new Date())) {
 
 const borradorGym = () => { const b = Storage.get('gymDraft'); return b && b.date === isoDate(new Date()) && Array.isArray(b.done) ? b : null; };
 
+// La sesión libre (plan cerrado por la puerta): solo fecha y una nota corta, sin ejercicios ni cardio
+function sesionLibre(fecha, nota, hoy = isoDate(new Date())) {
+  if (!esFechaIso(fecha) || fecha > hoy) return { error: 'Pon el día en que lo hiciste (hoy o uno anterior)' };
+  const texto = String(nota ?? '').trim();
+  if (texto.length > 120) return { error: 'la nota, hasta 120 letras' };
+  return { date: fecha, block: null, ...(texto && { note: texto }) };
+}
+
+// Plan de 5 días o, si la puerta está cerrada (E14), el formulario de sesión libre. Devuelve si el plan se ve.
+function renderPuertaGym() {
+  const bloque = document.getElementById('gymPlanBloque'), puerta = document.getElementById('gymPuerta');
+  if (!bloque || !puerta) return true;
+  const p = puertaGym(Storage.get('profile'));
+  bloque.hidden = p.cerrada;
+  puerta.hidden = !p.cerrada;
+  if (p.cerrada) {
+    document.getElementById('gymPuertaTexto').textContent = textoPuerta(p.motivos);
+    const f = document.getElementById('gymLibreFecha');
+    f.max = isoDate(new Date());
+    f.value = f.value || f.max;
+  }
+  return !p.cerrada;
+}
+
+function guardarLibre() {
+  const r = sesionLibre(document.getElementById('gymLibreFecha').value, document.getElementById('gymLibreNota').value);
+  if (r.error) return showToast(r.error);
+  Storage.set('sessions', [...Storage.get('sessions', []), r]);
+  document.getElementById('gymLibreNota').value = '';
+  showToast('Sesión guardada ✓');
+  updateDashboard();
+  checkLogros();
+}
+
 async function renderGym() {
   const lista = document.getElementById('gymEjercicios');
   if (!lista) return;
+  if (!renderPuertaGym()) return;   // puerta cerrada: no se carga ni se pinta el plan
   let plan;
   const primera = !planGym;
   try { plan = await cargarPlanGym(); } catch { lista.textContent = 'No se ha podido cargar el plan. Revisa la conexión y vuelve a abrir la app.'; return; }
@@ -212,4 +247,5 @@ function guardarGym() {
 }
 
 document.getElementById('gymGuardar')?.addEventListener('click', guardarGym);
+document.getElementById('gymLibreGuardar')?.addEventListener('click', guardarLibre);
 document.addEventListener('DOMContentLoaded', renderGym);

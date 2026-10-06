@@ -134,3 +134,19 @@ test('gym.json: cada ejercicio tiene un id estable y único', () => {
   assert.ok(ids.every(id => /^d[1-5]e\d{1,2}$/.test(id)));
   assert.equal(new Set(ids).size, ids.length);
 });
+
+test('sesionLibre: fecha (hoy o pasada) y nota opcional; sin ejercicios ni cardio', () => {
+  const libre = crearApp().get('sesionLibre'), hoy = '2026-10-06';
+  assert.deepEqual(JSON.parse(JSON.stringify(libre('2026-10-06', '  Caminata  ', hoy))), { date: '2026-10-06', block: null, note: 'Caminata' });
+  assert.deepEqual(JSON.parse(JSON.stringify(libre('2026-10-05', '', hoy))), { date: '2026-10-05', block: null });   // sin nota
+  assert.ok(libre('2026-10-07', 'x', hoy).error);                                    // futuro
+  assert.ok(libre('', 'x', hoy).error);
+  assert.ok(libre('2026-10-06', 'a'.repeat(121), hoy).error);
+});
+
+test('textoPuerta: sin «matrona» para menores', () => {
+  const texto = crearApp().get('textoPuerta');
+  assert.ok(!texto(['menor']).includes('matrona'));
+  assert.ok(texto(['embarazo']).includes('matrona'));
+  assert.ok(texto(['parq']).includes('plan de gimnasio ya hecho'));
+});

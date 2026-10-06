@@ -79,3 +79,12 @@ test('esc: escapa los cinco caracteres peligrosos y convierte a texto lo que no 
   assert.equal(esc(`&<>"'`), '&amp;&lt;&gt;&quot;&#39;');
   assert.equal(esc(7.5), '7.5');
 });
+
+test('sesión libre (fecha y nota) se importa; una nota vacía, larga o que no es texto descarta la sesión', () => {
+  const limpiar = crearApp().get('limpiarCopia');
+  const sesiones = s => JSON.parse(JSON.stringify(limpiar({ sessions: s }))).datos.sessions;
+  assert.deepEqual(sesiones([{ date: '2026-10-05', block: null, note: 'Caminata <b>' }]), [{ date: '2026-10-05', block: null, note: 'Caminata <b>' }]);
+  assert.deepEqual(sesiones([{ date: '2026-10-05', block: null, note: '  ' }]), []);
+  assert.deepEqual(sesiones([{ date: '2026-10-05', block: null, note: 'a'.repeat(121) }]), []);
+  assert.deepEqual(sesiones([{ date: '2026-10-05', block: null, note: 5 }]), []);
+});
