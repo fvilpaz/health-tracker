@@ -30,7 +30,7 @@ function updateDashboard() {
   // Esta semana
   const weekEl = document.getElementById('dashWeek');
   if (weekEl) {
-    weekEl.textContent = sessionsInWeek().length;   // bloques completos de esta semana
+    weekEl.textContent = sessionsInWeek().length;   // sesiones de esta semana (bloques completos o del gimnasio)
     const objEl = document.getElementById('dashWeekGoal');
     if (objEl) objEl.textContent = objetivoSemana();
   }
@@ -38,7 +38,7 @@ function updateDashboard() {
   // Racha
   const streakEl = document.getElementById('dashStreak');
   // eslint-disable-next-line no-unsanitized/property -- solo constantes e iconos del propio código y un número
-  if (streakEl) streakEl.innerHTML = duo('llama', 'estado racha') + ' ' + (streak ? `${plural(streak, 'semana cumplida', 'semanas cumplidas')} seguidas` : 'Cumple 3 bloques esta semana para empezar la racha');
+  if (streakEl) streakEl.innerHTML = duo('llama', 'estado racha') + ' ' + (streak ? `${plural(streak, 'semana cumplida', 'semanas cumplidas')} seguidas` : `Cumple ${objetivoSemana()} sesiones esta semana para empezar la racha`);
 
   // Progreso del plan
   if (startDate && currentWeight && startWeight) {

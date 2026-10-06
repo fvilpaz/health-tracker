@@ -75,6 +75,37 @@ test('lo que sale de sesionGym entra entero en limpiarCopia (guardar e importar 
   assert.deepEqual(plano(r.datos.sessions), [ses]);
 });
 
+test('idealSemana: sin plan cargado es el mínimo; con el plan de 5 días, 5 (y nunca menos que el mínimo)', () => {
+  const app = crearApp();
+  assert.equal(app.get('idealSemana')(), 3);
+  app.get('planGym = { days: [1, 2, 3, 4, 5] }');
+  assert.equal(app.get('idealSemana')(), 5);
+  app.get('Storage').set('profile', { days: 6 });
+  assert.equal(app.get('idealSemana')(), 6);
+});
+
+test('weekStatus con mínimo 3 e ideal 5: con 3 ya está cumplida (verde), con 5 el plan completo; con 2, como siempre', () => {
+  const estado = (hechas) => {
+    const app = crearApp();
+    app.get('planGym = { days: [1, 2, 3, 4, 5] }');
+    app.get('Storage').set('sessions', hechas.map((date, i) => ({ date, block: null, day: String(i + 1) })));
+    return plano(app.get('weekStatus')(new Date('2026-10-02T18:00')));   // viernes
+  };
+  const dias = ['2026-09-28', '2026-09-29', '2026-09-30', '2026-10-01', '2026-10-02'];
+  assert.deepEqual([estado(dias.slice(0, 3)).color, estado(dias.slice(0, 3)).texto.includes('Semana cumplida (mínimo 3). El plan completo son 5.')], ['verde', true]);
+  assert.ok(estado(dias).texto.includes('Plan completo: 5 de 5'));
+  assert.ok(estado(dias.slice(0, 2)).texto.includes('te falta 1 sesión'));
+});
+
+test('textoCardio: una línea con lo que haya, vacío sin cardio, y todo escapado (viene del almacén)', () => {
+  const t = crearApp().get('textoCardio');
+  assert.equal(t({ start: { minutes: 10.6, km: 0.69, note: 'cinta' }, end: { minutes: 54, km: 5.06 } }), 'Al empezar: 10.6 min · 0.69 km · cinta — Al acabar: 54 min · 5.06 km');
+  assert.equal(t({ end: { km: 0 } }), 'Al acabar: 0 km');
+  assert.equal(t(undefined), '');
+  assert.equal(t({ start: {} }), '');
+  assert.ok(!t({ end: { note: '<img src=x onerror="alert(1)">' } }).includes('<'));
+});
+
 test('el borrador de la sesión (gymDraft) se ignora al importar, sin contarlo como error', () => {
   const r = crearApp().get('limpiarCopia')({ gymDraft: { date: '2026-10-06', day: '1', done: ['x'] }, sessions: [] });
   assert.equal(r.descartados, 0);

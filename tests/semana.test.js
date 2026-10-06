@@ -42,10 +42,10 @@ test('weekStatus: el aviso de color en cada situación', () => {
   const casos = [
     // [nombre, hoy, fechas hechas, color esperado, trozo del texto]
     ['lunes sin nada', '2026-09-28', [], 'verde', 'quedan 7 días'],
-    ['viernes con 1', '2026-10-02', ['2026-09-29'], 'verde', 'faltan 2 bloques y quedan 3 días'],
+    ['viernes con 1', '2026-10-02', ['2026-09-29'], 'verde', 'faltan 2 sesiones y quedan 3 días'],
     ['sábado con 1', '2026-10-03', ['2026-09-29'], 'naranja', 'Vas justo'],
     ['sábado sin nada', '2026-10-03', [], 'rojo', 'solo quedan 2 días'],
-    ['sábado con 2, uno hoy', '2026-10-03', ['2026-09-30', '2026-10-03'], 'naranja', 'falta 1 bloque y queda 1 día'],
+    ['sábado con 2, uno hoy', '2026-10-03', ['2026-09-30', '2026-10-03'], 'naranja', 'falta 1 sesión y queda 1 día'],
     ['domingo con 2', '2026-10-04', ['2026-09-29', '2026-10-01'], 'rojo', 'Es domingo'],
     ['domingo con 3', '2026-10-04', ['2026-09-29', '2026-10-01', '2026-10-03'], 'verde', 'Semana cumplida'],
     ['domingo con 2, uno hoy', '2026-10-04', ['2026-09-29', '2026-10-04'], 'rojo', 'no quedan días'],

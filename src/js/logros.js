@@ -3,7 +3,7 @@
 /* ===== LOGROS ===== */
 const LOGROS_DEF = [
   { id: 'first_train', icon: duo('bandera'), name: 'Primer entreno', desc: 'Completa tu primer entrenamiento', check: () => getSessions().length >= 1 },
-  { id: 'week', icon: duo('llama'), name: 'Semana cumplida', desc: '3 bloques en una semana', check: () => completedWeeks() >= 1 },
+  { id: 'week', icon: duo('llama'), name: 'Semana cumplida', desc: 'Tu mínimo de sesiones en una semana', check: () => completedWeeks() >= 1 },
   { id: 'kg1', icon: duo('balanza'), name: '1 kg perdido', desc: 'Primer kilo perdido', check: () => { const w = Storage.get('weights', []); return w.length >= 2 && (w[0].weight - w[w.length - 1].weight) >= 1; } },
   { id: 'kg3', icon: duo('balanza'), name: '3 kg perdidos', desc: '3 kilos menos', check: () => { const w = Storage.get('weights', []); return w.length >= 2 && (w[0].weight - w[w.length - 1].weight) >= 3; } },
   { id: 'month', icon: duo('semana'), name: 'Primer mes', desc: '4 semanas cumplidas', check: () => completedWeeks() >= 4 },
