@@ -28,6 +28,16 @@ test('sessionsInWeek: solo cuenta los bloques de lunes a domingo de esa semana',
   assert.equal(app.get('sessionsInWeek')(dia('2026-10-01')).length, 2);   // 28-sep y 4-oct
 });
 
+test('nextBlock: rota 1 → 2 → 3 → 1 y se salta los entrenos antiguos sin bloque', () => {
+  const app = crearApp(), S = app.get('Storage'), next = app.get('nextBlock');
+  assert.equal(next(), '1');
+  S.set('sessions', [{ date: '2026-09-28', block: '3' }]);
+  assert.equal(next(), '1');
+  S.set('sessions', [{ date: '2026-09-28', block: '1' }]);
+  S.set('trainings', ['30/9/2026']);                                 // posterior, pero sin bloque
+  assert.equal(next(), '2');
+});
+
 test('weekStatus: el aviso de color en cada situación', () => {
   const casos = [
     // [nombre, hoy, fechas hechas, color esperado, trozo del texto]

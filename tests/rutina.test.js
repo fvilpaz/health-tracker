@@ -122,3 +122,45 @@ test('E3/E5/E12 en «En casa»: menor, embarazada o PAR-Q «sí» arman entreno 
   assert.ok(todos(armar({ level: 3, conditions: ['pregnancy'] })).every(e => !e.lying));
   assert.ok(sinSaltos(armar({ level: 3, birthDate: '1970-01-01' })));               // +50
 });
+
+test('duración de cada fase: se calcula de los ejercicios tal como corre el temporizador (antes, a mano y mal)', () => {
+  const app = crearApp(), dur = app.get('duracionFase'), texto = app.get('textoDuracion');
+  const w = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'src', 'data', 'workouts.json'), 'utf8'));
+  // Calentamiento de articulaciones (29-sep): marcha 40+20 y siete de movilidad 30+10 = 340 s. Antes ponía «4 min» a mano.
+  assert.equal(dur(w.warmup, w.warmup.exercises), 340);
+  // Nada de fuerza en el calentamiento (talones, rodillas y sentadillas van en los bloques) ni balanceo (Nando: no aporta)
+  for (const fuera of ['Sentadilla parcial', 'Elevación de rodillas', 'Elevación de talones', 'Balanceo de piernas']) assert.ok(!w.warmup.exercises.some(e => e.name === fuera), fuera);
+  // Fuerza: 3 vueltas × 4 × (40 + 20) + 2 descansos de 60 s = 840 s
+  assert.equal(dur(w.strength, w.strength.blocks['1'].exercises), 840);
+  // Vuelta a la calma: 25 × 4 + 30 = 130 s. Ponía «2 min».
+  assert.equal(dur(w.cooldown, w.cooldown.exercises), 130);
+  assert.equal(texto(360), '6 min');
+  assert.equal(texto(130), '2 min 10 s');
+});
+
+test('«En casa»: sin nivel ni minutos no se arma nada y sale el aviso; con ellos se arma y trae los tip del catálogo', async () => {
+  const app = crearApp(), doc = app.get('document'), S = app.get('Storage'), els = {};
+  doc.getElementById = id => (els[id] ??= { hidden: false, textContent: '', dataset: {}, classList: { toggle() {} }, style: {}, addEventListener() {}, querySelectorAll: () => [], appendChild() {} });
+  app.get('globalThis').fetch = async f => ({ ok: true, json: async () => JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'src', f), 'utf8')) });
+  const renderCasa = app.get('renderCasa'), PERFIL = { name: 'Ana', birthDate: '1985-03-10', sex: 'female', goal: 'health', days: 3, diet: 'all', modes: ['gym', 'home'] };
+  S.set('profile', PERFIL);                                                          // elegió «En casa» pero nunca le preguntaron nivel ni minutos
+  await renderCasa();
+  assert.equal(els.casaDatos.hidden, false);
+  assert.equal(els.casaEntreno.hidden, true);
+  assert.equal(app.get('workoutData'), null);                                        // no se ha cargado ni armado nada
+  S.set('profile', { ...PERFIL, level: 2, minutes: 20 });
+  await renderCasa();
+  assert.equal(els.casaDatos.hidden, true);
+  assert.equal(els.casaEntreno.hidden, false);
+  const bloques = JSON.parse(JSON.stringify(app.get('workoutData').strength.blocks));
+  assert.ok(bloques['1'].exercises.length >= 4 && bloques['1'].exercises.every(e => e.tip));
+});
+
+test('«En casa» sin el modo marcado no hace nada', async () => {
+  const app = crearApp(), doc = app.get('document'), els = {};
+  doc.getElementById = id => (els[id] ??= { hidden: false, dataset: {}, classList: { toggle() {} }, style: {}, addEventListener() {} });
+  app.get('Storage').set('profile', { name: 'Ana', birthDate: '1985-03-10', level: 2, minutes: 20, modes: ['gym'] });
+  await app.get('renderCasa')();
+  assert.equal(els.casaDatos.hidden, false);                                         // intacto: ni lo ha tocado
+  assert.equal(app.get('workoutData'), null);
+});

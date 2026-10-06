@@ -160,6 +160,8 @@ function patronAviso(tipo) {
   return {
     descanso: { tonos: [t(440, 0), t(440, 0.25)], vibracion: [100, 80, 100] },   // 2 graves: descansa
     ejercicio: { tonos: [t(880, 0)], vibracion: [200] },                          // 1 agudo: ¡a por la siguiente serie!
+    vuelta: { tonos: [t(523, 0), t(659, 0.2), t(784, 0.4)], vibracion: [100, 60, 100, 60, 100] },   // 3 subiendo: vuelta hecha (En casa)
+    fin: { tonos: [t(523, 0, 0.6), t(659, 0, 0.6), t(784, 0, 0.6)], vibracion: [400] },    // acorde largo: terminado (En casa)
   }[tipo];
 }
 
@@ -202,7 +204,7 @@ async function mantenerPantalla(encender) {
   } catch { pantallaEncendida = null; }
 }
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible' && Timer.isRunning()) mantenerPantalla(true);
+  if (document.visibilityState === 'visible' && (Timer.isRunning() || workoutActive)) mantenerPantalla(true);
 });
 
 // Cuánto del reloj queda lleno: entero parado; al descansar se va vaciando hasta el cero

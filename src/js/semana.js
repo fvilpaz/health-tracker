@@ -12,6 +12,12 @@ const esAIso = s => { const [d, m, y] = String(s).split('/'); return `${y}-${Str
 
 const isoDate = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
+function saveSession(block, minutes, exercises) {
+  const sessions = Storage.get('sessions', []);
+  sessions.push({ date: isoDate(new Date()), block, minutes, exercises });
+  Storage.set('sessions', sessions);
+}
+
 // Todas las sesiones, más los entrenos antiguos ('trainings', solo la fecha «d/m/aaaa») para no perder historia
 function getSessions() {
   const sessions = Storage.get('sessions', []);
@@ -30,6 +36,12 @@ function sessionsInWeek(ref = new Date(), sesiones = getSessions()) {
   domingo.setDate(lunes.getDate() + 6);
   const desde = isoDate(lunes), hasta = isoDate(domingo);
   return sesiones.filter(s => s.date >= desde && s.date <= hasta);
+}
+
+// Qué bloque toca: el siguiente al último hecho (1 → 2 → 3 → 1)
+function nextBlock() {
+  const ultimo = getSessions().filter(s => s.block).pop();
+  return ultimo ? String(Number(ultimo.block) % 3 + 1) : '1';
 }
 
 /* ===== MI SEMANA: aviso, días y semanas anteriores ===== */
