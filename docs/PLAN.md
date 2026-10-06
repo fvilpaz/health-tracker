@@ -49,6 +49,7 @@
 ## ✅ Completado
 
 **6-oct-2026**
+- [x] Modos de entreno (paso 1 de 4): `profile.modes` (`home` y/o `gym`) con `modosActivos()` como único sitio donde se leen; un perfil de antes pasa solo a `['gym']` (no cambia nada de lo que ve) y uno nuevo nace con `[]`; `limpiarCopia` descarta lo que no sea `home` o `gym`. Sin pantallas nuevas. Siguen: píldoras en Entreno y en «Mi perfil», editor del plan y traer la calistenia desde la etiqueta
 - [x] Sesión del gimnasio (`gym.js`, `data/gym.json`): plan de 5 días en rotación, ejercicios hechos y cardio opcional al empezar y al acabar; «Mi semana» con mínimo 3 e ideal 5. Las sesiones guardan `day` y `cardio`, y `copia.js` ya no los pierde al importar
 - [x] «Registrar medidas» con un solo botón «Guardar medidas» (antes, cuatro botones con el nombre de la medida, que no se entendían): se comprueba todo antes de guardar nada. Unidad en una pastilla con el color de esa medida en las gráficas (peso azul, cintura naranja, barriga púrpura)
 - [x] Historial de peso con el mismo diseño que el de cintura y barriga (fecha arriba; debajo PESO y CAMBIO con su rótulo); antes se pegaba a la fecha y partía «95.8 kg» en dos líneas a 320 px. Las copias automáticas dicen «sesiones» en vez de «bloques»

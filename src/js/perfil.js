@@ -30,6 +30,25 @@ function esMenor(hoy = new Date()) {
   return !!(p && p.birthDate && edad(p.birthDate, hoy) < 18);
 }
 
+// Modos de entreno que la persona tiene activos (profile.modes): 'home' = entreno guiado en casa, 'gym' = apuntar las
+// sesiones del gimnasio. Se pueden tener los dos a la vez.
+const MODOS = ['home', 'gym'];
+
+// Un único sitio para leer los modos. Sin perfil: ninguno. Perfil de antes (sin «modes»): gimnasio, como se usa hoy.
+function modosActivos(perfil = Storage.get('profile')) {
+  if (!perfil) return [];
+  return Array.isArray(perfil.modes) ? MODOS.filter(m => perfil.modes.includes(m)) : ['gym'];
+}
+
+// Al cargar la app: un perfil que ya existía y no tiene «modes» pasa a ['gym'] (verá exactamente lo mismo que antes).
+function migrarModos() {
+  const p = Storage.get('profile');
+  if (p && !Array.isArray(p.modes)) Storage.set('profile', { ...p, modes: modosActivos(p) });
+}
+
+// Un perfil recién creado empieza sin ningún modo hasta que elija; si no lo trajera, la migración lo confundiría con uno antiguo
+const conModos = (p, nuevo) => nuevo && !Array.isArray(p.modes) ? { ...p, modes: [] } : p;
+
 // Solo entra lo que tiene la forma correcta (el perfil también llega en copias, que pueden venir manipuladas).
 // Los ids se comprueban por su forma, no contra el catálogo (que se carga aparte); al pintarlos van con esc().
 function limpiarPerfil(p) {
@@ -55,6 +74,13 @@ function limpiarPerfil(p) {
   };
   const LISTAS = ['conditions', 'medications', 'supplements', 'avoid', 'focus', 'allergies'];
   for (const [k, v] of Object.entries(p)) {
+    if (k === 'modes') {   // solo 'home' y/o 'gym'; vacío es válido (perfil nuevo que aún no ha elegido)
+      if (!Array.isArray(v)) { descartados++; continue; }
+      const validos = MODOS.filter(m => v.includes(m));
+      descartados += v.filter(m => !MODOS.includes(m)).length;
+      if (validos.length || !v.length) perfil.modes = validos;   // todo basura: sin «modes», y se migra como un perfil antiguo
+      continue;
+    }
     if (LISTAS.includes(k)) {
       if (!Array.isArray(v)) { descartados++; continue; }
       const buenas = [...new Set(v.filter(id => typeof id === 'string' && /^[a-z0-9-]{1,30}$/.test(id)))].slice(0, 30);
@@ -263,7 +289,7 @@ async function abrirCuestionario({ nuevo }) {
   }
 
   function guardar() {
-    const { perfil } = limpiarPerfil(p);
+    const { perfil } = limpiarPerfil(conModos(p, nuevo));
     Storage.set('profile', perfil);
     const altura = numero($('pfAltura').value), menor = edad(perfil.birthDate) < 18;
     if (nuevo) {
