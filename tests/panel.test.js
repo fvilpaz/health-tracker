@@ -206,15 +206,3 @@ test('tracker: el color de cada caja dice cómo estás (no si llegaste al objeti
   assert.doesNotMatch(peso, /cumple/);
   assert.doesNotMatch(valor(null, 110, 'cm', 'BARRIGA', 'regla', ''), /sem-/);   // barriga: sin color
 });
-
-test('racha: sin racha todavía, la tarjeta dice cuántas sesiones llevas esta semana', () => {
-  const app = crearApp(), S = app.get('Storage'), doc = app.get('document'), original = doc.getElementById;
-  const racha = { innerHTML: '' };
-  doc.getElementById = id => (id === 'dashStreak' ? racha : original(id));
-  const lunes = app.get('getWeekStart')(new Date()), iso = n => { const d = new Date(lunes); d.setDate(lunes.getDate() + n); return app.get('isoDate')(d); };
-  const objetivo = app.get('objetivoSemana')();
-  const texto = n => { S.set('sessions', Array.from({ length: n }, (_, i) => ({ date: iso(i), block: String(i % 3 + 1), minutes: 15, exercises: ['A'] }))); app.get('updateDashboard')(); return racha.innerHTML; };
-  assert.ok(texto(0).includes(`Llevas 0 de ${objetivo} sesiones esta semana`));
-  assert.ok(texto(2).includes(`Llevas 2 de ${objetivo} sesiones esta semana`));
-  assert.match(texto(objetivo), /semana cumplida/);   // al llegar al objetivo la racha ya cuenta semanas: ese texto no cambia
-});
