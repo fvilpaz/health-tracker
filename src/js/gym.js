@@ -72,11 +72,11 @@ async function renderGym() {
   document.getElementById('gymInfo').textContent = b.day === toca ? `Hoy toca el día ${toca}` : `Hoy tocaba el día ${toca}`;
 
   lista.replaceChildren(...plan.days.find(d => d.id === b.day).exercises.map(e => {
-    const fila = nuevo('label', 'habito'), casilla = nuevo('input');
+    const fila = nuevo('label', 'gym-fila'), casilla = nuevo('input');
     casilla.type = 'checkbox';
     casilla.checked = b.done.includes(e.name);
     casilla.addEventListener('change', () => { b.done = casilla.checked ? [...b.done, e.name] : b.done.filter(n => n !== e.name); guardar(); });
-    fila.append(casilla, nuevo('span', 'habito-nombre', e.name), nuevo('span', 'habito-meta', `${e.sets || plan.sets}×${plan.reps}`));
+    fila.append(casilla, nuevo('span', 'gym-nombre', e.name), nuevo('span', 'gym-meta', `${e.sets || plan.sets}×${plan.reps}`));
     return fila;
   }));
 

@@ -25,7 +25,6 @@ function initApp() {
   renderWeightLog();
   renderMedidasLog();
   checkLogros();
-  renderHabitos();
   copiaAutomatica();   // una por semana, al abrir (ver copia.js)
   renderCopiasAutomaticas();
 
