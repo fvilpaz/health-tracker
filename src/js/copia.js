@@ -76,15 +76,22 @@ function limpiarCopia(entrada) {
     if (e.note !== undefined && !(esTexto(e.note, 120) && e.note.trim())) return null;   // sesión libre: solo fecha y nota
     const cardioBueno = c => c && typeof c === 'object' && (c.minutes === undefined || (esNum(c.minutes) && c.minutes > 0 && c.minutes <= 600)) &&
       (c.km === undefined || (esNum(c.km) && c.km >= 0 && c.km <= 200)) && (c.note === undefined || esTexto(c.note, 120));
-    if (e.cardio !== undefined && !(e.cardio && typeof e.cardio === 'object' && ['start', 'end'].every(k => e.cardio[k] === undefined || cardioBueno(e.cardio[k])))) return null;
+    const limpiaCardio = c => Object.fromEntries(['minutes', 'km', 'note'].filter(k => c[k] !== undefined).map(k => [k, c[k]]));
+    // Cardio: la LISTA nueva (hasta 4, cada uno con minutos, km o nota) o el formato viejo {start?, end?}: los dos se aceptan siempre
+    const cardioLista = Array.isArray(e.cardio);
+    if (e.cardio !== undefined && !(cardioLista ? e.cardio.length <= 4 && e.cardio.every(cardioBueno)
+      : e.cardio && typeof e.cardio === 'object' && ['start', 'end'].every(k => e.cardio[k] === undefined || cardioBueno(e.cardio[k])))) return null;
     const limpia = { date: e.date, block: e.block ?? null };
     if (e.day !== undefined) limpia.day = e.day;
     if (e.note !== undefined) limpia.note = e.note;
     if (e.minutes !== undefined) limpia.minutes = e.minutes;
     if (e.exercises !== undefined) limpia.exercises = [...e.exercises];
     if (e.cardio !== undefined) {
-      limpia.cardio = {};
-      for (const k of ['start', 'end']) if (e.cardio[k]) limpia.cardio[k] = Object.fromEntries(['minutes', 'km', 'note'].filter(c => e.cardio[k][c] !== undefined).map(c => [c, e.cardio[k][c]]));
+      if (cardioLista) limpia.cardio = e.cardio.map(limpiaCardio);
+      else {
+        limpia.cardio = {};
+        for (const k of ['start', 'end']) if (e.cardio[k]) limpia.cardio[k] = limpiaCardio(e.cardio[k]);
+      }
     }
     return limpia;
   });

@@ -63,13 +63,13 @@ test('sesionGym: ejercicios en el orden del plan, cardio solo si hay algo, y sin
   const app = crearApp(), s = (b, f = '2026-10-06') => plano(app.get('sesionGym')(gym, b, f));
   const dia1 = gym.days[0].exercises.map(e => e.name);
   assert.deepEqual(s({ day: '1', done: [dia1[2], dia1[0]], cardio: {} }), { date: '2026-10-06', block: null, day: '1', exercises: [dia1[0], dia1[2]] });
-  const con = s({ day: '1', done: [dia1[0]], cardio: { start: { minutes: '10,5' }, end: { minutes: '', km: '' } } });
-  assert.deepEqual(con.cardio, { start: { minutes: 10.5 } });
+  const con = s({ day: '1', done: [dia1[0]], cardio: { start: { minutes: '10,5' }, end: { minutes: '', km: '' } } });   // borrador de antes ({start, end}): se lee igual
+  assert.deepEqual(con.cardio, [{ minutes: 10.5 }]);
   assert.equal(s({ day: '1', done: [dia1[0]] }, '2026-10-05').date, '2026-10-05');   // lo de ayer, apuntado hoy
   for (const mala of ['2999-01-01', '2026-02-31', '', '5/10/2026']) assert.ok(s({ day: '1', done: [dia1[0]] }, mala).error, mala);   // futura, que no existe, vacía o mal escrita
   assert.equal(s({ day: '1', done: [] }).error, 'Marca al menos un ejercicio');
   assert.equal(s({ day: '1', done: ['Otro que no es del día 1'] }).error, 'Marca al menos un ejercicio');
-  assert.ok(s({ day: '1', done: [dia1[0]], cardio: { end: { km: 'mucho' } } }).error.startsWith('Cardio al acabar'));
+  assert.ok(s({ day: '1', done: [dia1[0]], cardio: { end: { km: 'mucho' } } }).error.startsWith('Cardio 1'));
 });
 
 test('lo que sale de sesionGym entra entero en limpiarCopia (guardar e importar dicen lo mismo)', () => {
@@ -104,6 +104,9 @@ test('weekStatus con mínimo 3 e ideal 5: con 3 ya está cumplida (verde), con 5
 
 test('textoCardio: una línea con lo que haya, vacío sin cardio, y todo escapado (viene del almacén)', () => {
   const t = crearApp().get('textoCardio');
+  assert.equal(t([{ minutes: 10.6, km: 0.69, note: 'cinta' }, { minutes: 54, km: 5.06 }]), '10.6 min · 0.69 km · cinta — 54 min · 5.06 km');   // lista nueva
+  assert.equal(t([]), '');
+  assert.ok(!t([{ note: '<img src=x onerror="alert(1)">' }]).includes('<'));
   assert.equal(t({ start: { minutes: 10.6, km: 0.69, note: 'cinta' }, end: { minutes: 54, km: 5.06 } }), 'Al empezar: 10.6 min · 0.69 km · cinta — Al acabar: 54 min · 5.06 km');
   assert.equal(t({ end: { km: 0 } }), 'Al acabar: 0 km');
   assert.equal(t(undefined), '');
@@ -227,7 +230,7 @@ test('fila del ejercicio: el <label> marca; el botón de explicación es su herm
   assert.ok(!lab.children.includes(boton) && !lab.children.includes(region));        // el botón NO va dentro del label
   assert.equal(boton.tag, 'button');
   assert.equal(boton.children[0].textContent, '▾');                                   // la flecha, aparte del texto visible
-  assert.equal(boton.textContent, 'Cómo se hace ');
+  assert.equal(boton.textContent, '');                                                  // solo la flecha a la vista
   assert.equal(boton.children[0].attr('aria-hidden'), 'true');                         // la flecha no se lee
   assert.equal(boton.attr('aria-label'), 'Cómo se hace: Remo');                        // empieza por el texto visible y dice qué ejercicio
   assert.equal(boton.attr('aria-controls'), region.id);
@@ -323,4 +326,35 @@ test('explicación: ref existente pero sin contenido → «Todavía no hay…» 
   await boton.oyentes.get('click')();
   assert.equal(region.children[0].textContent, 'Todavía no hay explicación de este ejercicio.');
   assert.equal(region.children[0].attr('role'), undefined);
+});
+
+test('cardio como lista: en el orden hecho, hasta 4, las filas vacías no cuentan y el error dice cuál es', () => {
+  const app = crearApp(), s = b => plano(app.get('sesionGym')(gym, { day: '1', done: [gym.days[0].exercises[0].name], ...b }, '2026-10-06'));
+  const r = s({ cardio: [{ minutes: '10:38', km: '0,69', note: 'cinta' }, {}, { minutes: '54', km: '5,06' }, { minutes: ' ', km: '', note: '' }] });
+  assert.deepEqual(r.cardio, [{ minutes: 10.63, km: 0.69, note: 'cinta' }, { minutes: 54, km: 5.06 }]);
+  assert.equal(s({ cardio: [{}, {}] }).cardio, undefined);                                 // todo vacío: sin cardio
+  assert.equal(s({ cardio: [{ minutes: '5' }, { minutes: '6' }, { minutes: '7' }, { minutes: '8' }] }).cardio.length, 4);
+  assert.equal(s({ cardio: [{}, {}, {}, {}, { minutes: '9' }] }).error, 'Cardio: como mucho 4');
+  assert.ok(s({ cardio: [{ minutes: '5' }, { km: 'mucho' }] }).error.startsWith('Cardio 2: '));
+});
+
+test('lo que sale de sesionGym con cardio en lista entra entero en limpiarCopia', () => {
+  const app = crearApp(), dia = gym.days[3].exercises.map(e => e.name);
+  const ses = plano(app.get('sesionGym')(gym, { day: '4', done: dia, cardio: [{ minutes: '10.6', km: '0,69', note: 'cinta' }, { minutes: '54', km: '5,06' }] }, '2026-01-06'));
+  const r = app.get('limpiarCopia')({ sessions: [ses] });
+  assert.equal(r.descartados, 0);
+  assert.deepEqual(plano(r.datos.sessions), [ses]);
+});
+
+test('compatibilidad: el cardio viejo {start, end} se lee siempre (lista y texto) y el borrador viejo pasa a lista sin perder lo escrito', () => {
+  const app = crearApp(), lista = app.get('cardioComoLista');
+  assert.deepEqual(plano(lista({ start: { minutes: 10 }, end: { km: 5 } })), [{ minutes: 10 }, { km: 5 }]);
+  assert.deepEqual(plano(lista({ end: { km: 5 } })), [{ km: 5 }]);
+  assert.deepEqual(plano(lista([{ minutes: 1 }])), [{ minutes: 1 }]);
+  for (const nada of [undefined, null, {}, { start: {} }, 'x', 3]) assert.deepEqual(plano(lista(nada)), [], String(nada));
+  const hoy = app.get('isoDate')(new Date());
+  app.get('Storage').set('gymDraft', { date: hoy, day: '1', done: ['x'], cardio: { start: { minutes: '10', note: 'cinta' }, end: { km: '5' } } });
+  assert.deepEqual(plano(app.get('borradorGym')().cardio), [{ minutes: '10', note: 'cinta' }, { km: '5' }]);
+  app.get('Storage').set('gymDraft', { date: hoy, day: '1', done: ['x'] });             // borrador sin cardio
+  assert.deepEqual(plano(app.get('borradorGym')().cardio), []);
 });
