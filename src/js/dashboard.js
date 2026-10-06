@@ -1,4 +1,4 @@
-/* Panel principal: tarjetas de peso, cintura, IMC, entrenos y racha (con su semáforo de colores) y las metas
+/* Panel principal: tarjetas de peso, cintura, IMC y entrenos (con su semáforo de colores) y las metas
    a corto, medio y largo plazo. Se movió tal cual desde app.js (28-sep-2026). */
 
 /* ===== DASHBOARD ===== */
@@ -12,7 +12,6 @@ function diferencia(inicio, actual) {
 function updateDashboard() {
   const settings = Storage.get('settings', {});
   const weights = Storage.get('weights', []);
-  const streak = weekStreak();
   const startDate = Storage.get('startDate', null);
 
   const currentWeight = weights.length ? weights[weights.length - 1].weight : null;
@@ -34,11 +33,6 @@ function updateDashboard() {
     const objEl = document.getElementById('dashWeekGoal');
     if (objEl) objEl.textContent = objetivoSemana();
   }
-
-  // Racha
-  const streakEl = document.getElementById('dashStreak');
-  // eslint-disable-next-line no-unsanitized/property -- solo constantes e iconos del propio código y un número
-  if (streakEl) streakEl.innerHTML = duo('llama', 'estado racha') + ' ' + (streak ? `${plural(streak, 'semana cumplida', 'semanas cumplidas')} seguidas` : `Llevas ${sessionsInWeek().length} de ${objetivoSemana()} sesiones esta semana para empezar la racha`);
 
   // Progreso del plan (el título dice las semanas de TU plan, no un número fijo)
   const tituloPlan = document.getElementById('planTitulo');

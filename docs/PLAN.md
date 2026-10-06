@@ -88,7 +88,7 @@
 
 **28-sep-2026**
 - [x] Auditoría de seguridad, 3 revisores, pruebas automáticas y reorganización del código (informe en el Escritorio)
-- [x] «Mi semana»: 3 bloques por semana con aviso de color, racha de semanas cumplidas, historial
+- [x] «Mi semana»: 3 bloques por semana con aviso de color, racha de semanas cumplidas (la tarjeta «Racha» se quitó el 6-oct-2026; los logros siguen contando semanas cumplidas), historial
 - [x] Fuerza en bloques 1 / 2 / 3, sin cardio
 - [x] Altura la pone el usuario; fuera los datos personales del código
 - [x] Exportar e importar copia JSON; importar solo análisis los añade sin borrar
