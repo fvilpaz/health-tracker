@@ -58,7 +58,7 @@ function renderSemana() {
   const hoy = new Date(), lunes = getWeekStart(hoy), est = weekStatus(hoy), sesiones = getSessions();
   const dia = (base, n) => { const d = new Date(base); d.setDate(base.getDate() + n); return d; };
   const corta = d => d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
-  const etiqueta = s => `${s.day ? `Día ${esc(s.day)}` : s.block ? `Bloque ${esc(s.block)}` : 'Entreno'}${s.minutes ? ` · ${esc(s.minutes)} min` : ''}`;
+  const etiqueta = s => `${s.day ? `Día ${esc(s.day)}` : s.block ? `Bloque ${esc(s.block)}` : 'Entreno'}${s.minutes ? ` · ${esc(s.minutes)} min` : ''}${s.note ? ` · ${esc(s.note)}` : ''}`;
   const ideal = idealSemana();
 
   // eslint-disable-next-line no-unsanitized/property -- lo del almacén o del PDF va por esc()/labNum() o son números; probado con una copia manipulada

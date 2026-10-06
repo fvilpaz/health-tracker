@@ -37,6 +37,12 @@ function puertaGym(perfil, hoy = new Date()) {
   return { cerrada: motivos.length > 0, motivos };
 }
 
+// Texto de la puerta: sin «matrona» para menores; el aviso de embarazo (E5) sigue aparte, en los avisos de Entreno
+function textoPuerta(motivos) {
+  const quien = motivos.includes('menor') ? 'médico o entrenador' : 'médico, matrona o entrenador';
+  return `Por lo que has contestado, no te propongo un plan de gimnasio ya hecho. Antes de elegir ejercicios, coméntalo con tu ${quien}. Puedes apuntar aquí las sesiones que hagas tú.`;
+}
+
 /* ===== Modos de entreno (profile.modes): píldoras «Mis modos», estados vacíos y acordeones ===== */
 const PILDORAS = [['gym', 'Gimnasio'], ['home', 'En casa']];
 
