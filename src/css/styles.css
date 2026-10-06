@@ -454,6 +454,16 @@ table.labs td.fuera { color: var(--red); }
   font-size: 0.85rem;
 }
 .weight-entry .w-date { color: var(--text-muted); }
+/* Historial de cintura y barriga: fecha, dos medidas con su rótulo encima del valor, y la papelera; en una rejilla para que no se pisen */
+.weight-entry.medida-fila { display: grid; grid-template-columns: auto 1fr 1fr 44px; align-items: center; gap: 8px; }
+.medida-fila .w-date { white-space: nowrap; }
+.w-celda { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.w-rotulo { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.03em; color: var(--text-muted); }
+.medida-fila .w-value { white-space: nowrap; }
+@media (max-width: 360px) {   /* móvil muy estrecho: la fecha en su propia línea y debajo las dos medidas */
+  .weight-entry.medida-fila { grid-template-columns: 1fr 1fr 44px; }
+  .medida-fila .w-date { grid-column: 1 / -1; }
+}
 .weight-entry .w-value { font-weight: 700; font-size: 1rem; color: var(--blue); }
 .weight-entry .w-diff { font-size: 0.75rem; font-weight: 600; }
 .weight-entry .w-diff.down { color: var(--green); }

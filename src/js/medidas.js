@@ -127,7 +127,9 @@ function renderMedidasLog() {
   }
   const el = (tag, clase, texto) => { const e = document.createElement(tag); e.className = clase; e.textContent = texto; return e; };
   caja.replaceChildren(...filas.map(f => {
-    const fila = el('div', 'weight-entry', '');
+    const fila = el('div', 'weight-entry medida-fila', '');
+    // Cada medida con su rótulo pequeño encima del valor (así nunca se pegan ni se parten en el móvil)
+    const celda = (rotulo, valor) => { const c = el('span', 'w-celda', ''); c.append(el('span', 'w-rotulo', rotulo), el('span', 'w-value', valor)); return c; };
     const borrar = el('button', 'w-del', '');
     // eslint-disable-next-line no-unsanitized/property -- solo el icono del propio código
     borrar.innerHTML = ICONO.cerrar;
@@ -141,8 +143,8 @@ function renderMedidasLog() {
       updateDashboard();
     });
     fila.append(el('span', 'w-date', f.date),
-      el('span', 'w-value', f.waist != null ? `cintura ${f.waist} cm` : 'cintura —'),
-      el('span', 'w-value', f.belly != null ? `barriga ${f.belly} cm` : 'barriga —'), borrar);
+      celda('CINTURA', f.waist != null ? `${f.waist} cm` : '—'),
+      celda('BARRIGA', f.belly != null ? `${f.belly} cm` : '—'), borrar);
     return fila;
   }));
 }
