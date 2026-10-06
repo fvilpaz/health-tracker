@@ -170,18 +170,18 @@ test('solo gimnasio (sin entreno en casa) el reloj se comporta como antes; marca
     assert.equal(decide('gym', { corre: true, casaActivo }).accion, 'parar');
     assert.equal(decide('gym', { corre: true, casaActivo }).aviso, undefined);
   }
-  app.get('document').getElementById = id => (els.has(id) ? els.get(id) : els.set(id, { setAttribute(k, v) { this[k] = v; } }).get(id));
+  app.get('document').getElementById = id => (els.has(id) ? els.get(id) : els.set(id, { attrs: new Map(), setAttribute(k, v) { this.attrs.set(k, v); } }).get(id));
   const marcar = app.get('marcarRelojes'), T = app.get('Timer');
   marcar();
-  assert.equal(els.get('gymDescanso')['aria-disabled'], 'false');
-  assert.equal(els.get('startWorkoutBtn')['aria-disabled'], 'false');
+  assert.equal(els.get('gymDescanso').attrs.get('aria-disabled'), 'false');
+  assert.equal(els.get('startWorkoutBtn').attrs.get('aria-disabled'), 'false');
   T.start(30, () => {}, () => {});                                                   // corre el reloj del gym (workoutActive false)
   marcar();
-  assert.equal(els.get('gymDescanso')['aria-disabled'], 'false');
-  assert.equal(els.get('startWorkoutBtn')['aria-disabled'], 'true');                 // «Iniciar» inerte mientras corre el del gym
+  assert.equal(els.get('gymDescanso').attrs.get('aria-disabled'), 'false');
+  assert.equal(els.get('startWorkoutBtn').attrs.get('aria-disabled'), 'true');                 // «Iniciar» inerte mientras corre el del gym
   T.stop();
   app.get('(function(){ workoutActive = true; })')();                                  // entreno en casa en marcha
   marcar();
-  assert.equal(els.get('gymDescanso')['aria-disabled'], 'true');                     // el reloj del gym, inerte
-  assert.equal(els.get('startWorkoutBtn')['aria-disabled'], 'false');
+  assert.equal(els.get('gymDescanso').attrs.get('aria-disabled'), 'true');                     // el reloj del gym, inerte
+  assert.equal(els.get('startWorkoutBtn').attrs.get('aria-disabled'), 'false');
 });
