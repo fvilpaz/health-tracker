@@ -647,24 +647,31 @@ table.labs td.fuera { color: var(--red); }
   padding: 14px 16px;
 }
 .plan-card.current { border-color: var(--blue); background: var(--blue-light); }
-/* Etiquetas dentro de cada semana: ENTRENOS encima del 1 2 3; PESO, CINTURA y BARRIGA encima de su recuadro */
+/* Etiquetas dentro de cada semana: ENTRENOS encima de sus casillas; PESO, CINTURA y BARRIGA encima de su recuadro */
 .plan-mini { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.55rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.02em; }   /* icono encima del nombre: todas caben sobre su recuadro */
 .mini-ico { width: 12px; height: 12px; color: var(--blue); }
-/* Entrenos: la etiqueta y debajo las 3 casillas, cada una en su tercio (alineadas con los recuadros de abajo) */
-.plan-entrenos { margin-bottom: 14px; }
-.plan-mini-hueco { visibility: hidden; }   /* mismo alto que «ENTRENOS» en las casillas 2 y 3: todo queda en línea */
-.plan-entrenos .plan-check { width: 58px; border-radius: 8px; }   /* tan anchas como los recuadros de peso, cintura y barriga */
+/* Entrenos: la etiqueta una vez y debajo una casilla por sesión del plan; las que pasan del mínimo, con borde discontinuo */
+.plan-entrenos { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.plan-checks-fila { display: flex; gap: 6px; width: 100%; justify-content: center; }
+.plan-checks-fila .plan-check { flex: 1; max-width: 58px; border-radius: 8px; }
+.plan-check.extra:not(.checked) { border-style: dashed; }
 .plan-card.past { opacity: 0.6; }
+/* Cabecera de cada semana: «Semana N» y su fecha a la izquierda; peso, cintura y barriga a la derecha */
 .plan-week-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;   /* en un móvil muy estrecho, las medidas bajan a la línea de debajo en vez de salirse de la tarjeta */
   gap: 8px;
   margin-bottom: 14px;
 }
-.plan-week-label { font-size: 0.85rem; font-weight: 700; }
+.plan-week-titulo { display: flex; flex-direction: column; gap: 2px; padding-top: 2px; }
+.plan-week-label { font-size: 0.85rem; font-weight: 700; white-space: nowrap; }
+.plan-medidas { margin-left: auto; }
 .plan-date { font-size: 0.7rem; color: var(--text-muted); }
-.plan-inputs { display: flex; gap: 10px; width: 100%; }   /* peso, cintura y barriga: un tercio cada una */
-.plan-input-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.plan-inputs { display: flex; gap: 6px; }
+.plan-medidas .plan-real { width: 50px; }
+.plan-input-group { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .plan-target { font-size: 0.6rem; color: var(--text-muted); }
 .plan-target span { color: var(--blue); font-weight: 700; }
 .plan-real { width: 58px; padding: 6px 4px; border: 1px solid var(--border); border-radius: 8px; text-align: center;
@@ -675,8 +682,6 @@ table.labs td.fuera { color: var(--red); }
 .plan-real.sem-amarillo { border-color: var(--yellow); color: var(--yellow); }
 .plan-real.sem-naranja { border-color: var(--orange); color: var(--orange); }
 .plan-real.sem-rojo { border-color: var(--red); color: var(--red); }
-.plan-row-bottom { display: flex; }
-.plan-checks { display: flex; gap: 6px; }
 .plan-check {
   width: 32px; height: 32px; border-radius: 50%;
   border: 2px solid var(--border); background: var(--surface2);

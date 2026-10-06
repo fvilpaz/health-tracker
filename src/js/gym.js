@@ -58,7 +58,7 @@ async function renderGym() {
   if (!lista) return;
   let plan;
   try { plan = await cargarPlanGym(); } catch { lista.textContent = 'No se ha podido cargar el plan. Revisa la conexión y vuelve a abrir la app.'; return; }
-  renderSemana();   // ya se conoce el ideal (días del plan): «Mi semana» lo enseña
+  updateDashboard();   // ya se conoce el ideal (días del plan): «Mi semana» y las casillas del plan lo enseñan
   const toca = nextGymDay(getSessions(), plan.days.length);
   const b = borradorGym() || { date: isoDate(new Date()), day: toca, done: [], cardio: {} };
   const guardar = () => Storage.set('gymDraft', b);
