@@ -139,28 +139,28 @@ test('duración de cada fase: se calcula de los ejercicios tal como corre el tem
 });
 
 test('«En casa»: sin nivel ni minutos no se arma nada y sale el aviso; con ellos se arma y trae los tip del catálogo', async () => {
-  const app = crearApp(), doc = app.get('document'), S = app.get('Storage'), els = {};
-  doc.getElementById = id => (els[id] ??= { hidden: false, textContent: '', dataset: {}, classList: { toggle() {} }, style: {}, addEventListener() {}, querySelectorAll: () => [], appendChild() {} });
+  const app = crearApp(), doc = app.get('document'), S = app.get('Storage'), els = new Map();
+  doc.getElementById = id => (els.has(id) ? els.get(id) : els.set(id, { hidden: false, textContent: '', dataset: {}, classList: { toggle() {} }, style: {}, addEventListener() {}, querySelectorAll: () => [], appendChild() {} }).get(id));
   app.get('globalThis').fetch = async f => ({ ok: true, json: async () => JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'src', f), 'utf8')) });
   const renderCasa = app.get('renderCasa'), PERFIL = { name: 'Ana', birthDate: '1985-03-10', sex: 'female', goal: 'health', days: 3, diet: 'all', modes: ['gym', 'home'] };
   S.set('profile', PERFIL);                                                          // elegió «En casa» pero nunca le preguntaron nivel ni minutos
   await renderCasa();
-  assert.equal(els.casaDatos.hidden, false);
-  assert.equal(els.casaEntreno.hidden, true);
+  assert.equal(els.get('casaDatos').hidden, false);
+  assert.equal(els.get('casaEntreno').hidden, true);
   assert.equal(app.get('workoutData'), null);                                        // no se ha cargado ni armado nada
   S.set('profile', { ...PERFIL, level: 2, minutes: 20 });
   await renderCasa();
-  assert.equal(els.casaDatos.hidden, true);
-  assert.equal(els.casaEntreno.hidden, false);
+  assert.equal(els.get('casaDatos').hidden, true);
+  assert.equal(els.get('casaEntreno').hidden, false);
   const bloques = JSON.parse(JSON.stringify(app.get('workoutData').strength.blocks));
   assert.ok(bloques['1'].exercises.length >= 4 && bloques['1'].exercises.every(e => e.tip));
 });
 
 test('«En casa» sin el modo marcado no hace nada', async () => {
-  const app = crearApp(), doc = app.get('document'), els = {};
-  doc.getElementById = id => (els[id] ??= { hidden: false, dataset: {}, classList: { toggle() {} }, style: {}, addEventListener() {} });
+  const app = crearApp(), doc = app.get('document'), els = new Map();
+  doc.getElementById = id => (els.has(id) ? els.get(id) : els.set(id, { hidden: false, dataset: {}, classList: { toggle() {} }, style: {}, addEventListener() {} }).get(id));
   app.get('Storage').set('profile', { name: 'Ana', birthDate: '1985-03-10', level: 2, minutes: 20, modes: ['gym'] });
   await app.get('renderCasa')();
-  assert.equal(els.casaDatos.hidden, false);                                         // intacto: ni lo ha tocado
+  assert.equal(els.get('casaDatos').hidden, false);                                         // intacto: ni lo ha tocado
   assert.equal(app.get('workoutData'), null);
 });
