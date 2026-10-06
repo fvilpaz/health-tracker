@@ -8,7 +8,7 @@
 ## 🔲 P1 — Alto impacto / Bajo esfuerzo
 
 ### En curso — Modos de entreno «En casa» y «Gimnasio» (diseño acordado el 6-oct-2026)
-> Lo han diseñado las dos sesiones de Claude (una implementa; la otra orquesta y audita) con las decisiones que Nando delegó. Orden: tarea 1 ✅ (datos y migración, subida) → tarea 2 (modos y puerta de seguridad, en local) → tarea 3 (traer «En casa» de la etiqueta `calistenia-en-casa`). **2 y 3 se suben JUNTAS en un solo push**; el cardio va después, como tarea aparte.
+> Lo han diseñado las dos sesiones de Claude (una implementa; la otra orquesta y audita) con las decisiones que Nando delegó. Orden: tarea 1 ✅ (datos y migración, subida) → tarea 2 (2a-1 ✅ perfil y migración; 2a-2 ✅ píldoras y acordeones de Entreno, en local; 2b puerta de seguridad pendiente) → tarea 3 (traer «En casa» de la etiqueta `calistenia-en-casa`). **2 y 3 se suben JUNTAS en un solo push**; el cardio va después, como tarea aparte.
 
 - **Datos:** `profile.modes` = lista con `home` y/o `gym` (se lee con `modosActivos()`; se escribirá con `guardarModos(lista)`, único escritor). Perfil antiguo → `['gym']` solo; perfil nuevo → `[]` hasta que elija. El plan editado irá en `gymPlan` como DIFERENCIAS sobre `gym.json`, por id estable de ejercicio (series 1-10, reps 1-100, descanso global 10-600 s); el editor solo toca números, nunca nombres.
 - **Elegir:** paso obligatorio «¿Dónde vas a entrenar?» (casillas Gimnasio / En casa, varias) dentro del paso «Ejercicio», con error persistente (`role="alert"`) y foco a la primera casilla. Las preguntas de nivel, molestias, zonas y minutos solo si marca «En casa» (hoy no las lee nadie); nunca se ocultan edad, sexo, embarazo, condiciones, PAR-Q ni días por semana.
