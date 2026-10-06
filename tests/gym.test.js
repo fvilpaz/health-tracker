@@ -239,32 +239,58 @@ test('fila del ejercicio: el <label> marca; el botón de explicación es su herm
   assert.deepEqual(llamadas, []);                                                    // el botón nuevo no marca
 });
 
-test('explicación: Trabaja, pasos, Ojo y fotos (solo nombres seguros, tamaño fijo, carga diferida); sin foto, solo texto; todo con textContent', () => {
+test('explicación: Trabaja, pasos, Ojo, dibujos (nombre seguro, tamaño fijo, carga diferida), pie con enlaces y YouTube; sin dibujo, solo texto; todo con textContent', () => {
   const app = crearApp();
   app.get('document').createElement = elementoFalso;
   const construir = app.get('construirExplicacion');
   const region = elementoFalso('div');
   region.replaceChildren = (...h) => { region.children = h; };
   const hijos = exp => { construir(exp, 'Remo', region); return region.children; };
+  const clases = h => h.map(x => x.className);
+  const FUENTE = 'https://commons.wikimedia.org/wiki/File:Seated_cable_rows_1.svg';
 
-  const completa = hijos({ trabaja: ['espalda', 'bíceps'], pasos: ['Siéntate', 'Tira'], ojo: 'no balancees', fotos: { inicio: 'd1e1-inicio.webp', final: 'd1e1-final.webp', aproximada: true } });
-  assert.deepEqual(completa.map(h => h.className), ['gym-tip-trabaja', 'gym-tip-pasos', 'gym-tip-ojo', 'gym-tip-fotos', 'gym-tip-aviso']);
+  const completa = hijos({ trabaja: ['espalda', 'bíceps'], pasos: ['Siéntate', 'Tira'], ojo: 'no balancees', fotos: { inicio: 'd1e1-inicio.svg', final: 'd1e1-final.svg', fuente: FUENTE, aproximada: true } });
+  assert.deepEqual(clases(completa), ['gym-tip-trabaja', 'gym-tip-pasos', 'gym-tip-ojo', 'gym-tip-fotos', 'gym-tip-aviso', 'gym-tip-pie', 'gym-tip-video', 'gym-tip-etiqueta']);
   assert.equal(completa[0].textContent, 'Trabaja: espalda, bíceps');
   assert.deepEqual(completa[1].children.map(l => l.textContent), ['Siéntate', 'Tira']);
   assert.equal(completa[2].textContent, 'Ojo: no balancees');
   const imgs = completa[3].children.map(f => f.children[0]);
-  assert.deepEqual(imgs.map(i => i.src), ['img/gym/d1e1-inicio.webp', 'img/gym/d1e1-final.webp']);
+  assert.deepEqual(imgs.map(i => i.src), ['img/everkinetic/d1e1-inicio.svg', 'img/everkinetic/d1e1-final.svg']);
+  assert.deepEqual(completa[3].children.map(f => f.children[1].textContent), ['Inicio', 'Final']);
   assert.ok(imgs.every(i => i.loading === 'lazy' && i.width > 0 && i.height > 0 && i.alt.includes('Remo')));
-  assert.ok(completa[4].textContent.includes('orientativa'));                         // aviso solo si la foto es aproximada
+  assert.ok(completa[4].textContent.includes('orientativo'));                         // el aviso solo si el dibujo es aproximado
+  const enlaces = completa[5].children.filter(h => h.tag === 'a');
+  assert.deepEqual(enlaces.map(a => a.textContent), ['CC BY-SA 3.0', 'origen']);
+  assert.ok(enlaces.every(a => a.rel === 'noopener noreferrer' && a.target === '_blank'));
+  assert.equal(enlaces[1].href, FUENTE);
+  const yt = completa[6];
+  assert.equal(yt.href, 'https://www.youtube.com/results?search_query=' + encodeURIComponent('cómo hacer Remo ejercicio'));
+  assert.equal(yt.rel, 'noopener noreferrer');
+  assert.equal(yt.attr('aria-label'), 'Buscar en YouTube: Remo (se abre fuera de la app)');
+  assert.ok(yt.textContent.includes('se abre fuera de la app'));                      // el aviso de privacidad, visible
+  assert.ok(completa[7].textContent.includes('sin revisar'));                         // etiqueta de texto sin revisar
 
-  const propias = hijos({ fotos: { inicio: 'a-inicio.webp', final: 'a-final.webp' } });
-  assert.ok(!propias.some(h => h.className === 'gym-tip-aviso'));                      // fotos propias: sin aviso
+  const propias = hijos({ trabaja: ['espalda'], fotos: { inicio: 'd1e1-inicio.svg', final: 'd1e1-final.svg', fuente: FUENTE } });
+  assert.ok(!clases(propias).includes('gym-tip-aviso'));                               // dibujo exacto: sin aviso
   const soloTexto = hijos({ trabaja: ['espalda'] });
-  assert.deepEqual(soloTexto.map(h => h.className), ['gym-tip-trabaja']);              // sin foto: solo texto
+  assert.deepEqual(clases(soloTexto), ['gym-tip-trabaja', 'gym-tip-video', 'gym-tip-etiqueta']);   // sin dibujo: sin hueco ni marco
+  // Fotos (.webp): van en img/gym/, con su propio pie y el aviso «Foto orientativa»
+  const foto = hijos({ trabaja: ['espalda'], fotos: { inicio: 'd1e1-inicio.webp', final: 'd1e1-final.webp', fuente: 'https://github.com/yuhonas/free-exercise-db', aproximada: true } });
+  const fotoImgs = foto.find(h => h.className === 'gym-tip-fotos').children;
+  assert.deepEqual(fotoImgs.map(f => f.children[0].src), ['img/gym/d1e1-inicio.webp', 'img/gym/d1e1-final.webp']);
+  assert.ok(fotoImgs.every(f => f.className.includes('gym-tip-figura--foto')));
+  assert.equal(foto.find(h => h.className === 'gym-tip-aviso').textContent.startsWith('Foto orientativa'), true);
+  const pieFoto = foto.find(h => h.className === 'gym-tip-pie');
+  assert.equal(pieFoto.children[0], 'Foto: free-exercise-db');
+  assert.deepEqual(pieFoto.children.filter(h => h.tag === 'a').map(a => a.textContent), ['origen']);
+  assert.equal(pieFoto.children.filter(h => h.tag === 'a')[0].href, 'https://github.com/yuhonas/free-exercise-db');
   // Nombres de archivo peligrosos: no se crea ninguna imagen
-  for (const malo of ['../x.webp', 'a b.webp', 'x.jpg', 'http://malo/x.webp', '<img>.webp', 5]) {
-    assert.ok(!hijos({ trabaja: ['a'], fotos: { inicio: malo, final: malo } }).some(h => h.className === 'gym-tip-fotos'), String(malo));
+  for (const malo of ['../x.svg', 'a b.svg', 'x.png', 'x.webp', 'http://malo/x.svg', '<img>.svg', 'd9e9-inicio.svg', 5]) {
+    assert.ok(!clases(hijos({ trabaja: ['a'], fotos: { inicio: malo, final: malo } })).includes('gym-tip-fotos'), String(malo));
   }
+  // Un origen que no sea una página de Commons no se enlaza
+  const malaFuente = hijos({ trabaja: ['a'], fotos: { inicio: 'd1e1-inicio.svg', final: 'd1e1-final.svg', fuente: 'https://malo.example/x' } });
+  assert.deepEqual(malaFuente[malaFuente.length - 3].children.filter(h => h.tag === 'a').map(a => a.textContent), ['CC BY-SA 3.0']);
   assert.equal(hijos({}).length, 1);                                                   // vacío: «Todavía no hay explicación»
 });
 

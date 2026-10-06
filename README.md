@@ -74,7 +74,7 @@ health-tracker/
 │       ├── gym.json            ← Plan del gimnasio: 5 días con sus ejercicios, series, repeticiones y descanso
 │       ├── health.json         ← Catálogo del cuestionario: objetivos, enfermedades, medicación, suplementos, molestias, zonas, dieta, alergias
 │       └── nutrition.json      ← Catálogo de comidas con sus ingredientes, dietas, alergias y consejos (reglas A1-A7)
-├── tests/                  ← 158 pruebas (node --test): semana, gimnasio, modos de entreno, medidas, copias y seguridad, copias automáticas, análisis y lector del PDF, temporizador, panel, metas y logros, perfil, rutina, nutrición y estructura del HTML
+├── tests/                  ← 162 pruebas (node --test): semana, gimnasio, modos de entreno, medidas, copias y seguridad, copias automáticas, análisis y lector del PDF, temporizador, panel, metas y logros, perfil, rutina, nutrición y estructura del HTML
 ├── perfiles/               ← Tus datos reales para importar en la app (en .gitignore: nunca se suben)
 ├── docs/PLAN.md            ← Plan de mejoras priorizado
 ├── docs/FUENTES.md         ← Fuente de verdad: reglas de ejercicio (E), comida (A) y fichas de Meds (M) con su guía oficial

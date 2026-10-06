@@ -7,52 +7,52 @@
   "cardio_end": { "minutes": 20 },
   "days": [
     { "id": "1", "exercises": [
-      { "id": "d1e1", "name": "Press de banca placas" },
-      { "id": "d1e2", "name": "Aperturas inclinadas con mancuernas" },
-      { "id": "d1e3", "name": "Hombro en máquina" },
-      { "id": "d1e4", "name": "Elevaciones laterales con mancuernas" },
-      { "id": "d1e5", "name": "Extensión de piernas máquina" },
-      { "id": "d1e6", "name": "Prensa inclinada máquina discos" },
-      { "id": "d1e7", "name": "Abdominales en máquina crunch (placas)", "sets": 4 }
+      { "id": "d1e1", "ref": "d1e1", "name": "Press de banca placas" },
+      { "id": "d1e2", "ref": "d1e2", "name": "Aperturas inclinadas con mancuernas" },
+      { "id": "d1e3", "ref": "d1e3", "name": "Hombro en máquina" },
+      { "id": "d1e4", "ref": "d1e4", "name": "Elevaciones laterales con mancuernas" },
+      { "id": "d1e5", "ref": "d1e5", "name": "Extensión de piernas máquina" },
+      { "id": "d1e6", "ref": "d1e6", "name": "Prensa inclinada máquina discos" },
+      { "id": "d1e7", "ref": "d1e7", "name": "Abdominales en máquina crunch (placas)", "sets": 4 }
     ] },
     { "id": "2", "exercises": [
-      { "id": "d2e1", "name": "Jalón al pecho en polea" },
-      { "id": "d2e2", "name": "Remo sentado en máquina de placas" },
-      { "id": "d2e3", "name": "Bíceps con mancuernas" },
-      { "id": "d2e4", "name": "Tríceps con polea alta" },
-      { "id": "d2e5", "name": "Hack de piernas" },
-      { "id": "d2e6", "name": "Femoral tumbado" },
-      { "id": "d2e7", "name": "Gemelos de pie" },
-      { "id": "d2e8", "name": "Hiperextensión en máquina" }
+      { "id": "d2e1", "ref": "d2e1", "name": "Jalón al pecho en polea" },
+      { "id": "d2e2", "ref": "d2e2", "name": "Remo sentado en máquina de placas" },
+      { "id": "d2e3", "ref": "d2e3", "name": "Bíceps con mancuernas" },
+      { "id": "d2e4", "ref": "d2e4", "name": "Tríceps con polea alta" },
+      { "id": "d2e5", "ref": "d2e5", "name": "Hack de piernas" },
+      { "id": "d2e6", "ref": "d2e6", "name": "Femoral tumbado" },
+      { "id": "d2e7", "ref": "d2e7", "name": "Gemelos de pie" },
+      { "id": "d2e8", "ref": "d2e8", "name": "Hiperextensión en máquina" }
     ] },
     { "id": "3", "exercises": [
-      { "id": "d3e1", "name": "Aperturas en máquina" },
-      { "id": "d3e2", "name": "Remo en polea baja" },
-      { "id": "d3e3", "name": "Press de hombros con mancuernas" },
-      { "id": "d3e4", "name": "Bíceps máquina de pie barra Z" },
-      { "id": "d3e5", "name": "Extensión de tríceps con mancuerna (dos manos)" },
-      { "id": "d3e6", "name": "Femoral sentado" },
-      { "id": "d3e7", "name": "Prensa frontal bilateral" },
-      { "id": "d3e8", "name": "Abdominales en máquina crunch (placas)", "sets": 4 }
+      { "id": "d3e1", "ref": "d3e1", "name": "Aperturas en máquina" },
+      { "id": "d3e2", "ref": "d3e2", "name": "Remo en polea baja" },
+      { "id": "d3e3", "ref": "d3e3", "name": "Press de hombros con mancuernas" },
+      { "id": "d3e4", "ref": "d3e4", "name": "Bíceps máquina de pie barra Z" },
+      { "id": "d3e5", "ref": "d3e5", "name": "Extensión de tríceps con mancuerna (dos manos)" },
+      { "id": "d3e6", "ref": "d3e6", "name": "Femoral sentado" },
+      { "id": "d3e7", "ref": "d3e7", "name": "Prensa frontal bilateral" },
+      { "id": "d3e8", "ref": "d1e7", "name": "Abdominales en máquina crunch (placas)", "sets": 4 }
     ] },
     { "id": "4", "exercises": [
-      { "id": "d4e1", "name": "Press superior vertical discos" },
-      { "id": "d4e2", "name": "Remo sentado con discos" },
-      { "id": "d4e3", "name": "Elevación frontal con mancuernas" },
-      { "id": "d4e4", "name": "Bíceps martillo con mancuernas" },
-      { "id": "d4e5", "name": "Fondos de tríceps (máquina placa)" },
-      { "id": "d4e6", "name": "Hiperextensión en máquina" },
-      { "id": "d4e7", "name": "Abdominales en máquina de disco crunch", "sets": 4 }
+      { "id": "d4e1", "ref": "d4e1", "name": "Press superior vertical discos" },
+      { "id": "d4e2", "ref": "d4e2", "name": "Remo sentado con discos" },
+      { "id": "d4e3", "ref": "d4e3", "name": "Elevación frontal con mancuernas" },
+      { "id": "d4e4", "ref": "d4e4", "name": "Bíceps martillo con mancuernas" },
+      { "id": "d4e5", "ref": "d4e5", "name": "Fondos de tríceps (máquina placa)" },
+      { "id": "d4e6", "ref": "d2e8", "name": "Hiperextensión en máquina" },
+      { "id": "d4e7", "ref": "d4e7", "name": "Abdominales en máquina de disco crunch", "sets": 4 }
     ] },
     { "id": "5", "exercises": [
-      { "id": "d5e1", "name": "Jalón al pecho en polea" },
-      { "id": "d5e2", "name": "Remo sentado en máquina de placas" },
-      { "id": "d5e3", "name": "Bíceps con mancuernas" },
-      { "id": "d5e4", "name": "Tríceps con polea alta" },
-      { "id": "d5e5", "name": "Femoral tumbado" },
-      { "id": "d5e6", "name": "Hack de piernas" },
-      { "id": "d5e7", "name": "Gemelos de pie" },
-      { "id": "d5e8", "name": "Hiperextensión en máquina" }
+      { "id": "d5e1", "ref": "d2e1", "name": "Jalón al pecho en polea" },
+      { "id": "d5e2", "ref": "d2e2", "name": "Remo sentado en máquina de placas" },
+      { "id": "d5e3", "ref": "d2e3", "name": "Bíceps con mancuernas" },
+      { "id": "d5e4", "ref": "d2e4", "name": "Tríceps con polea alta" },
+      { "id": "d5e5", "ref": "d2e6", "name": "Femoral tumbado" },
+      { "id": "d5e6", "ref": "d2e5", "name": "Hack de piernas" },
+      { "id": "d5e7", "ref": "d2e7", "name": "Gemelos de pie" },
+      { "id": "d5e8", "ref": "d2e8", "name": "Hiperextensión en máquina" }
     ] }
   ]
 }
