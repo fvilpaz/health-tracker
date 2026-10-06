@@ -172,7 +172,9 @@ function construirExplicacion(exp, nombre, region) {
     const video = nuevo('a', 'gym-tip-video', '▶ Buscar en YouTube (se abre fuera de la app)');
     video.href = urlYoutube(nombre); video.target = '_blank'; video.rel = 'noopener noreferrer';
     video.setAttribute('aria-label', `Buscar en YouTube: ${nombre} (se abre fuera de la app)`);
-    partes.push(video, nuevo('p', 'gym-tip-etiqueta', 'Texto redactado con ayuda de IA, sin revisar. Guía orientativa: no sustituye la indicación de un profesional. Si algo te duele, para y consúltalo.'));
+    // La etiqueta dice si Nando revisó el texto (campo «revision», con fecha y quién) o si sigue sin revisar
+    const origen = typeof exp.revision === 'string' && exp.revision.length <= 200 ? exp.revision : 'Texto redactado con ayuda de IA, sin revisar';
+    partes.push(video, nuevo('p', 'gym-tip-etiqueta', `${origen}. Guía orientativa: no sustituye la indicación de un profesional. Si algo te duele, para y consúltalo.`));
   }
   region.replaceChildren(...partes);
 }

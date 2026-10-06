@@ -297,6 +297,20 @@ test('explicación: Trabaja, pasos, Ojo, dibujos (nombre seguro, tamaño fijo, c
   assert.equal(hijos({}).length, 1);                                                   // vacío: «Todavía no hay explicación»
 });
 
+test('etiqueta de la ficha: dice «Revisado por Nando…» si la ficha lo trae y «sin revisar» si no (y no acepta un texto largo ni que no sea texto)', () => {
+  const app = crearApp();
+  app.get('document').createElement = elementoFalso;
+  const construir = app.get('construirExplicacion');
+  const region = elementoFalso('div');
+  region.replaceChildren = (...h) => { region.children = h; };
+  const etiqueta = exp => { construir(exp, 'Remo', region); return region.children.find(h => h.className === 'gym-tip-etiqueta').textContent; };
+  const cierre = 'Guía orientativa: no sustituye la indicación de un profesional. Si algo te duele, para y consúltalo.';
+  const rev = 'Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)';
+  assert.equal(etiqueta({ trabaja: ['x'], revision: rev }), `${rev}. ${cierre}`);
+  assert.equal(etiqueta({ trabaja: ['x'] }), `Texto redactado con ayuda de IA, sin revisar. ${cierre}`);
+  for (const mala of [5, null, ['a'], 'x'.repeat(201)]) assert.ok(etiqueta({ trabaja: ['x'], revision: mala }).startsWith('Texto redactado con ayuda de IA, sin revisar'), String(mala));
+});
+
 test('abrir la explicación: carga una sola vez, no marca, y sin conexión se reintenta', async () => {
   const app = crearApp();
   app.get('document').createElement = elementoFalso;

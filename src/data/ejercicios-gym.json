@@ -1,5 +1,5 @@
 {
- "nota": "Textos redactados con ayuda de IA, sin revisar. Sin imágenes por ahora.",
+ "nota": "Fichas revisadas por Nando el 7-oct-2026 (excepto d4e1, pendiente) con el especialista de salud (IA, sin acceso al manual NSCA). Sin imágenes por ahora.",
  "ejercicios": {
   "d1e1": {
    "trabaja": [
@@ -12,7 +12,9 @@
     "Agarra las asas a la altura del pecho.",
     "Empuja hacia delante hasta estirar los brazos casi del todo.",
     "Vuelve despacio hasta notar el pecho estirado, sin soltar de golpe."
-   ]
+   ],
+   "ojo": "No despegues la espalda del respaldo ni subas los hombros. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d1e2": {
    "trabaja": [
@@ -20,10 +22,12 @@
     "hombros"
    ],
    "pasos": [
-    "Tumbado en el banco inclinado, mancuernas sobre el pecho y codos algo flexionados.",
+    "Recostado en el banco inclinado, con las mancuernas sobre el pecho y los codos algo flexionados.",
     "Abre los brazos hacia los lados en arco, con control, hasta notar el pecho estirado.",
-    "Sube juntando las mancuernas como si abrazaras un tronco."
-   ]
+    "Sube en arco juntando las mancuernas."
+   ],
+   "ojo": "Si notas molestia en el hombro, no bajes tanto: para en la línea del pecho.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d1e3": {
    "trabaja": [
@@ -35,7 +39,9 @@
     "Espalda apoyada.",
     "Empuja hacia arriba sin encoger los hombros hacia las orejas.",
     "Baja despacio."
-   ]
+   ],
+   "ojo": "Mantén los codos algo por delante del cuerpo. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d1e4": {
    "trabaja": [
@@ -45,7 +51,9 @@
     "De pie, mancuernas a los lados y codos ligeramente flexionados.",
     "Sube los brazos hacia los lados hasta la altura de los hombros.",
     "Baja despacio, sin balancear el cuerpo."
-   ]
+   ],
+   "ojo": "Si necesitas balancearte, baja la carga.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d1e5": {
    "trabaja": [
@@ -55,7 +63,9 @@
     "Siéntate con la espalda apoyada y las rodillas alineadas con el eje de giro.",
     "Estira las piernas sin golpear al final.",
     "Baja despacio."
-   ]
+   ],
+   "ojo": "Ajusta el respaldo y el rodillo según las indicaciones de la máquina.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d1e6": {
    "trabaja": [
@@ -66,8 +76,11 @@
    "pasos": [
     "Espalda y glúteos pegados al respaldo, pies a la anchura de los hombros.",
     "Baja hasta donde llegues sin que se despegue la zona lumbar.",
-    "Empuja sin bloquear las rodillas del todo."
-   ]
+    "Empuja sin bloquear las rodillas del todo.",
+    "Mantén las rodillas en línea con los pies."
+   ],
+   "ojo": "Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d1e7": {
    "trabaja": [
@@ -77,7 +90,9 @@
     "Siéntate y agarra las asas sin tirar con los brazos.",
     "Encoge el abdomen acercando las costillas a la pelvis.",
     "Vuelve despacio, sin impulso."
-   ]
+   ],
+   "ojo": "No tires del cuello con las manos. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d2e1": {
    "trabaja": [
@@ -88,7 +103,9 @@
     "Muslos bien sujetos bajo el rodillo, pecho arriba.",
     "Tira de la barra hacia la parte alta del pecho llevando los codos hacia abajo.",
     "Sube controlando, sin que los hombros se eleven."
-   ]
+   ],
+   "ojo": "Lleva la barra por delante de la cabeza, no por detrás de la nuca. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d2e2": {
    "trabaja": [
@@ -100,7 +117,9 @@
     "Pecho apoyado y espalda recta.",
     "Tira llevando los codos hacia atrás y juntando los omóplatos.",
     "Vuelve estirando despacio."
-   ]
+   ],
+   "ojo": "Mantén el pecho abierto y no encojas los hombros. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d2e3": {
    "trabaja": [
@@ -110,7 +129,9 @@
     "De pie, codos pegados al cuerpo.",
     "Sube las mancuernas sin balancear la espalda.",
     "Baja despacio."
-   ]
+   ],
+   "ojo": "Si necesitas balancearte, baja la carga.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d2e4": {
    "trabaja": [
@@ -120,7 +141,9 @@
     "Codos pegados a los costados.",
     "Estira los brazos hacia abajo sin mover los codos.",
     "Sube controlando."
-   ]
+   ],
+   "ojo": "Mantén el tronco quieto; si se mueve, la carga es alta.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d2e5": {
    "trabaja": [
@@ -129,9 +152,11 @@
    ],
    "pasos": [
     "Espalda apoyada, pies a la anchura de los hombros.",
-    "Baja hasta donde llegues con comodidad.",
-    "Sube empujando con todo el pie."
-   ]
+    "Baja hasta donde llegues con comodidad, con las rodillas en línea con los pies.",
+    "Sube empujando con todo el pie, sin bloquear las rodillas arriba."
+   ],
+   "ojo": "Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d2e6": {
    "trabaja": [
@@ -141,17 +166,20 @@
     "Tumbado boca abajo con las caderas pegadas al banco.",
     "Flexiona las rodillas llevando los talones hacia los glúteos.",
     "Baja despacio sin levantar la cadera."
-   ]
+   ],
+   "ojo": "Mantén la zona lumbar plana y las rodillas alineadas con el eje.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d2e7": {
    "trabaja": [
     "gemelos"
    ],
    "pasos": [
-    "Apoya la punta de los pies.",
-    "Sube lo más alto que puedas con una pausa breve arriba.",
+    "Apoya la parte delantera del pie en el borde, con los talones libres y las rodillas casi estiradas.",
+    "Sube lo más alto que puedas, con una pausa breve arriba.",
     "Baja despacio hasta notar el estiramiento."
-   ]
+   ],
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d2e8": {
    "trabaja": [
@@ -160,20 +188,25 @@
     "parte trasera del muslo"
    ],
    "pasos": [
-    "Ajusta el apoyo a la altura de la cadera.",
-    "Baja con la espalda recta.",
+    "Ajusta el apoyo a la altura de la cadera y sujeta los tobillos bajo los rodillos.",
+    "Baja con la espalda recta, doblando por la cadera.",
     "Sube hasta alinear el cuerpo, sin arquear de más."
-   ]
+   ],
+   "ojo": "Mueve desde la cadera y no sacudas. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d3e1": {
    "trabaja": [
-    "pecho"
+    "pecho",
+    "hombros (parte delantera)"
    ],
    "pasos": [
     "Espalda apoyada y codos ligeramente flexionados.",
     "Junta las asas delante del pecho apretando.",
     "Vuelve despacio."
-   ]
+   ],
+   "ojo": "No lleves los codos más atrás de la línea del cuerpo. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d3e2": {
    "trabaja": [
@@ -184,7 +217,9 @@
     "Siéntate con la espalda recta y las rodillas algo flexionadas.",
     "Tira hacia el abdomen juntando los omóplatos.",
     "Estira despacio sin inclinarte hacia delante."
-   ]
+   ],
+   "ojo": "Mantén el pecho abierto y no encojas los hombros. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d3e3": {
    "trabaja": [
@@ -192,30 +227,35 @@
     "tríceps"
    ],
    "pasos": [
-    "Mancuernas a la altura de los hombros.",
+    "Sentado con la espalda apoyada (o de pie), con las mancuernas a la altura de los hombros.",
     "Empuja hacia arriba sin arquear la espalda.",
     "Baja despacio hasta la altura de las orejas."
-   ]
+   ],
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d3e4": {
    "trabaja": [
-    "bíceps"
+    "bíceps (antebrazo como apoyo)"
    ],
    "pasos": [
-    "Codos pegados al cuerpo y espalda quieta.",
-    "Sube la barra sin balancear.",
-    "Baja despacio."
-   ]
+    "De pie frente a la polea baja, con los pies a la anchura de las caderas y las rodillas sueltas.",
+    "Agarra la barra Z con las palmas hacia arriba y los brazos estirados, sin bloquear los codos.",
+    "Pega los codos al cuerpo y sube la barra doblando solo los codos, con la espalda quieta.",
+    "Baja despacio, sin soltar la tensión de golpe."
+   ],
+   "ojo": "Si necesitas balancear el cuerpo para subir, baja la carga. Mantén las muñecas rectas y los hombros relajados.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d3e5": {
    "trabaja": [
     "tríceps"
    ],
    "pasos": [
-    "Sujeta la mancuerna con las dos manos por encima de la cabeza.",
+    "Sujeta la mancuerna con las dos manos por encima de la cabeza, con los brazos estirados.",
     "Baja detrás de la cabeza solo doblando los codos, manteniéndolos cerca de la cabeza.",
-    "Estira controlando."
-   ]
+    "Estira controlando, sin arquear la espalda."
+   ],
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d3e6": {
    "trabaja": [
@@ -225,7 +265,9 @@
     "Espalda apoyada y rodillas alineadas con el eje.",
     "Lleva los talones hacia abajo y atrás.",
     "Vuelve despacio."
-   ]
+   ],
+   "ojo": "Mantén la zona lumbar plana y las rodillas alineadas con el eje. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d3e7": {
    "trabaja": [
@@ -235,9 +277,11 @@
    ],
    "pasos": [
     "Espalda y glúteos pegados al respaldo, pies a la anchura de los hombros.",
-    "Empuja sin bloquear las rodillas del todo.",
-    "Baja con control."
-   ]
+    "Baja con control hasta donde llegues sin que se despegue la zona lumbar.",
+    "Empuja sin bloquear las rodillas del todo, con las rodillas en línea con los pies."
+   ],
+   "ojo": "Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d4e1": {
    "trabaja": [
@@ -246,6 +290,7 @@
     "parte alta del pecho"
    ],
    "pasos": [
+    "Espalda apoyada.",
     "Asiento a la altura que deje las asas a la altura de los hombros.",
     "Empuja hacia arriba sin encoger los hombros.",
     "Baja despacio."
@@ -260,7 +305,9 @@
     "Pecho apoyado y espalda recta.",
     "Tira llevando los codos hacia atrás.",
     "Vuelve estirando despacio."
-   ]
+   ],
+   "ojo": "Mantén el pecho abierto y no encojas los hombros. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d4e3": {
    "trabaja": [
@@ -270,7 +317,9 @@
     "De pie, mancuernas delante de los muslos.",
     "Sube al frente hasta la altura del hombro.",
     "Baja despacio, sin balancear el cuerpo."
-   ]
+   ],
+   "ojo": "Si necesitas balancearte, baja la carga.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d4e4": {
    "trabaja": [
@@ -280,7 +329,8 @@
     "Palmas mirándose, codos pegados al cuerpo.",
     "Sube sin balancear.",
     "Baja controlando."
-   ]
+   ],
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d4e5": {
    "trabaja": [
@@ -291,7 +341,9 @@
     "Espalda apoyada y codos cerca del cuerpo.",
     "Empuja hacia abajo hasta estirar los brazos sin bloquear del todo.",
     "Sube despacio."
-   ]
+   ],
+   "ojo": "Mantén los hombros lejos de las orejas. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   },
   "d4e7": {
    "trabaja": [
@@ -301,7 +353,9 @@
     "Siéntate y agarra las asas sin tirar con los brazos.",
     "Encoge el abdomen acercando las costillas a la pelvis.",
     "Vuelve despacio, sin impulso."
-   ]
+   ],
+   "ojo": "No tires del cuello con las manos. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   }
  }
 }
