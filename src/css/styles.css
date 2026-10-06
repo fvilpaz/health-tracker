@@ -285,7 +285,7 @@ a { color: inherit; text-decoration: none; }
   cursor: pointer; transition: all var(--transition);
 }
 .gym-dia.active { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
-.gym-fecha { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; font-size: 0.8rem; color: var(--text-muted); }
+.campo-fecha { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; font-size: 0.8rem; color: var(--text-muted); }
 .gym-info { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 14px; }
 .gym-lista { display: flex; flex-direction: column; gap: 10px; }
 .gym-ej {
@@ -328,10 +328,10 @@ a { color: inherit; text-decoration: none; }
 .gym-cardio-tit { font-weight: 600; font-size: 0.9rem; }
 .gym-cardio-plan { color: var(--text-muted); font-weight: 400; font-size: 0.75rem; margin-left: 8px; }   /* pista, nunca obligación */
 .gym-cardio-campos { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
-.gym-fecha input, .gym-cardio-campos input { width: 100%; min-width: 0; font-size: 1rem; padding: 8px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+.campo-fecha input, .gym-cardio-campos input { width: 100%; min-width: 0; font-size: 1rem; padding: 8px; border: 1px solid var(--border); border-radius: var(--radius-sm);
   background: var(--surface2); color: var(--text); }   /* 16 px: por debajo, el iPhone hace zoom al tocar */
 .gym-cardio-nota { grid-column: 1 / -1; }
-.gym-fecha input { width: auto; }
+.campo-fecha input { width: auto; }
 
 /* Metas */
 .metas-list { display: flex; flex-direction: column; gap: 10px; }
