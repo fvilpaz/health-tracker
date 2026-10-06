@@ -358,3 +358,22 @@ test('compatibilidad: el cardio viejo {start, end} se lee siempre (lista y texto
   app.get('Storage').set('gymDraft', { date: hoy, day: '1', done: ['x'] });             // borrador sin cardio
   assert.deepEqual(plano(app.get('borradorGym')().cardio), []);
 });
+
+test('quitar una fila de cardio: se decide al tocar, con lo que haya escrito entonces (no con lo que había al pintar)', () => {
+  const quitar = crearApp().get('quitarFilaCardio');
+  const q = (lista, i, conf = -1) => plano(quitar(lista, i, conf));
+  // la fila 2 estaba vacía al pintar y se teclea «25» después: tiene que pedir confirmación, no borrarse
+  const lista = [{ minutes: '10' }, {}];
+  lista[1] = { ...lista[1], minutes: '25' };
+  const primera = q(lista, 1);
+  assert.deepEqual([primera.accion, primera.confirmando, primera.lista.length], ['confirmar', 1, 2]);
+  const segunda = q(lista, 1, 1);
+  assert.deepEqual([segunda.accion, segunda.confirmando, segunda.lista], ['quitada', -1, [{ minutes: '10' }]]);
+  // vacía (o solo espacios): se quita al momento
+  assert.equal(q([{ minutes: '10' }, { minutes: ' ', note: '' }], 1).accion, 'quitada');
+  // la última que queda no desaparece: queda una fila vacía
+  assert.deepEqual(q([{}], 0).lista, [{}]);
+  assert.deepEqual(q([{ km: '3' }], 0, 0).lista, [{}]);
+  // confirmar otra fila no vale para esta
+  assert.equal(q([{ km: '1' }, { km: '2' }], 1, 0).accion, 'confirmar');
+});

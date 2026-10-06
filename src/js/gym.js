@@ -24,6 +24,17 @@ function nextGymDay(sesiones = getSessions(), total = 5) {
 
 const MAX_CARDIOS = 4;   // cuántos cardios caben en una sesión
 
+// ¿Tiene algo escrito la fila? (se mira al TOCAR «Quitar», no al pintar: se puede teclear después de pintar)
+const filaConDatos = fila => Object.values(fila || {}).some(v => String(v).trim());
+
+// Qué hace «Quitar» sobre la fila i: con datos, la primera vez pide confirmar (en la propia fila); la segunda, o sin datos, la quita.
+// Siempre queda al menos una fila (vacía). Devuelve la accion, la lista nueva y qué fila queda por confirmar (-1 = ninguna).
+function quitarFilaCardio(lista, i, confirmando) {
+  if (filaConDatos(lista[i]) && confirmando !== i) return { accion: 'confirmar', lista, confirmando: i };
+  const nueva = lista.filter((_, k) => k !== i);
+  return { accion: 'quitada', lista: nueva.length ? nueva : [{}], confirmando: -1 };
+}
+
 // Minutos como los da la máquina («10:38», min:seg) o a mano («10,6»); en el almacén siempre decimales (10.63)
 const minutosDe = t => { const r = /^(\d{1,3}):([0-5]\d)$/.exec(t); return r ? Math.round((+r[1] + +r[2] / 60) * 100) / 100 : Number(t); };
 
@@ -261,17 +272,14 @@ async function renderGym() {
       };
       campos.append(campo('minutes', 'min o min:seg', 'text'), campo('km', 'km', 'decimal'), campo('note', 'nota (cinta, caminata…)', 'text'));
       cab.append(nuevo('div', 'gym-cardio-tit', titulo));
-      const tieneAlgo = Object.values(b.cardio[i] || {}).some(v => String(v).trim());
-      if (b.cardio.length > 1 || tieneAlgo) {
+      if (b.cardio.length > 1 || filaConDatos(b.cardio[i])) {
         const quitar = nuevo('button', 'gym-cardio-quitar', confirmando === i ? '¿Quitar? Pulsa otra vez' : 'Quitar');
         quitar.type = 'button';
         quitar.setAttribute('aria-label', `${confirmando === i ? 'Confirmar: quitar' : 'Quitar'} ${titulo}`);
         quitar.addEventListener('click', () => {
-          if (tieneAlgo && confirmando !== i) { confirmando = i; pintarCardio(); return; }   // con datos, se pide confirmar en la propia fila
-          confirmando = -1;
-          b.cardio.splice(i, 1);
-          if (!b.cardio.length) b.cardio = [{}];
-          guardar();
+          const r = quitarFilaCardio(b.cardio, i, confirmando);   // se decide AHORA con lo que haya escrito
+          confirmando = r.confirmando;
+          if (r.accion === 'quitada') { b.cardio = r.lista; guardar(); }
           pintarCardio();
         });
         cab.append(quitar);
@@ -282,7 +290,7 @@ async function renderGym() {
     const mas = nuevo('button', 'gym-cardio-mas', '+ Añadir otro cardio');
     mas.type = 'button';
     mas.hidden = b.cardio.length >= MAX_CARDIOS;
-    mas.addEventListener('click', () => { confirmando = -1; b.cardio.push({}); guardar(); pintarCardio(true); });
+    mas.addEventListener('click', () => { if (b.cardio.length >= MAX_CARDIOS) return; confirmando = -1; b.cardio.push({}); guardar(); pintarCardio(true); });
     zonaCardio.replaceChildren(...filas, mas);
     if (enfocar) zonaCardio.querySelectorAll('.gym-cardio')[b.cardio.length - 1]?.querySelector('input')?.focus();
   };
