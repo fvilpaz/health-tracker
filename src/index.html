@@ -459,22 +459,11 @@
       <div class="card">
         <div class="card-title" role="heading" aria-level="2">Registrar medidas</div>
         <label class="campo-fecha">¿De qué día es la medida? <input type="date" id="medidaFecha"></label>
-        <div class="weight-input-row">
-          <input type="number" id="weightInput" placeholder="Peso (kg)" aria-label="Peso en kg" inputmode="decimal" step="0.1" min="30" max="300">
-          <button class="btn btn-primary" id="saveWeightBtn">Peso</button>
-        </div>
-        <div class="weight-input-row">
-          <input type="number" id="waistInput" placeholder="Cintura (cm)" aria-label="Cintura en cm" inputmode="decimal" step="0.1" min="40" max="200">
-          <button class="btn btn-primary" id="saveWaistBtn">Cintura</button>
-        </div>
-        <div class="weight-input-row">
-          <input type="number" id="bellyInput" placeholder="Barriga (cm)" aria-label="Barriga en cm" inputmode="decimal" step="0.1" min="40" max="200">
-          <button class="btn btn-primary" id="saveBellyBtn">Barriga</button>
-        </div>
-        <div class="weight-input-row">
-          <input type="number" id="heightInput" placeholder="Altura (cm)" aria-label="Altura en cm" inputmode="numeric" step="1" min="120" max="230">
-          <button class="btn btn-primary" id="saveHeightBtn">Altura</button>
-        </div>
+        <div class="medida-campo"><input type="number" id="weightInput" placeholder="Peso" aria-label="Peso en kg" inputmode="decimal" step="0.1" min="30" max="300"><span class="medida-unidad peso">kg</span></div>
+        <div class="medida-campo"><input type="number" id="waistInput" placeholder="Cintura" aria-label="Cintura en cm" inputmode="decimal" step="0.1" min="40" max="200"><span class="medida-unidad cintura">cm</span></div>
+        <div class="medida-campo"><input type="number" id="bellyInput" placeholder="Barriga" aria-label="Barriga en cm" inputmode="decimal" step="0.1" min="40" max="200"><span class="medida-unidad barriga">cm</span></div>
+        <div class="medida-campo"><input type="number" id="heightInput" placeholder="Altura" aria-label="Altura en cm" inputmode="numeric" step="1" min="120" max="230"><span class="medida-unidad">cm</span></div>
+        <button class="btn btn-green btn-full medida-guardar" id="guardarMedidasBtn">Guardar medidas</button>
         <div style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">Mide en ayunas y sin apretar: la cintura donde va el cinturón y la barriga por el ombligo</div>
       </div>
 
