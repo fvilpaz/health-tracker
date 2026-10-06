@@ -49,6 +49,21 @@ function migrarModos() {
 // Un perfil recién creado empieza sin ningún modo hasta que elija; si no lo trajera, la migración lo confundiría con uno antiguo
 const conModos = (p, nuevo) => nuevo && !Array.isArray(p.modes) ? { ...p, modes: [] } : p;
 
+// Las preguntas del entreno guiado (nivel, molestias, zonas y minutos) solo se piden con «En casa» marcado: ningún otro código las lee
+const pideDatosDeCasa = modes => modes.includes('home');
+
+// Comprueba el paso «Ejercicio» con lo elegido: devuelve el aviso, o null si está bien. Hay que marcar al menos un modo y los
+// días a la semana (siempre); nivel y minutos, solo con «En casa».
+function avisoEjercicio({ modes, days, level, minutes }) {
+  if (!modes.length) return 'Elige dónde vas a entrenar';
+  if (!days) return 'Elige cuántos días a la semana puedes';
+  if (pideDatosDeCasa(modes)) {
+    if (!level) return 'Elige cuánto ejercicio haces ahora';
+    if (!minutes) return 'Elige cuántos minutos cada día';
+  }
+  return null;
+}
+
 // Solo entra lo que tiene la forma correcta (el perfil también llega en copias, que pueden venir manipuladas).
 // Los ids se comprueban por su forma, no contra el catálogo (que se carga aparte); al pintarlos van con esc().
 function limpiarPerfil(p) {
@@ -192,11 +207,15 @@ async function abrirCuestionario({ nuevo }) {
       '<p class="setup-note pf-riesgo" hidden><strong>Consulta con tu médico antes de empezar.</strong> La app te lo recordará en Entreno.</p>' +
       '<p class="setup-note">Esto se queda en tu móvil: no se envía a ningún sitio.</p>' },
     { titulo: 'Ejercicio', html: () =>
+      grupo('¿Dónde vas a entrenar?', opciones('pfModos', [{ id: 'gym', name: 'Gimnasio' }, { id: 'home', name: 'En casa' }], p.modes ?? [])) +
+      '<p class="pf-error" id="pfModosError" role="alert" hidden>Elige dónde vas a entrenar (puedes marcar los dos).</p>' +
+      grupo('¿Cuántos días a la semana puedes?', opciones('pfDias', cat.days, p.days, 'radio')) +
+      '<div id="pfCasa">' +
       grupo('¿Cuánto ejercicio haces ahora?', opciones('pfNivel', cat.levels, p.level, 'radio')) +
       grupo('¿Te molesta algo? (si no, déjalo vacío)', opciones('pfMolestias', cat.pains, p.avoid ?? [])) +
       grupo('¿Qué quieres trabajar más? (opcional)', opciones('pfZonas', cat.focus, p.focus ?? [])) +
-      grupo('¿Cuántos días a la semana puedes?', opciones('pfDias', cat.days, p.days, 'radio')) +
-      grupo('¿Cuántos minutos cada día?', opciones('pfMinutos', cat.minutes, p.minutes, 'radio')) },
+      grupo('¿Cuántos minutos cada día?', opciones('pfMinutos', cat.minutes, p.minutes, 'radio')) +
+      '</div>' },
     { titulo: 'Comida', html: () =>
       grupo('¿Cómo comes?', opciones('pfDieta', cat.diets, p.diet, 'radio')) +
       grupo('Alergias o intolerancias', opciones('pfAlergias', cat.allergies, p.allergies ?? [])) +
@@ -263,10 +282,14 @@ async function abrirCuestionario({ nuevo }) {
       }
     }
     if (t === 'Ejercicio') {
-      p.level = Number(elegido('pfNivel')); p.avoid = elegidos('pfMolestias'); p.focus = elegidos('pfZonas');
-      p.days = Number(elegido('pfDias')); p.minutes = Number(elegido('pfMinutos'));
-      if (!p.level) return 'Elige cuánto ejercicio haces ahora';
-      if (!p.days || !p.minutes) return 'Elige días y minutos';
+      p.modes = MODOS.filter(m => elegidos('pfModos').includes(m));
+      p.days = Number(elegido('pfDias'));
+      const casa = pideDatosDeCasa(p.modes);
+      if (casa) { p.level = Number(elegido('pfNivel')); p.avoid = elegidos('pfMolestias'); p.focus = elegidos('pfZonas'); p.minutes = Number(elegido('pfMinutos')); }
+      const aviso = avisoEjercicio({ modes: p.modes, days: p.days, level: casa ? p.level : null, minutes: casa ? p.minutes : null });
+      $('pfModosError').hidden = p.modes.length > 0;   // el error se queda a la vista (el aviso temporal dura 2,6 s)
+      if (!p.modes.length) overlay.querySelector('input[name="pfModos"]')?.focus();
+      if (aviso) return aviso;
     }
     if (t === 'Comida') {
       p.diet = elegido('pfDieta'); p.allergies = elegidos('pfAlergias'); p.dislikes = $('pfNoMeGusta').value.trim().slice(0, 200);
@@ -322,6 +345,16 @@ async function abrirCuestionario({ nuevo }) {
   };
   overlay.addEventListener('change', actualizarSiNo);
   actualizarSiNo();
+
+  // Modos: las preguntas de «En casa» solo salen con «En casa» marcado; al marcar un modo desaparece el error
+  const actualizarModos = () => {
+    const marcados = elegidos('pfModos');
+    const casa = $('pfCasa'), error = $('pfModosError');
+    if (casa) casa.hidden = !pideDatosDeCasa(marcados);
+    if (error && marcados.length) error.hidden = true;
+  };
+  overlay.addEventListener('change', actualizarModos);
+  actualizarModos();
 
   $('pfSiguiente').addEventListener('click', () => {
     const aviso = leerPaso(actual);
