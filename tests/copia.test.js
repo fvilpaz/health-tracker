@@ -42,10 +42,11 @@ test('una copia manipulada: fuera todo lo que no tiene la forma correcta, y se c
   assert.equal(r.descartados, 2 + 1 + 2 + 2 + 2 + 1 + 1);   // pesos, barriga, sesiones, análisis, plan, tema, clave rara
 });
 
-test('las claves viejas (racha por días, calendario) se ignoran sin contar como error', () => {
-  const r = crearApp().get('limpiarCopia')({ streak: 4, 'calendar_2026-09-21': { 0: true }, weights: [] });
+test('las claves viejas (racha por días, calendario, hábitos de hoy) se ignoran sin contar como error', () => {
+  const r = crearApp().get('limpiarCopia')({ streak: 4, 'calendar_2026-09-21': { 0: true }, habits: { '2026-09-29': ['agua'] }, weights: [] });
   assert.equal(r.descartados, 0);
   assert.equal(r.datos.streak, undefined);
+  assert.equal(r.datos.habits, undefined);
 });
 
 test('un nombre de ejercicio con HTML entra (es texto libre) pero esc() lo deja inofensivo', () => {

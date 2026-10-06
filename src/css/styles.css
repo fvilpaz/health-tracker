@@ -612,13 +612,12 @@ table.labs td.fuera { color: var(--red); }
 
 /* ===== LOGROS ===== */
 .logros-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-/* Hábitos de hoy: una fila por hábito (casilla, nombre y su meta) */
-.habitos-cuenta { color: var(--text-muted); font-weight: 400; margin-left: 6px; }
-.habitos-lista { display: grid; gap: 10px; }
-.habito { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; cursor: pointer; }
-.habito input { width: 22px; height: 22px; accent-color: var(--green); flex-shrink: 0; }
-.habito-nombre { font-weight: 600; }
-.habito-meta { color: var(--text-muted); font-size: 0.85rem; }
+/* Sesión del gimnasio: una fila por ejercicio (casilla, nombre y series×repeticiones) */
+.gym-lista { display: grid; gap: 10px; }
+.gym-fila { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; cursor: pointer; }
+.gym-fila input { width: 22px; height: 22px; accent-color: var(--green); flex-shrink: 0; }
+.gym-nombre { font-weight: 600; }
+.gym-meta { color: var(--text-muted); font-size: 0.85rem; }
 .logro {
   padding: 14px;
   border-radius: var(--radius);
