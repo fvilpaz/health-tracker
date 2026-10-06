@@ -193,19 +193,21 @@ function elementoFalso(tag) {
     tag, children: [], className: '', textContent: '', hidden: false, checked: false,
     classList: { toggle(c, on) { const l = new Set(el.className.split(' ').filter(Boolean)); if (on) l.add(c); else l.delete(c); el.className = [...l].join(' '); } },
     append(...h) { el.children.push(...h); },
+    replaceChildren(...h) { el.children = h; },
     setAttribute(k, v) { attrs.set(k, v); },
     attr: k => attrs.get(k),
     addEventListener(t, f) { oyentes.set(t, f); },
     dispara(t) { oyentes.get(t)?.(); },
+    oyentes,
   };
   return el;
 }
 
-test('fila del ejercicio: el <label> marca; el botón de explicación es su hermano y no marca; sin tip no hay botón', () => {
+test('fila del ejercicio: el <label> marca; el botón de explicación es su hermano y no marca; sin ref no hay botón', () => {
   const app = crearApp();
   app.get('document').createElement = elementoFalso;
   const fila = app.get('filaEjercicio'), llamadas = [];
-  const hacer = e => fila({ e, i: 0, hecha: false, meta: '3 series × 15 reps', alCambiar: m => llamadas.push(m) });
+  const hacer = e => fila({ e, i: 0, hecha: false, meta: '3 series × 15 reps', alCambiar: m => llamadas.push(m), cargarExplicacion: async () => ({ trabaja: ['espalda'] }) });
 
   const sin = hacer({ id: 'd1e1', name: 'Press' });
   assert.equal(sin.children.length, 1);                                              // solo el <label>: idéntico a antes
@@ -219,7 +221,7 @@ test('fila del ejercicio: el <label> marca; el botón de explicación es su herm
   assert.deepEqual(llamadas, [true, false]);
 
   llamadas.length = 0;
-  const con = hacer({ id: 'd1e2', name: 'Remo', tip: 'texto' });
+  const con = hacer({ id: 'd1e2', name: 'Remo', ref: 'remo' });
   const [lab, boton, region] = con.children;
   assert.equal(con.children.length, 3);
   assert.ok(!lab.children.includes(boton) && !lab.children.includes(region));        // el botón NO va dentro del label
@@ -232,4 +234,53 @@ test('fila del ejercicio: el <label> marca; el botón de explicación es su herm
   assert.equal(region.hidden, false);
   assert.equal(boton.attr('aria-expanded'), 'true');
   assert.deepEqual(llamadas, []);                                                    // el botón nuevo no marca
+});
+
+test('explicación: Trabaja, pasos, Ojo y fotos (solo nombres seguros, tamaño fijo, carga diferida); sin foto, solo texto; todo con textContent', () => {
+  const app = crearApp();
+  app.get('document').createElement = elementoFalso;
+  const construir = app.get('construirExplicacion');
+  const region = elementoFalso('div');
+  region.replaceChildren = (...h) => { region.children = h; };
+  const hijos = exp => { construir(exp, 'Remo', region); return region.children; };
+
+  const completa = hijos({ trabaja: ['espalda', 'bíceps'], pasos: ['Siéntate', 'Tira'], ojo: 'no balancees', fotos: { inicio: 'd1e1-inicio.webp', final: 'd1e1-final.webp', aproximada: true } });
+  assert.deepEqual(completa.map(h => h.className), ['gym-tip-trabaja', 'gym-tip-pasos', 'gym-tip-ojo', 'gym-tip-fotos', 'gym-tip-aviso']);
+  assert.equal(completa[0].textContent, 'Trabaja: espalda, bíceps');
+  assert.deepEqual(completa[1].children.map(l => l.textContent), ['Siéntate', 'Tira']);
+  assert.equal(completa[2].textContent, 'Ojo: no balancees');
+  const imgs = completa[3].children.map(f => f.children[0]);
+  assert.deepEqual(imgs.map(i => i.src), ['img/gym/d1e1-inicio.webp', 'img/gym/d1e1-final.webp']);
+  assert.ok(imgs.every(i => i.loading === 'lazy' && i.width > 0 && i.height > 0 && i.alt.includes('Remo')));
+  assert.ok(completa[4].textContent.includes('orientativa'));                         // aviso solo si la foto es aproximada
+
+  const propias = hijos({ fotos: { inicio: 'a-inicio.webp', final: 'a-final.webp' } });
+  assert.ok(!propias.some(h => h.className === 'gym-tip-aviso'));                      // fotos propias: sin aviso
+  const soloTexto = hijos({ trabaja: ['espalda'] });
+  assert.deepEqual(soloTexto.map(h => h.className), ['gym-tip-trabaja']);              // sin foto: solo texto
+  // Nombres de archivo peligrosos: no se crea ninguna imagen
+  for (const malo of ['../x.webp', 'a b.webp', 'x.jpg', 'http://malo/x.webp', '<img>.webp', 5]) {
+    assert.ok(!hijos({ trabaja: ['a'], fotos: { inicio: malo, final: malo } }).some(h => h.className === 'gym-tip-fotos'), String(malo));
+  }
+  assert.equal(hijos({}).length, 1);                                                   // vacío: «Todavía no hay explicación»
+});
+
+test('abrir la explicación: carga una sola vez, no marca, y sin conexión se reintenta', async () => {
+  const app = crearApp();
+  app.get('document').createElement = elementoFalso;
+  const fila = app.get('filaEjercicio'), cambios = [];
+  let cargas = 0, falla = true;
+  const f = fila({ e: { id: 'd1e2', name: 'Remo', ref: 'remo' }, i: 0, hecha: false, meta: 'm', alCambiar: m => cambios.push(m),
+    cargarExplicacion: async () => { cargas++; if (falla) throw new Error('sin red'); return { trabaja: ['espalda'] }; } });
+  const [, boton, region] = f.children;
+  region.replaceChildren = (...h) => { region.children = h; };
+  await boton.oyentes.get('click')();                                                  // abre: falla la carga
+  assert.equal(region.children[0].textContent, 'Todavía no hay explicación de este ejercicio.');
+  await boton.oyentes.get('click')();                                                  // cierra
+  falla = false;
+  await boton.oyentes.get('click')();                                                  // abre otra vez: reintenta y pinta
+  assert.equal(region.children[0].textContent, 'Trabaja: espalda');
+  await boton.oyentes.get('click')(); await boton.oyentes.get('click')();              // cierra y abre: no vuelve a cargar
+  assert.equal(cargas, 2);
+  assert.deepEqual(cambios, []);                                                       // nada de esto marca el ejercicio
 });
