@@ -39,6 +39,7 @@
 
 ## 💡 Aparcado
 
+- **Cardio con cronómetro y GPS dentro de la app** (6-oct-2026, idea de Nando; de momento a mano) — «Iniciar» y que cuente minutos y km con la geolocalización del navegador (~100 líneas + pruebas). Límites: solo con la página abierta y la pantalla encendida (en iPhone peor), gasta batería, y sin GPS en la cinta. Guardar solo minutos y km, nunca el recorrido. Conectar con Google Fit: descartado (su API se retira; Health Connect no se lee desde una web)
 - **Varios perfiles en el mismo aparato** (29-sep-2026, decidido no hacerlo por ahora: YAGNI) — cada uno usa su móvil. Para un PC compartido ya sirven los **perfiles del navegador** (Brave/Chrome: cada uno su cajón, sin programar nada). Si algún día hace falta: prefijo por perfil en las claves + pasar los datos actuales al primero; inicial en un círculo de color, sin fotos.
 
 ---
