@@ -1,0 +1,58 @@
+{
+  "plan": "Adaptación 5 días (gimnasio)",
+  "sets": 3,
+  "reps": 15,
+  "rest": 90,
+  "cardio_start": { "minutes": 10 },
+  "cardio_end": { "minutes": 20 },
+  "days": [
+    { "id": "1", "exercises": [
+      { "name": "Press de banca placas" },
+      { "name": "Aperturas inclinadas con mancuernas" },
+      { "name": "Hombro en máquina" },
+      { "name": "Elevaciones laterales con mancuernas" },
+      { "name": "Extensión de piernas máquina" },
+      { "name": "Prensa inclinada máquina discos" },
+      { "name": "Abdominales en máquina crunch (placas)", "sets": 4 }
+    ] },
+    { "id": "2", "exercises": [
+      { "name": "Jalón al pecho en polea" },
+      { "name": "Remo sentado en máquina de placas" },
+      { "name": "Bíceps con mancuernas" },
+      { "name": "Tríceps con polea alta" },
+      { "name": "Hack de piernas" },
+      { "name": "Femoral tumbado" },
+      { "name": "Gemelos de pie" },
+      { "name": "Hiperextensión en máquina" }
+    ] },
+    { "id": "3", "exercises": [
+      { "name": "Aperturas en máquina" },
+      { "name": "Remo en polea baja" },
+      { "name": "Press de hombros con mancuernas" },
+      { "name": "Bíceps máquina de pie barra Z" },
+      { "name": "Extensión de tríceps con mancuerna (dos manos)" },
+      { "name": "Femoral sentado" },
+      { "name": "Prensa frontal bilateral" },
+      { "name": "Abdominales en máquina crunch (placas)", "sets": 4 }
+    ] },
+    { "id": "4", "exercises": [
+      { "name": "Press superior vertical discos" },
+      { "name": "Remo sentado con discos" },
+      { "name": "Elevación frontal con mancuernas" },
+      { "name": "Bíceps martillo con mancuernas" },
+      { "name": "Fondos de tríceps (máquina placa)" },
+      { "name": "Hiperextensión en máquina" },
+      { "name": "Abdominales en máquina de disco crunch", "sets": 4 }
+    ] },
+    { "id": "5", "exercises": [
+      { "name": "Jalón al pecho en polea" },
+      { "name": "Remo sentado en máquina de placas" },
+      { "name": "Bíceps con mancuernas" },
+      { "name": "Tríceps con polea alta" },
+      { "name": "Femoral tumbado" },
+      { "name": "Hack de piernas" },
+      { "name": "Gemelos de pie" },
+      { "name": "Hiperextensión en máquina" }
+    ] }
+  ]
+}
