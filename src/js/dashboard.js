@@ -38,7 +38,7 @@ function updateDashboard() {
   // Racha
   const streakEl = document.getElementById('dashStreak');
   // eslint-disable-next-line no-unsanitized/property -- solo constantes e iconos del propio código y un número
-  if (streakEl) streakEl.innerHTML = duo('llama', 'estado racha') + ' ' + (streak ? `${plural(streak, 'semana cumplida', 'semanas cumplidas')} seguidas` : `Cumple ${objetivoSemana()} sesiones esta semana para empezar la racha`);
+  if (streakEl) streakEl.innerHTML = duo('llama', 'estado racha') + ' ' + (streak ? `${plural(streak, 'semana cumplida', 'semanas cumplidas')} seguidas` : `Llevas ${sessionsInWeek().length} de ${objetivoSemana()} sesiones esta semana para empezar la racha`);
 
   // Progreso del plan (el título dice las semanas de TU plan, no un número fijo)
   const tituloPlan = document.getElementById('planTitulo');
