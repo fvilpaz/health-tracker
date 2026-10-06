@@ -8,7 +8,7 @@ Estática: HTML + CSS + JS sin compilar, datos en el `localStorage` del navegado
   Nunca datos reales en el código ni en las pruebas (solo inventados). Los PDF de análisis de Nando llevan su DNI: jamás al repo.
 - Entreno: la app **solo apunta** lo que haces en el gimnasio (vídeos y plan están en la app del gimnasio). Plan de 5 días en rotación (`data/gym.json`); cuenta cada sesión con lo que marcaste. **Mínimo 3 por semana, ideal 5** (lunes-domingo; criterio de la entrenadora, sin fuente en `FUENTES.md`). El cardio es opcional y va dentro de la sesión. El entreno guiado de calistenia en casa (bloques, calentamiento, calma) se quitó el 6-oct-2026: se recupera con la etiqueta de git `calistenia-en-casa`.
 - Perfil (`profile`): cuestionario de 6 pasos con opciones del catálogo `src/data/health.json`, nunca texto que decida nada.
-  Modos de entreno en `profile.modes` (`home` y/o `gym`, se leen con `modosActivos()`): un perfil de antes sin `modes` migra solo a `['gym']`; uno nuevo nace con `[]`.
+  Modos de entreno en `profile.modes` (`home` y/o `gym`, se leen con `modosActivos()`): un perfil de antes sin `modes` migra solo a `['gym']`; uno nuevo nace con `[]` y el cuestionario obliga a elegir al menos uno (las preguntas de nivel, molestias, zonas y minutos solo con «En casa»).
   **Menores de 18: sin metas de peso ni objetivo «perder peso»** (lo lleva el pediatra).
 - **Fuente de verdad: `docs/FUENTES.md`** (guías oficiales con enlace; reglas E1… de ejercicio y A1… de comida). Toda regla
   de salud que use la app sale de ahí; si no hay guía, se escribe como «criterio de la app». Nada inventado.

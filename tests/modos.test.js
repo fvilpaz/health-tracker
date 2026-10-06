@@ -46,6 +46,26 @@ test('perfil nuevo: nace con modes = [] y la migración no lo convierte en gimna
   assert.deepEqual(plano(S.get('profile').modes), []);
 });
 
+test('avisoEjercicio: hay que marcar un modo y los días; nivel y minutos solo con «En casa»', () => {
+  const aviso = crearApp().get('avisoEjercicio');
+  assert.equal(aviso({ modes: [], days: 3 }), 'Elige dónde vas a entrenar');                  // sin modo no se avanza
+  assert.equal(aviso({ modes: ['gym'], days: 0 }), 'Elige cuántos días a la semana puedes');    // los días se piden siempre
+  assert.equal(aviso({ modes: ['gym'], days: NaN }), 'Elige cuántos días a la semana puedes');  // sin marcar, Number(undefined) es NaN
+  assert.equal(aviso({ modes: ['gym'], days: 3 }), null);                                      // gimnasio: sin nivel ni minutos
+  assert.equal(aviso({ modes: ['home'], days: 3, level: 0, minutes: 20 }), 'Elige cuánto ejercicio haces ahora');
+  assert.equal(aviso({ modes: ['home'], days: 3, level: 1, minutes: 0 }), 'Elige cuántos minutos cada día');
+  assert.equal(aviso({ modes: ['home'], days: 3, level: 1, minutes: 20 }), null);
+  assert.equal(aviso({ modes: ['gym', 'home'], days: 3, level: 2 }), 'Elige cuántos minutos cada día');   // con los dos, se pide lo de casa
+});
+
+test('pideDatosDeCasa: las preguntas del entreno guiado solo con «En casa» marcado', () => {
+  const pide = crearApp().get('pideDatosDeCasa');
+  assert.equal(pide(['gym']), false);
+  assert.equal(pide([]), false);
+  assert.equal(pide(['home']), true);
+  assert.equal(pide(['gym', 'home']), true);
+});
+
 test('limpiarPerfil y modes: solo home y gym; la basura se descarta y se cuenta; vacío es válido', () => {
   const limpiar = crearApp().get('limpiarPerfil');
   const modos = m => { const r = plano(limpiar({ ...PERFIL, modes: m })); return [r.perfil.modes, r.descartados]; };

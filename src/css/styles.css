@@ -684,6 +684,7 @@ table.labs td.fuera { color: var(--red); }
 .pf-sub { margin-top: 12px; }
 .meal-todas summary { cursor: pointer; font-size: 0.8rem; font-weight: 600; color: var(--blue); padding: 8px 0; min-height: 44px; display: flex; align-items: center; }
 .pf-riesgo { color: var(--red); }
+.pf-error { margin: -4px 0 12px; font-size: 0.8rem; font-weight: 600; color: var(--red); }
 .setup-note { font-size: 0.7rem; color: var(--text-muted); margin-top: 16px; line-height: 1.4; }
 .setup-cancel {
   margin-top: 8px !important;
