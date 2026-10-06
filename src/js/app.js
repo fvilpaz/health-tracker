@@ -4,6 +4,7 @@ if (window.top !== window.self) document.documentElement.style.display = 'none';
 
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
+  migrarModos();   // perfil.js: un perfil de antes pasa a modo gimnasio, como lo usa hoy
   if (!Storage.get('settings')) {
     showSetup();
   } else {

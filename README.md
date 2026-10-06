@@ -64,7 +64,7 @@ health-tracker/
 │   │   ├── plan.js             ← Plan de N semanas (objetivos, lo real de cada semana y casillas de entrenos)
 │   │   ├── medidas.js          ← Guardar peso, cintura, barriga y altura; historial de peso
 │   │   ├── logros.js           ← Logros
-│   │   ├── perfil.js           ← Cuestionario del perfil (6 pasos) y «Mi perfil»; menores sin metas de peso
+│   │   ├── perfil.js           ← Cuestionario del perfil (6 pasos) y «Mi perfil»; menores sin metas de peso; modos de entreno activos (`profile.modes`: `home` y/o `gym`; un perfil de antes pasa solo a gimnasio)
 │   │   ├── rutina.js           ← Mínimo de sesiones por semana (los días del perfil) y avisos de Entreno según el perfil
 │   │   ├── nutricion.js        ← Comidas, «OK», «Limitar» y consejos según el perfil (data/nutrition.json)
 │   │   ├── gym.js              ← Sesión del gimnasio: día que toca, ejercicios hechos, descanso entre series (reloj y sonidos), cardio opcional y borrador
@@ -73,7 +73,7 @@ health-tracker/
 │       ├── gym.json            ← Plan del gimnasio: 5 días con sus ejercicios, series, repeticiones y descanso
 │       ├── health.json         ← Catálogo del cuestionario: objetivos, enfermedades, medicación, suplementos, molestias, zonas, dieta, alergias
 │       └── nutrition.json      ← Catálogo de comidas con sus ingredientes, dietas, alergias y consejos (reglas A1-A7)
-├── tests/                  ← 110 pruebas (node --test): semana, gimnasio, medidas, copias y seguridad, copias automáticas, análisis y lector del PDF, temporizador, panel, metas y logros, perfil, rutina, nutrición y estructura del HTML
+├── tests/                  ← 115 pruebas (node --test): semana, gimnasio, modos de entreno, medidas, copias y seguridad, copias automáticas, análisis y lector del PDF, temporizador, panel, metas y logros, perfil, rutina, nutrición y estructura del HTML
 ├── perfiles/               ← Tus datos reales para importar en la app (en .gitignore: nunca se suben)
 ├── docs/PLAN.md            ← Plan de mejoras priorizado
 ├── docs/FUENTES.md         ← Fuente de verdad: reglas de ejercicio (E), comida (A) y fichas de Meds (M) con su guía oficial
