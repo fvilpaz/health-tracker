@@ -164,7 +164,13 @@ function filaEjercicio({ e, i, hecha, meta, alCambiar, cargarExplicacion }) {
       if (region.hidden || pintada) return;
       pintada = true;
       let exp = null;
-      try { exp = await cargarExplicacion(); } catch { pintada = false; }   // sin conexión: se reintenta al abrir otra vez
+      try { exp = await cargarExplicacion(); } catch {
+        pintada = false;   // sin conexión: se reintenta al abrir otra vez, y se dice que es un fallo de carga (no que no exista)
+        const aviso = nuevo('p', 'gym-tip-aviso', 'No se ha podido cargar la explicación. Comprueba la conexión y ábrela otra vez.');
+        aviso.setAttribute('role', 'status');
+        region.replaceChildren(aviso);
+        return;
+      }
       construirExplicacion(exp || {}, e.name, region);
     });
     fila.append(boton, region);
