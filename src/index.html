@@ -159,6 +159,14 @@
     <!-- ===== ENTRENAMIENTO ===== -->
     <section id="entrenamiento" class="section">
       <div class="card" id="avisosEntreno" hidden></div>
+      <div class="card" id="gymCard">
+        <div class="card-title" role="heading" aria-level="2">Sesión del gimnasio</div>
+        <div class="gym-dias" id="gymDias"></div>
+        <div class="meta-aviso" id="gymInfo"></div>
+        <div class="habitos-lista" id="gymEjercicios"></div>
+        <div id="gymCardio"></div>
+        <button class="btn btn-green btn-full" id="gymGuardar" style="margin-top: 14px;">Guardar sesión</button>
+      </div>
       <div class="phase-tabs">
         <button class="phase-tab active" data-phase="warmup"><span data-duo="llama"></span> Calent.</button>
         <button class="phase-tab" data-phase="strength"><span data-duo="pesa"></span> Fuerza</button>
@@ -586,6 +594,7 @@
   <script src="js/perfil.js"></script>
   <script src="js/rutina.js"></script>
   <script src="js/nutricion.js"></script>
+  <script src="js/gym.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

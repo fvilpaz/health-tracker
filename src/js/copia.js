@@ -37,7 +37,8 @@ function limpiarCopia(entrada) {
 
   // Claves que la app ya no usa (racha por días y calendario viejo): se ignoran sin contarlas como error,
   // porque vienen en cualquier copia hecha antes del 28-sep-2026.
-  const obsoleta = clave => clave === 'streak' || clave.startsWith('calendar_');
+  // 'gymDraft' es el borrador de la sesión de hoy: no va en la copia y, si viene, se ignora sin contarlo
+  const obsoleta = clave => clave === 'streak' || clave.startsWith('calendar_') || clave === 'gymDraft';
   for (const clave of Object.keys(entrada)) {
     if (!['settings', 'startDate', 'weights', 'waists', 'bellies', 'sessions', 'labs', 'plan', 'logros', 'theme', 'trainings', 'profile', 'habits'].includes(clave) && !obsoleta(clave)) descartados++;
   }
