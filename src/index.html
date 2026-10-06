@@ -157,52 +157,26 @@
       <div class="card" id="gymCard">
         <div class="card-title" role="heading" aria-level="2">Sesión del gimnasio</div>
         <div class="gym-dias" id="gymDias"></div>
-        <div class="meta-aviso" id="gymInfo"></div>
+        <label class="gym-fecha">¿Qué día lo hiciste? <input type="date" id="gymFecha"></label>
+        <div class="gym-info" id="gymInfo"></div>
         <div class="gym-lista" id="gymEjercicios"></div>
-        <div id="gymCardio"></div>
-        <button class="btn btn-green btn-full" id="gymGuardar" style="margin-top: 14px;">Guardar sesión</button>
       </div>
-      <div class="phase-tabs">
-        <button class="phase-tab active" data-phase="warmup"><span data-duo="llama"></span> Calent.</button>
-        <button class="phase-tab" data-phase="strength"><span data-duo="pesa"></span> Fuerza</button>
-        <button class="phase-tab" data-phase="cooldown"><span data-duo="calma"></span> Calma</button>
-      </div>
-
       <div class="card">
-        <div class="block-picker" id="blockPicker" style="display: none;">
-          <button class="block-btn" data-block="1">Bloque 1</button>
-          <button class="block-btn" data-block="2">Bloque 2</button>
-          <button class="block-btn" data-block="3">Bloque 3</button>
-        </div>
-        <div class="card-title" role="heading" aria-level="2" id="roundInfo"></div>
-        <div class="exercise-list" id="exerciseList"></div>
+        <div class="card-title" role="heading" aria-level="2">Descanso entre series</div>
+        <button class="gym-reloj" id="gymDescanso" aria-live="off">
+          <svg width="170" height="170" viewBox="0 0 170 170" aria-hidden="true">
+            <circle class="gym-reloj-fondo" cx="85" cy="85" r="75"></circle>
+            <circle class="gym-reloj-arco" id="gymRelojArco" cx="85" cy="85" r="75" stroke-dasharray="471.24" stroke-dashoffset="0"></circle>
+          </svg>
+          <span class="gym-reloj-num" id="gymRelojNum"></span>
+          <span class="gym-reloj-txt" id="gymRelojTxt"></span>
+        </button>
       </div>
-
-      <div id="workoutSetup">
-        <button class="btn btn-green btn-full" id="startWorkoutBtn"><span data-ico="jugar"></span>Iniciar entrenamiento</button>
+      <div class="card">
+        <div class="card-title" role="heading" aria-level="2">Cardio <span class="gym-opcional">opcional</span></div>
+        <div id="gymCardio"></div>
       </div>
-
-      <div id="timerView" style="display: none;">
-        <div class="card">
-          <div class="timer-display">
-            <div class="timer-phase-label" id="timerPhaseLabel"></div>
-            <div class="timer-exercise-name" id="timerExerciseName"></div>
-            <div class="timer-circle-wrap">
-              <svg width="180" height="180" viewBox="0 0 180 180">
-                <circle class="timer-circle-bg" cx="90" cy="90" r="80"></circle>
-                <circle class="timer-circle-fg" id="timerCircleFg" cx="90" cy="90" r="80"
-                  stroke-dasharray="502.65" stroke-dashoffset="0"></circle>
-              </svg>
-              <div class="timer-number" id="timerNumber">0</div>
-            </div>
-            <div class="timer-controls">
-              <button class="timer-btn stop" id="stopBtn" aria-label="Detener"><span data-ico="parar"></span></button>
-              <button class="timer-btn play" id="pauseBtn" aria-label="Pausar"><span data-ico="pausa"></span></button>
-            </div>
-            <div class="timer-status" id="timerStatus"></div>
-          </div>
-        </div>
-      </div>
+      <button class="btn btn-green btn-full" id="gymGuardar">Guardar sesión</button>
     </section>
 
     <!-- ===== NUTRICIÓN ===== -->
@@ -578,7 +552,6 @@
   <script src="js/copia.js"></script>
   <script src="js/timer.js"></script>
   <script src="js/charts.js"></script>
-  <script src="js/workout.js"></script>
   <script src="js/semana.js"></script>
   <script src="js/analisis.js"></script>
   <script src="js/dashboard.js"></script>

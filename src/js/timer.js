@@ -4,14 +4,12 @@
 const Timer = (() => {
   let intervalId = null;
   let fin = 0;             // hora (ms) a la que llega a cero
-  let enPausa = 0;         // ms que quedaban al pausar
   let total = 0;
   let ultimo = null;       // último segundo pintado (para no repetirlo)
   let onTick = null;
   let onDone = null;
   let running = false;
 
-  const circumference = 2 * Math.PI * 80;
   const restante = () => Math.max(0, Math.ceil((fin - Date.now()) / 1000));
 
   function start(duration, tickCb, doneCb) {
@@ -30,7 +28,7 @@ const Timer = (() => {
     const r = restante();
     if (r !== ultimo) {
       ultimo = r;
-      if (onTick) onTick(r, total, circumference);
+      if (onTick) onTick(r, total);
     }
     if (r <= 0) {
       stop();
@@ -38,32 +36,13 @@ const Timer = (() => {
     }
   }
 
-  function pause() {
-    if (!running) return;
-    tick();                  // si con la pantalla apagada ya se había acabado el tiempo, se termina (antes se quedaba colgado)
-    if (!running) return;
-    enPausa = fin - Date.now();
-    clearInterval(intervalId);
-    intervalId = null;
-    running = false;
-  }
-
-  function resume() {
-    if (running || enPausa <= 0) return;
-    fin = Date.now() + enPausa;
-    enPausa = 0;
-    running = true;
-    intervalId = setInterval(tick, 1000);
-  }
-
   function stop() {
     clearInterval(intervalId);
     intervalId = null;
-    enPausa = 0;
     running = false;
   }
 
   function isRunning() { return running; }
 
-  return { start, pause, resume, stop, isRunning };
+  return { start, stop, isRunning };
 })();

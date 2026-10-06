@@ -24,13 +24,16 @@ function nextGymDay(sesiones = getSessions(), total = 5) {
 
 const CARDIOS_GYM = [['start', 'Cardio al empezar', 'cardio_start'], ['end', 'Cardio al acabar', 'cardio_end']];
 
+// Minutos como los da la máquina («10:38», min:seg) o a mano («10,6»); en el almacén siempre decimales (10.63)
+const minutosDe = t => { const r = /^(\d{1,3}):([0-5]\d)$/.exec(t); return r ? Math.round((+r[1] + +r[2] / 60) * 100) / 100 : Number(t); };
+
 // El cardio es opcional: sin nada escrito → null. «entrada» son los textos de las casillas (minutos, km, nota).
 // Mal escrito → { error }. Los mismos límites que valida copia.js al importar.
 function cardioDeCasillas(entrada) {
   const minutos = String(entrada.minutes ?? '').trim().replace(',', '.'), km = String(entrada.km ?? '').trim().replace(',', '.');
   const nota = String(entrada.note ?? '').trim();
   if (!minutos && !km && !nota) return null;
-  const m = minutos ? Number(minutos) : undefined, k = km ? Number(km) : undefined;
+  const m = minutos ? minutosDe(minutos) : undefined, k = km ? Number(km) : undefined;
   if (m !== undefined && !(m > 0 && m <= 600)) return { error: 'minutos entre 1 y 600' };
   if (k !== undefined && !(k >= 0 && k <= 200)) return { error: 'km entre 0 y 200' };
   if (nota.length > 120) return { error: 'la nota, hasta 120 letras' };
@@ -38,7 +41,9 @@ function cardioDeCasillas(entrada) {
 }
 
 // La sesión que se guarda a partir del borrador { day, done, cardio }, o { error }. Los ejercicios, en el orden del plan.
+// «fecha» es el día que la hiciste (por defecto hoy; un día pasado sirve para apuntar lo de ayer, nunca uno futuro).
 function sesionGym(plan, borrador, fecha = isoDate(new Date())) {
+  if (!esFechaIso(fecha) || fecha > isoDate(new Date())) return { error: 'Pon el día en que lo hiciste (hoy o uno anterior)' };
   const dia = plan.days.find(d => d.id === borrador.day);
   const hechos = dia.exercises.map(e => e.name).filter(n => borrador.done.includes(n));
   if (!hechos.length) return { error: 'Marca al menos un ejercicio' };
@@ -57,26 +62,39 @@ async function renderGym() {
   const lista = document.getElementById('gymEjercicios');
   if (!lista) return;
   let plan;
+  const primera = !planGym;
   try { plan = await cargarPlanGym(); } catch { lista.textContent = 'No se ha podido cargar el plan. Revisa la conexión y vuelve a abrir la app.'; return; }
-  updateDashboard();   // ya se conoce el ideal (días del plan): «Mi semana» y las casillas del plan lo enseñan
+  if (primera) updateDashboard();   // ya se conoce el ideal (días del plan): «Mi semana» y las casillas del plan lo enseñan
   const toca = nextGymDay(getSessions(), plan.days.length);
   const b = borradorGym() || { date: isoDate(new Date()), day: toca, done: [], cardio: {} };
   const guardar = () => Storage.set('gymDraft', b);
   const nuevo = (tag, clase, texto) => { const el = document.createElement(tag); if (clase) el.className = clase; if (texto !== undefined) el.textContent = texto; return el; };
 
   document.getElementById('gymDias').replaceChildren(...plan.days.map(d => {
-    const btn = nuevo('button', 'block-btn' + (d.id === b.day ? ' active' : ''), `Día ${d.id}`);
+    const btn = nuevo('button', 'gym-dia' + (d.id === b.day ? ' active' : ''), `Día ${d.id}`);
     btn.addEventListener('click', () => { if (d.id !== b.day) { b.day = d.id; b.done = []; guardar(); renderGym(); } });
     return btn;
   }));
   document.getElementById('gymInfo').textContent = b.day === toca ? `Hoy toca el día ${toca}` : `Hoy tocaba el día ${toca}`;
+  const fecha = document.getElementById('gymFecha');   // el día en que lo hiciste: hoy, o uno anterior para apuntar lo de ayer
+  fecha.max = isoDate(new Date());
+  fecha.value = b.when || fecha.max;
+  fecha.onchange = () => { if (fecha.value && fecha.value !== fecha.max) b.when = fecha.value; else delete b.when; guardar(); };
 
-  lista.replaceChildren(...plan.days.find(d => d.id === b.day).exercises.map(e => {
-    const fila = nuevo('label', 'gym-fila'), casilla = nuevo('input');
+  // Una tarjeta por ejercicio: círculo con su número, nombre con series × repeticiones y casilla redonda (verde al hacerlo)
+  lista.replaceChildren(...plan.days.find(d => d.id === b.day).exercises.map((e, i) => {
+    const hecha = b.done.includes(e.name);
+    const fila = nuevo('label', 'gym-ej' + (hecha ? ' hecho' : '')), num = nuevo('span', 'gym-ej-num', String(i + 1));
+    const cuerpo = nuevo('span', 'gym-ej-cuerpo'), casilla = nuevo('input', 'gym-check');
     casilla.type = 'checkbox';
-    casilla.checked = b.done.includes(e.name);
-    casilla.addEventListener('change', () => { b.done = casilla.checked ? [...b.done, e.name] : b.done.filter(n => n !== e.name); guardar(); });
-    fila.append(casilla, nuevo('span', 'gym-nombre', e.name), nuevo('span', 'gym-meta', `${e.sets || plan.sets}×${plan.reps}`));
+    casilla.checked = hecha;
+    casilla.addEventListener('change', () => {
+      b.done = casilla.checked ? [...b.done, e.name] : b.done.filter(n => n !== e.name);
+      fila.classList.toggle('hecho', casilla.checked);
+      guardar();
+    });
+    cuerpo.append(nuevo('span', 'gym-ej-nombre', e.name), nuevo('span', 'gym-ej-meta', `${e.sets || plan.sets} series × ${plan.reps} reps`));
+    fila.append(num, cuerpo, casilla);
     return fila;
   }));
 
@@ -91,17 +109,97 @@ async function renderGym() {
       el.addEventListener('input', () => { b.cardio[k] = { ...b.cardio[k], [nombre]: el.value }; guardar(); });
       return el;
     };
-    campos.append(campo('minutes', `minutos (plan: ${plan[clavePlan].minutes})`, 'decimal'), campo('km', 'km', 'decimal'), campo('note', 'nota (cinta, caminata…)', 'text'));
-    caja.append(nuevo('div', 'gym-cardio-tit', `${titulo} (opcional)`), campos);
+    campos.append(campo('minutes', 'min o min:seg', 'text'), campo('km', 'km', 'decimal'), campo('note', 'nota (cinta, caminata…)', 'text'));
+    const tit = nuevo('div', 'gym-cardio-tit', titulo);
+    tit.append(nuevo('span', 'gym-cardio-plan', `plan: ${plan[clavePlan].minutes} min`));
+    caja.append(tit, campos);
     return caja;
   }));
+  pintarDescanso();
 }
+
+/* ===== DESCANSO ENTRE SERIES: «Serie hecha» → cuenta atrás (data/gym.json, rest) con aviso al empezar y al acabar ===== */
+// Tonos: frecuencia (Hz), cuándo empieza y cuánto dura (s). Vibración: ms encendida/apagada (solo móvil; iPhone no la permite).
+function patronAviso(tipo) {
+  const t = (f, inicio, dura = 0.15) => ({ f, inicio, dura });
+  return {
+    descanso: { tonos: [t(440, 0), t(440, 0.25)], vibracion: [100, 80, 100] },   // 2 graves: descansa
+    ejercicio: { tonos: [t(880, 0)], vibracion: [200] },                          // 1 agudo: ¡a por la siguiente serie!
+  }[tipo];
+}
+
+let audio = null;   // se crea con el primer toque (al pulsar «Serie hecha»): los navegadores no dejan sonar antes
+function avisoCambio(tipo) {
+  const p = patronAviso(tipo);
+  if (!p) return;
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (Ctx) {
+      audio = audio || new Ctx();
+      if (audio.state === 'suspended') audio.resume();
+      const ahora = audio.currentTime;
+      for (const { f, inicio, dura } of p.tonos) {
+        const osc = audio.createOscillator(), vol = audio.createGain();
+        osc.frequency.value = f;
+        vol.gain.setValueAtTime(0.0001, ahora + inicio);
+        vol.gain.exponentialRampToValueAtTime(0.25, ahora + inicio + 0.02);   // sube y baja suave: sin chasquidos
+        vol.gain.exponentialRampToValueAtTime(0.0001, ahora + inicio + dura);
+        osc.connect(vol).connect(audio.destination);
+        osc.start(ahora + inicio);
+        osc.stop(ahora + inicio + dura + 0.05);
+      }
+    }
+    if (navigator.vibrate) navigator.vibrate(p.vibracion);
+  } catch { /* sin sonido ni vibración en este aparato: el descanso sigue igual */ }
+}
+
+// Pantalla encendida mientras descansas: el móvil no se apaga a mitad de la cuenta atrás.
+// Si el navegador no lo permite, no pasa nada. El sistema lo suelta al cambiar de app: se pide otra vez al volver.
+let pantallaEncendida = null;
+async function mantenerPantalla(encender) {
+  try {
+    if (encender && !pantallaEncendida && 'wakeLock' in navigator) {
+      pantallaEncendida = await navigator.wakeLock.request('screen');
+      pantallaEncendida.addEventListener('release', () => { pantallaEncendida = null; });
+    } else if (!encender && pantallaEncendida) {
+      await pantallaEncendida.release();
+    }
+  } catch { pantallaEncendida = null; }
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && Timer.isRunning()) mantenerPantalla(true);
+});
+
+// Cuánto del reloj queda lleno: entero parado; al descansar se va vaciando hasta el cero
+const rellenoReloj = (restante, total) => restante === undefined ? 1 : Math.max(0, Math.min(1, restante / total));
+const CIRCUNFERENCIA_RELOJ = 2 * Math.PI * 75;   // el radio del círculo de index.html
+function pintarDescanso(restante) {
+  const boton = document.getElementById('gymDescanso');
+  if (!boton || !planGym) return;
+  boton.classList.toggle('descansando', restante !== undefined);
+  document.getElementById('gymRelojNum').textContent = restante ?? planGym.rest;
+  document.getElementById('gymRelojTxt').textContent = restante === undefined ? 'Serie hecha: toca para descansar' : 'Descansando: toca para parar';
+  document.getElementById('gymRelojArco').style.strokeDashoffset = CIRCUNFERENCIA_RELOJ * (1 - rellenoReloj(restante, planGym.rest));
+}
+
+document.getElementById('gymDescanso')?.addEventListener('click', () => {
+  if (!planGym) return;
+  if (Timer.isRunning()) { Timer.stop(); mantenerPantalla(false); pintarDescanso(); return; }   // tocar durante el descanso lo para
+  mantenerPantalla(true);
+  avisoCambio('descanso');
+  Timer.start(planGym.rest, restante => pintarDescanso(restante), () => {
+    avisoCambio('ejercicio');
+    mantenerPantalla(false);
+    pintarDescanso();
+    showToast('¡Siguiente serie!');
+  });
+});
 
 function guardarGym() {
   if (!planGym) return;
   const b = borradorGym();
   if (!b) return showToast('Marca al menos un ejercicio');
-  const r = sesionGym(planGym, b);
+  const r = sesionGym(planGym, b, b.when);   // sin fecha elegida, hoy
   if (r.error) return showToast(r.error);
   const sesiones = Storage.get('sessions', []);
   sesiones.push(r);

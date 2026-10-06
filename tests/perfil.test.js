@@ -76,13 +76,12 @@ test('números escritos a la española: 95,6 vale lo mismo que 95.6', () => {
   assert.ok(Number.isNaN(num('')));
 });
 
-test('catálogo de salud: ids únicos y las molestias son las mismas que usa el catálogo de ejercicios', () => {
-  const h = leer('health.json'), ex = leer('exercises.json');
+test('catálogo de salud: ids únicos', () => {
+  const h = leer('health.json');
   for (const lista of ['goals', 'conditions', 'medications', 'levels', 'pains', 'diets', 'allergies']) {
     const ids = h[lista].map(x => x.id);
     assert.equal(new Set(ids).size, ids.length, lista);
   }
-  assert.deepEqual(h.pains.map(p => p.id).sort(), Object.keys(ex.avoid).sort());
 });
 
 test('fichas de Meds y Nutrición: sin perfil se ve todo (como antes); con perfil, solo lo que casa', () => {

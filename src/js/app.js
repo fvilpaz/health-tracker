@@ -9,13 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     initApp();
   }
-  // Los ejercicios se cargan aparte: antes la app entera esperaba a este archivo, y sin red no arrancaba
-  loadWorkoutData()
-    .then(() => { currentBlock = nextBlock(); renderWorkoutPhase('warmup'); })   // el Entreno abre con el bloque que toca
-    .catch(() => {
-      const lista = document.getElementById('exerciseList');
-      if (lista) lista.innerHTML = '<div class="meta-aviso">No se han podido cargar los ejercicios. Revisa la conexión y vuelve a abrir la app.</div>';
-    });
 });
 
 function initApp() {
@@ -157,10 +150,10 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js')
     .then(reg => reg.update())   // mira si hay versión nueva cada vez que se abre, también en la app instalada
     .catch(() => {});
-  // Versión nueva publicada: se recarga sola, salvo en mitad de un entreno (se cortaría el temporizador);
+  // Versión nueva publicada: se recarga sola, salvo en mitad de un descanso (se cortaría la cuenta atrás);
   // en ese caso la versión nueva sale la próxima vez que se abra.
   navigator.serviceWorker.addEventListener('message', e => {
-    if (e.data?.type === 'SW_UPDATED' && !workoutActive) window.location.reload();
+    if (e.data?.type === 'SW_UPDATED' && !Timer.isRunning()) window.location.reload();
   });
 }
 
