@@ -13,20 +13,20 @@ App web personal de salud y seguimiento de progreso. Sin servidor, sin backend, 
 | **Bienvenida y perfil** | Al empezar: «Soy nuevo» (cuestionario de 6 pasos: tú, medidas, objetivo, salud al estilo PAR-Q+ —enfermedades, medicación recetada y suplementos con sí/no, y tres preguntas de seguridad—, ejercicio y comida) o «Ya tengo mis datos» (carga tu copia). Botón «Mi perfil» arriba para cambiarlo. Todo lo que la app hace con tu perfil sale de `docs/FUENTES.md` (guías oficiales). Menores de 18: sin metas de peso |
 | **Dashboard** | Peso actual, perdido, IMC, cintura (donde va el cinturón), barriga (por el ombligo) y lo perdido de cada una, ratio cintura/altura, sesiones de esta semana, racha de **semanas cumplidas**, logros (primer entreno, semanas, 1-3-5-7-10 kg, 1-5-10 cm de cintura, peso objetivo, cintura/altura sana). El color dice cómo estás: el peso por el IMC de la OMS (🟢 normal · 🟡 sobrepeso o bajo peso · 🟠 obesidad I · 🔴 obesidad II+) y la cintura por cintura/altura (🟢/🟠/🔴); igual en el tracker semanal |
 | **🎯 Metas** | Metas a corto, medio y largo plazo **solo si hay sobrepeso**: salir de la obesidad (IMC 30), tu objetivo y la larga (IMC 27 con hígado graso o sin perfil; IMC 25 si no), solo las que estaban por encima de tu peso inicial; con peso sano, «mantenerlo». Historial de análisis: **subes el PDF del laboratorio y la app lee la fecha y los valores** (tú revisas y guardas), el PDF queda adjunto; desplegable por análisis con su PDF y la papelera, que borra el análisis entero (valores y PDF) y comparativa entre dos con sugerencias |
-| **Entrenamiento** | **Sesión del gimnasio** (arriba): la app solo **apunta** lo que haces, los vídeos y el plan están en la app del gimnasio. Plan de 5 días (`data/gym.json`: 3×15, 4 series en abdominales) que rotan: «Hoy toca el día N» es el siguiente al último que hiciste. Marcas los ejercicios hechos y, si quieres, el **cardio al empezar y al acabar** (minutos, km y nota, todo opcional; los minutos del plan salen solo como pista). Lo marcado se guarda como borrador (no va en la copia) y sobrevive a cerrar la app. Debajo siguen las fases guiadas anteriores: calentamiento de articulaciones (cuello, hombros, muñecas, tronco, cadera, rodillas, tobillos) → fuerza → calma, con temporizador SVG. La fuerza va en **bloques 1 / 2 / 3** que rotan solos: con perfil los arma la app con el catálogo (piernas, empuje, espalda y abdomen + un extra por cada zona que quieras trabajar; tu nivel —+50, embarazo o un «sí» de seguridad: nivel 1 sin saltos—; fuera lo que choca con tus molestias; equilibrio a partir de 65; vueltas según tus minutos); sin perfil, los de siempre. Cada ejercicio es un desplegable («1 Nombre ▾»; al abrirlo, la explicación, los tiempos y el vídeo). La duración de cada fase se calcula de los ejercicios (con el descanso entre vueltas a la vista). Un sonido distinto al empezar ejercicio, descanso o vuelta nueva, con vibración en el móvil. Avisos según tu perfil (embarazo, insulina, tensión, asma, seguridad). Solo cuenta el bloque **completo** |
+| **Entrenamiento** | **Sesión del gimnasio** (arriba): la app solo **apunta** lo que haces, los vídeos y el plan están en la app del gimnasio. Plan de 5 días (`data/gym.json`: 3×15, 4 series en abdominales) que rotan: «Hoy toca el día N» es el siguiente al último que hiciste. Marcas los ejercicios hechos y, si quieres, el **cardio al empezar y al acabar** (minutos, km y nota, todo opcional; los minutos del plan salen solo como pista). Lo marcado se guarda como borrador (no va en la copia) y sobrevive a cerrar la app. **Descanso entre series**: un reloj circular de 90 s (tócalo al acabar una serie) con 2 pitidos graves al empezar y 1 agudo al acabar, con vibración en el móvil (en iPhone no vibra), y la pantalla encendida mientras cuenta. Los minutos del cardio se pueden escribir como los da la máquina (`10:38`) o en decimales (`10,6`). Avisos según tu perfil (embarazo, insulina, tensión, asma, seguridad). El entreno guiado de calistenia en casa (bloques 1/2/3, calentamiento, calma y su catálogo de 59 ejercicios) se quitó el 6-oct-2026: se recupera con la etiqueta de git `calistenia-en-casa` |
 | **Nutrición** | Método del plato (ADA). **Sugerencias del día** (3 por comida, cambian cada día) y «Ver todas las opciones», según tu dieta (vegana, vegetariana, sin carne), tus alergias y «lo que no comes»; «Recomendaciones» de las guías (AESAN para todos; ADA, EASL, DASH, ESC/EAS, AND según tu perfil); «Alimentos OK» y «Limitar». Sin perfil, todo |
 | **Meds** | Solo las fichas de lo que marcas en tu perfil: Ebymect, diabetes tipo 2 (tus controles, ADA), hígado graso, Gilbert (NHS y StatPearls), tensión alta, colesterol, tiroides, asma, corazón y embarazo (NHS), señales de alerta y suplementos (omega 3 con la dosis de la AHA, creatina «antes, habla con tu médico» y los que hay que evitar). Ebymect incluye el aviso de **cetoacidosis** del prospecto. Sin nada marcado, te dice cómo añadirlo; sin perfil, todo |
 | **Progreso** | Registro de peso, cintura, barriga y altura; gráfica e historial de peso, y de cintura y barriga (con borrar); exportar e importar copia; **borrar todos mis datos** (solo los de esta app); **copias automáticas** (una por semana al abrir, las 5 últimas, con «Recuperar») |
 | **Semana** | **Mínimo** de sesiones por semana = los días de tu perfil (sin perfil, 3) e **ideal** = los días del plan del gimnasio (5), de lunes a domingo: aviso 🟢 vas bien o cumplida con el mínimo · 🟠 vas justo · 🔴 no llegas al mínimo o domingo con pendientes; los días con su «Día N» (o su bloque antiguo), qué día toca con botón para apuntarlo, y semanas anteriores en desplegables con los ejercicios y el cardio de cada sesión |
 
-## Plan de 12 semanas
+## Plan de N semanas (las de tu plan; 12 si no pones otra, de 4 a 24)
 
 Tracker semanal integrado con:
 - **Al terminar, aviso «¿empiezas otro?»**: el plan nuevo empieza hoy, conserva todo tu historial y su objetivo sale de tu peso de ese día
-- **Semana 1 = los mismos números con los que empiezas** (objetivo y real, tal cual); los objetivos bajan por igual desde la semana 2 y llegan a tu meta justo en la última. La leyenda (entrenos, peso, cintura, barriga) va encima de cada columna también en el móvil
+- **Semana 1 = los mismos números con los que empiezas** (objetivo y real, tal cual); los objetivos bajan por igual desde la semana 2 y llegan a tu meta justo en la última. La fecha de inicio y la duración se cambian en «Mi perfil» → «Tu plan»
 - **Objetivos a partir de tus datos**: con sobrepeso, peso inicial − 7 kg (nunca por debajo de IMC 25) y cintura inicial − 9 cm; con peso sano, «Mantenerme» o menores de 18, sin objetivos (nada escrito en el código)
-- **Peso, cintura y barriga reales de cada semana**: salen solos de lo que registras en Progreso (la última medida de esa semana; en verde si llegas al objetivo; la barriga, sin objetivo). Cada semana en tres líneas: la semana; «ENTRENOS» encima de sus 3 casillas; y PESO, CINTURA y BARRIGA, cada una encima de su recuadro (medido de 300 a 430 px y en PC: nada se descuadra)
-- **Casillas de entrenos** que se rellenan solas con los bloques hechos cada semana
+- **Peso, cintura y barriga reales de cada semana**: salen solos de lo que registras en Progreso (la última medida de esa semana; en verde si llegas al objetivo; la barriga, sin objetivo). Cada semana en dos partes: la cabecera, con «Semana N» y su fecha a la izquierda y PESO, CINTURA y BARRIGA a la derecha; y debajo «ENTRENOS» con una casilla por sesión del plan (medido a 320, 360 y 390 px y en PC; en 320 las medidas bajan a la línea de debajo)
+- **Casillas de entrenos** (5, las del plan): se rellenan solas con las sesiones hechas cada semana; las que pasan del mínimo (3), con borde discontinuo
 - **Sincronización automática** con el historial de peso y cintura
 
 ## Características técnicas
@@ -37,7 +37,6 @@ Tracker semanal integrado con:
 - **En el PC** (900 px o más) usa el 50 % del ancho (25 % de margen a cada lado; como mínimo 680 px) con cada tarjeta a todo el ancho, una debajo de otra (nada salta de sitio al abrir o cerrar algo), y el contenido de cada tarjeta en columnas automáticas (comidas del día, recomendaciones, alimentos, ejercicios, logros, metas, días de la semana): sin tamaños fijos por pantalla
 - **localStorage** — tus datos no salen de tu navegador
 - **GitHub Pages** — en cada subida pasan las pruebas y, si van bien, se publica `src/` sola
-- **Botón ▶ en ejercicios** — busca vídeos en YouTube al instante
 - **Iconos** (sin emojis de colores, se ven igual en cualquier móvil; quedan símbolos de texto como ✓ y ▶): pestañas, títulos, logros y estados con [Phosphor](https://phosphoricons.com) duotono (MIT); botones con trazos estilo [Lucide](https://lucide.dev) (ISC). Todo dentro de la app, en `src/js/iconos.js`
 - **PWA instalable** — en Chrome del móvil: menú ⋮ → *Instalar aplicación*. Funciona sin conexión y las actualizaciones llegan solas
 
@@ -57,27 +56,24 @@ health-tracker/
 │   │   ├── iconos.js           ← Todos los iconos (línea y duotono) en un solo sitio
 │   │   ├── storage.js          ← Wrapper de localStorage + esc() para pintar datos sin riesgo
 │   │   ├── copia.js            ← Exportar/importar la copia (validando lo que entra) y copias automáticas semanales
-│   │   ├── timer.js            ← Temporizador con círculo SVG
+│   │   ├── timer.js            ← Temporizador de cuenta atrás contra la hora real (el descanso entre series)
 │   │   ├── charts.js           ← Gráfica Chart.js para peso
-│   │   ├── workout.js          ← Fases del entreno, temporizador y sus botones
 │   │   ├── semana.js           ← Sesiones hechas (sessions: bloques antiguos y días del gimnasio), lunes de cada semana, aviso de color y racha
 │   │   ├── analisis.js         ← Análisis: catálogo de pruebas, tabla, comparativa, lector del PDF y PDF guardados
 │   │   ├── dashboard.js        ← Panel principal (tarjetas y semáforo) y metas
-│   │   ├── plan.js             ← Plan de 12 semanas (objetivos, lo real de cada semana y casillas)
+│   │   ├── plan.js             ← Plan de N semanas (objetivos, lo real de cada semana y casillas de entrenos)
 │   │   ├── medidas.js          ← Guardar peso, cintura, barriga y altura; historial de peso
 │   │   ├── logros.js           ← Logros
 │   │   ├── perfil.js           ← Cuestionario del perfil (6 pasos) y «Mi perfil»; menores sin metas de peso
-│   │   ├── rutina.js           ← Bloques según el perfil (catálogo, nivel, molestias, minutos, zonas) y objetivo semanal
+│   │   ├── rutina.js           ← Mínimo de sesiones por semana (los días del perfil) y avisos de Entreno según el perfil
 │   │   ├── nutricion.js        ← Comidas, «OK», «Limitar» y consejos según el perfil (data/nutrition.json)
-│   │   ├── gym.js              ← Sesión del gimnasio: día que toca, ejercicios hechos, cardio opcional y borrador
+│   │   ├── gym.js              ← Sesión del gimnasio: día que toca, ejercicios hechos, descanso entre series (reloj y sonidos), cardio opcional y borrador
 │   │   └── app.js              ← Arranque, bienvenida (nuevo o cargar tu copia), configuración inicial, tema, navegación, avisos e instalación
 │   └── data/
 │       ├── gym.json            ← Plan del gimnasio: 5 días con sus ejercicios, series, repeticiones y descanso
-│       ├── workouts.json       ← Calentamiento, vuelta a la calma y los bloques de siempre (sin perfil)
 │       ├── health.json         ← Catálogo del cuestionario: objetivos, enfermedades, medicación, suplementos, molestias, zonas, dieta, alergias
-│       ├── nutrition.json      ← Catálogo de comidas con sus ingredientes, dietas, alergias y consejos (reglas A1-A7)
-│       └── exercises.json      ← Catálogo de calistenia (59, 24 de preparación militar): zona, nivel 1-3, impacto, molestias, material, si se hace tumbado, versión fácil/difícil. Lo usa rutina.js
-├── tests/                  ← 123 pruebas (node --test): semana, gimnasio, copias y seguridad, copias automáticas, análisis y lector del PDF, temporizador, panel, metas y logros, perfil, rutina, nutrición, catálogos y estructura del HTML
+│       └── nutrition.json      ← Catálogo de comidas con sus ingredientes, dietas, alergias y consejos (reglas A1-A7)
+├── tests/                  ← 107 pruebas (node --test): semana, gimnasio, copias y seguridad, copias automáticas, análisis y lector del PDF, temporizador, panel, metas y logros, perfil, rutina, nutrición y estructura del HTML
 ├── perfiles/               ← Tus datos reales para importar en la app (en .gitignore: nunca se suben)
 ├── docs/PLAN.md            ← Plan de mejoras priorizado
 ├── docs/FUENTES.md         ← Fuente de verdad: reglas de ejercicio (E), comida (A) y fichas de Meds (M) con su guía oficial

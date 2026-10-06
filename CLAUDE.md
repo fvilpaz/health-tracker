@@ -1,12 +1,12 @@
 # Health Tracker — contexto para la IA
 
-App web instalable (PWA) de salud de Nando: peso, cintura, barriga, bloques de fuerza, plan de 12 semanas y análisis.
+App web instalable (PWA) de salud de Nando: peso, cintura, barriga, sesiones del gimnasio, plan de N semanas y análisis.
 Estática: HTML + CSS + JS sin compilar, datos en el `localStorage` del navegador. Web: https://fvilpaz.github.io/health-tracker/
 
 ## Decisiones que NO se tocan
 - **El repositorio es PÚBLICO.** Los datos de salud (pesos, análisis, PDF) viven SOLO en el navegador del usuario.
   Nunca datos reales en el código ni en las pruebas (solo inventados). Los PDF de análisis de Nando llevan su DNI: jamás al repo.
-- Entreno: Bloque 1/2/3 de fuerza, sin cardio. **Solo cuenta el bloque completo.** Objetivo: 3 bloques por semana (lunes-domingo).
+- Entreno: la app **solo apunta** lo que haces en el gimnasio (vídeos y plan están en la app del gimnasio). Plan de 5 días en rotación (`data/gym.json`); cuenta cada sesión con lo que marcaste. **Mínimo 3 por semana, ideal 5** (lunes-domingo; criterio de la entrenadora, sin fuente en `FUENTES.md`). El cardio es opcional y va dentro de la sesión. El entreno guiado de calistenia en casa (bloques, calentamiento, calma) se quitó el 6-oct-2026: se recupera con la etiqueta de git `calistenia-en-casa`.
 - Perfil (`profile`): cuestionario de 6 pasos con opciones del catálogo `src/data/health.json`, nunca texto que decida nada.
   **Menores de 18: sin metas de peso ni objetivo «perder peso»** (lo lleva el pediatra).
 - **Fuente de verdad: `docs/FUENTES.md`** (guías oficiales con enlace; reglas E1… de ejercicio y A1… de comida). Toda regla
@@ -32,4 +32,6 @@ Estática: HTML + CSS + JS sin compilar, datos en el `localStorage` del navegado
   Comprobar el informe real (`docs/audit-*.txt`): un filtro que no ve la auditoría también diría «verde».
 
 ## Pendiente
-Ver `docs/PLAN.md`. Del informe `Desktop\INFORME-health-tracker.md` quedan: decisiones A y B (F hecha el 29-sep) y probar el Wake Lock en el móvil.
+Ver `docs/PLAN.md`. Del informe `Desktop\INFORME-health-tracker.md` quedan: decisiones A y B (ambas de momento sin tocar).
+
+✅ **Wake Lock probado en móvil:** pantalla se mantiene activa durante entreno (29-sep, primer entreno).
