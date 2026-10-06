@@ -39,12 +39,17 @@
 
 ## 💡 Aparcado
 
+- **Tus vídeos de cada ejercicio dentro de la app** (6-oct-2026, idea de Nando: la app del gimnasio deja descargarlos) — botón «añadir vídeo» por ejercicio que guarda el archivo en el aparato (IndexedDB), nunca en el repo (es público y los vídeos son del gimnasio). Límites: pesan (10–50 MB cada uno × ~40 ejercicios), el navegador puede borrarlos si falta espacio, y no entran en Exportar/copias. Alternativa más ligera: guardar solo el enlace por ejercicio (ya está como «Vídeos elegidos y revisados por ejercicio» en P2)
 - **Cardio con cronómetro y GPS dentro de la app** (6-oct-2026, idea de Nando; de momento a mano) — «Iniciar» y que cuente minutos y km con la geolocalización del navegador (~100 líneas + pruebas). Límites: solo con la página abierta y la pantalla encendida (en iPhone peor), gasta batería, y sin GPS en la cinta. Guardar solo minutos y km, nunca el recorrido. Conectar con Google Fit: descartado (su API se retira; Health Connect no se lee desde una web)
 - **Varios perfiles en el mismo aparato** (29-sep-2026, decidido no hacerlo por ahora: YAGNI) — cada uno usa su móvil. Para un PC compartido ya sirven los **perfiles del navegador** (Brave/Chrome: cada uno su cajón, sin programar nada). Si algún día hace falta: prefijo por perfil en las claves + pasar los datos actuales al primero; inicial en un círculo de color, sin fotos.
 
 ---
 
 ## ✅ Completado
+
+**6-oct-2026**
+- [x] Sesión del gimnasio (`gym.js`, `data/gym.json`): plan de 5 días en rotación, ejercicios hechos y cardio opcional al empezar y al acabar; «Mi semana» con mínimo 3 e ideal 5. Las sesiones guardan `day` y `cardio`, y `copia.js` ya no los pierde al importar
+- [x] Fuera «Hábitos de hoy» (`habitos.js`, su tarjeta, estilos y pruebas): no aportaba. `habits` pasa a ser una clave vieja que la copia ignora sin contarla; los hábitos que tuvieras guardados siguen en tu navegador, sin usarse (las reglas H1–H4 de `docs/FUENTES.md` quedan sin uso)
 
 **29-sep-2026**
 - [x] Hábitos de hoy en el Panel: agua, pasos (30 min andando), verdura (3 raciones) y sueño (7 h), con metas de fuentes (H1–H4). Entran en la copia validados (solo fechas reales y hábitos conocidos). Sin «2 L de agua» ni «6.000 pasos»: no hay cifra oficial. El entreno no va aquí porque ya se cuenta solo
