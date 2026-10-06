@@ -55,6 +55,24 @@ test('un nombre de ejercicio con HTML entra (es texto libre) pero esc() lo deja 
   assert.equal(app.get('esc')(ataque), '&lt;img src=x onerror=&quot;alert(1)&quot;&gt;');
 });
 
+test('sesiones del gimnasio (día 1-5 y cardio opcional) entran enteras; lo roto, fuera y contado', () => {
+  const limpiar = crearApp().get('limpiarCopia');
+  const buena = [
+    { date: '2026-01-06', day: '4', exercises: ['Remo sentado con discos'], cardio: { start: { minutes: 10, km: 0.69, note: 'cinta' }, end: { minutes: 54, km: 5.06 } } },
+    { date: '2026-01-07', day: '5', exercises: ['Hack de piernas'] },   // sin cardio: vale
+  ];
+  const r = limpiar({ sessions: buena });
+  assert.equal(r.descartados, 0);
+  assert.deepEqual(plano(r.datos.sessions).map(s => [s.day, s.cardio]), [['4', buena[0].cardio], ['5', undefined]]);
+  const mala = limpiar({ sessions: [
+    { date: '2026-01-06', day: '6' }, { date: '2026-01-06', day: ataque },
+    { date: '2026-01-06', day: '1', cardio: { start: { minutes: ataque } } }, { date: '2026-01-06', day: '1', cardio: { end: { minutes: 30, km: -2 } } },
+    { date: '2026-01-06', day: '1', cardio: { start: { note: ataque.repeat(10) } } },
+  ] });
+  assert.equal(mala.datos.sessions.length, 0);
+  assert.equal(mala.descartados, 5);
+});
+
 test('esc: escapa los cinco caracteres peligrosos y convierte a texto lo que no lo es', () => {
   const esc = crearApp().get('esc');
   assert.equal(esc(`&<>"'`), '&amp;&lt;&gt;&quot;&#39;');
