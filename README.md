@@ -77,7 +77,7 @@ health-tracker/
 │       ├── workouts.json       ← Calentamiento, bloques de fuerza y vuelta a la calma de «En casa»
 │       ├── health.json         ← Catálogo del cuestionario: objetivos, enfermedades, medicación, suplementos, molestias, zonas, dieta, alergias
 │       └── nutrition.json      ← Catálogo de comidas con sus ingredientes, dietas, alergias y consejos (reglas A1-A7)
-├── tests/                  ← 167 pruebas (node --test): semana, gimnasio, modos de entreno, medidas, copias y seguridad, copias automáticas, análisis y lector del PDF, temporizador, panel, metas y logros, perfil, rutina, nutrición y estructura del HTML
+├── tests/                  ← 168 pruebas (node --test): semana, gimnasio, modos de entreno, medidas, copias y seguridad, copias automáticas, análisis y lector del PDF, temporizador, panel, metas y logros, perfil, rutina, nutrición y estructura del HTML
 ├── LICENSE                 ← Licencia MIT del código
 ├── perfiles/               ← Tus datos reales para importar en la app (en .gitignore: nunca se suben)
 ├── docs/PLAN.md            ← Plan de mejoras priorizado
