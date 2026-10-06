@@ -49,7 +49,7 @@
 
 **6-oct-2026**
 - [x] Sesión del gimnasio (`gym.js`, `data/gym.json`): plan de 5 días en rotación, ejercicios hechos y cardio opcional al empezar y al acabar; «Mi semana» con mínimo 3 e ideal 5. Las sesiones guardan `day` y `cardio`, y `copia.js` ya no los pierde al importar
-- [x] Historial de cintura y barriga: ya no se pisan en el móvil (antes, con 2 medidas por fila, «cintura» y «barriga» se pegaban a la fecha y a 320 px se fundían entre sí). Rejilla con el rótulo encima de cada valor; a ≤ 360 px la fecha pasa a su propia línea. Medido a 390 y 320 px
+- [x] Historial de cintura y barriga: ya no se pisan en el móvil (antes, con 2 medidas por fila, «cintura» y «barriga» se pegaban a la fecha y a 320 px se fundían entre sí). La fecha siempre arriba y debajo las dos medidas, con el rótulo encima de cada valor (decisión de Nando: se ve mejor que alineadas). Medido a 390, 360 y 320 px; el campo de fecha de las medidas y de la sesión ya no se corta en móviles estrechos
 - [x] «Registrar medidas» con campo de fecha (hoy o anterior, nunca futura): se pueden apuntar pesos, cinturas y barrigas de otros días; antes solo guardaban con la fecha de hoy
 - [x] Sesión del gimnasio con otro aspecto (tarjetas con su número, casilla redonda, reloj circular de descanso de 90 s con sonidos y vibración), fecha elegible para apuntar lo de ayer y minutos del cardio como los da la máquina (`10:38`)
 - [x] Panel: título «Plan de N semanas» con las del plan, 5 casillas de entreno y las medidas junto a «Semana N». «Mi perfil» → «Tu plan» cambia la fecha de inicio y la duración (antes solo se podían poner al crear el perfil)
