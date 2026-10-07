@@ -1,5 +1,7 @@
 # Health Tracker — contexto para la IA
 
+@MEMORY.md
+
 App web instalable (PWA) de salud de Nando: peso, cintura, barriga, sesiones del gimnasio, plan de N semanas y análisis.
 Estática: HTML + CSS + JS sin compilar, datos en el `localStorage` del navegador. Web: https://fvilpaz.github.io/health-tracker/
 
@@ -27,7 +29,7 @@ Estática: HTML + CSS + JS sin compilar, datos en el `localStorage` del navegado
 - Pruebas: `node --test tests/*.test.js` (sin dependencias). Probar en local: `python -m http.server` en la raíz y abrir `/src/`.
 - Cada subida a `main` pasa las pruebas y **publica la web sola** (`.github/workflows/pages.yml`, sella la versión de `src/sw.js`).
   Nando da permiso para subir en este proyecto. No hacer dos subidas seguidas sin esperar a que acabe la publicación.
-- Cambio de funcionalidad → README al día en el mismo cambio. Una prueba nueva debe fallar con el código viejo (control).
+- Cambio de funcionalidad → README y MEMORY.md al día en el mismo cambio. Una prueba nueva debe fallar con el código viejo (control).
 - Auditoría de seguridad: `audit` (nando-toolkit, en WSL); sus informes `docs/audit-*` no se suben.
   **Se pasa antes de CADA subida y, si no sale todo ✅, no se sube** (el 29-sep se subió dos veces sin mirarla).
   Comprobar el informe real (`docs/audit-*.txt`): un filtro que no ve la auditoría también diría «verde».
