@@ -35,6 +35,6 @@ Estática: HTML + CSS + JS sin compilar, datos en el `localStorage` del navegado
   Comprobar el informe real (`docs/audit-*.txt`): un filtro que no ve la auditoría también diría «verde».
 
 ## Pendiente
-Ver `docs/PLAN.md`. Del informe `Desktop\INFORME-health-tracker.md` quedaban las decisiones A y B (ambas sin tocar); ese archivo ya no está en el Escritorio (hay un `docs/INFORME-2026-09-28.md` sin seguimiento en el repo): comprobar si siguen vigentes.
+Ver `docs/PLAN.md`. Del informe de la auditoría del 28-sep quedaban las decisiones A y B (ambas sin tocar); está en `docs/INFORME-2026-09-28.md`, sin seguimiento a propósito: comprobar si siguen vigentes.
 
 ✅ **Wake Lock probado en móvil:** pantalla se mantiene activa durante entreno (29-sep, primer entreno).
