@@ -79,6 +79,16 @@ Pedida por Nando: tras cada diseño, buscar hallazgos, fallos, deuda técnica y 
 - **Verificación pendiente (nadie la ha hecho):** tema claro, 320 px, teclado real y los días 2-5 de las fichas y del cardio; sesiones antiguas reales de Nando con el cardio viejo.
 - **Contradicciones de documentación ya corregidas hoy:** README y CLAUDE.md decían que el entreno «En casa» estaba quitado; el PLAN daba por «sin commit» la bandeja de nandis (`cc1d7e2`, subida) y por pendientes cosas hechas (LICENSE, fichas, cardio).
 
+## 📌 Estado al reiniciar (7-oct-2026)
+- **Sin subir (esperan el «sí» de Nando):** commits `47536b8` y `805771b` (fichas con correcciones aprobadas). El push lo confirma Nando.
+- **Sin seguimiento:** `docs/INFORME-2026-09-28.md` — no se añade ni se toca.
+- **d4e1 (texto neutro, orden de alfa):** SIN HACER. Hay que cambiar sus pasos/Ojo en `ejercicios-gym.json`, quitar la expectativa «Espalda apoyada.» de `tests/fichas.test.js` y ajustar `sinOjo` (d4e1 pasa a tener Ojo). Sigue sin `revision`.
+- **«Cambia de pie»** (`sides: 2`, patrón nuevo en `patronAviso` de gym.js, sin tocar timer.js), **`esc()`/https en workout.js** y **editor del plan** (en ese orden): SIN HACER.
+- **Fotos tapadas:** A MEDIAS. Hechas las 56 (WebP ≤40 KB) y las hojas antes/después en `Escritorio\ejercicios-health-trackerntes-despues-01..07.png`; falta que Nando las apruebe una a una (hojas 3-7 sin revisar por mí; persona pequeña de fondo en la prensa). Tras su OK: copiar a `src/img/gym/`, `fotos` en las 28 fichas, CREDITS.md, tests (sin EXIF/XMP/ICC, ≤40 KB), auditoría, revisión de alfa, push solo con confirmación.
+- **Originales SIN tapar (fuera del repo, nunca entran en un commit):** carpeta temporal de la sesión `...\scratchpadotos-tarea\orig` (con `tapar_fotos.py`) y `Escritorio\ejercicios-health-trackerotos-preparadas\`.
+- **Rama local `backup-fotos-ejercicios`:** contiene fotos SIN tapar y dibujos Everkinetic. **No se sube jamás** (nada de `push --all/--mirror/--tags`). Borrarla solo si Nando lo pide.
+- **Limpieza de código zombi** (CSS sin uso: caution, gym-cardio-plan, safe, streak-badge, sup-dose, sup-warning; `weekStreak` solo en tests; código de imágenes dormido; campo `nota`): pendiente de un «sí» cerrado de Nando antes de borrar nada.
+
 ## 💡 Aparcado
 
 - **Orden tras el primer push** (6-oct-2026, decisión de la auditoría con el informe de UX; un cambio por vez, no tocar `renderGym`, `guardarGym` y el reloj en el mismo commit): a) CARDIO como bloque único (filas con minutos como texto para admitir «10:38», km con teclado decimal, etiqueta visible por campo, máx. 4, orden de hecho, quitar con confirmación en línea o «Deshacer», sin borrar al vaciar campos, guardar el formato nuevo como lista aceptando SIEMPRE start/end antiguos; el borrador `gymDraft` viejo se descarta por fecha); b) tarjeta del gym: quitar el `<label>` envolvente y casilla de 44 px separada; c) desplegable con ▶ y tip en el gym; d) descanso mostrado en la tarjeta; e) tarjeta común solo cuando casa y gym ya se parezcan; f) editor del plan y, mucho después, fotos propias. Descanso: híbrido solo en datos (`e.rest ?? plan.rest`) cuando exista el editor; no se unifica la interacción (en casa guía el temporizador; en el gym decides tú cuándo acaba la serie).
