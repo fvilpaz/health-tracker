@@ -50,15 +50,21 @@ test('correcciones aprobadas por Nando el 7-oct-2026: polea en d3e4, «recostado
 
 test('«Ojo» y revisión: todas llevan Ojo salvo las sin cambios; todas están revisadas menos d4e1 (pendiente), que conserva «sin revisar»', () => {
   const sinOjo = Object.entries(fichas).filter(([, f]) => !f.ojo).map(([r]) => r).sort();
-  assert.deepEqual(sinOjo, ['d2e7', 'd3e3', 'd3e5', 'd4e1', 'd4e4']);
+  assert.deepEqual(sinOjo, ['d2e7', 'd3e3', 'd3e5', 'd4e4']);
   const sinRevision = Object.entries(fichas).filter(([, f]) => !f.revision).map(([r]) => r);
   assert.deepEqual(sinRevision, ['d4e1']);
   for (const [ref, f] of Object.entries(fichas)) {
     if (!f.revision) continue;
     assert.match(f.revision, /^Revisado por Nando el 7-oct-2026 \(/, ref);
   }
-  assert.deepEqual(fichas.d4e1.pasos[0], 'Espalda apoyada.');
-  // las máquinas dicen que los ajustes cambian entre modelos (salvo d1e5, que ya lo dice con su propio Ojo; d4e1 sigue pendiente)
+  // d4e1: texto neutro (no se sabe el recorrido real de las asas); es texto nuevo que Nando no ha visto, sigue «sin revisar»
+  const d4e1 = JSON.stringify(fichas.d4e1);
+  assert.doesNotMatch(d4e1, /arriba|altura de los hombros/);
+  assert.match(fichas.d4e1.pasos[2], /recorrido de la máquina/);
+  assert.equal(fichas.d4e1.pasos.length, 4);
+  assert.match(fichas.d4e1.ojo, /espalda pegada al respaldo/);
+  assert.equal(fichas.d4e1.revision, undefined);
+  // las máquinas dicen que los ajustes cambian entre modelos (salvo d1e5, que ya lo dice con su propio Ojo; d4e1 usa texto neutro)
   for (const ref of ['d1e1', 'd1e3', 'd1e6', 'd2e1', 'd2e2', 'd2e5', 'd2e8', 'd3e1', 'd3e2', 'd3e6', 'd3e7', 'd4e2', 'd4e5', 'd4e7', 'd1e7']) {
     assert.match(porRef.get(ref).ojo, /Los ajustes cambian entre modelos/, ref);
   }

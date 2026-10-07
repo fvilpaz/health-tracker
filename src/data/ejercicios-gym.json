@@ -407,11 +407,12 @@
     "parte alta del pecho"
    ],
    "pasos": [
-    "Espalda apoyada.",
-    "Asiento a la altura que deje las asas a la altura de los hombros.",
-    "Empuja hacia arriba sin encoger los hombros.",
-    "Baja despacio."
+    "Ajusta el asiento según las indicaciones de la máquina y apoya bien la espalda en el respaldo.",
+    "Agarra las asas con las muñecas rectas y los hombros relajados, lejos de las orejas.",
+    "Empuja las asas siguiendo el recorrido de la máquina, sin bloquear los codos del todo.",
+    "Vuelve despacio, sin soltar la tensión de golpe."
    ],
+   "ojo": "Mantén la espalda pegada al respaldo y no encojas los hombros. Si notas molestia en el hombro, para.",
    "fotos": {
     "inicio": "d4e1-inicio.webp",
     "final": "d4e1-final.webp",

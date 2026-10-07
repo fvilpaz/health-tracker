@@ -35,7 +35,7 @@
 ## Fichas «Cómo se hace» (`src/data/ejercicios-gym.json`)
 - 27 fichas con «Revisado por Nando el 7-oct-2026» (redactadas con IA, criterio de entrenador, sin guía oficial; el manual NSCA
   de pago no se pudo contrastar). **d4e1** (press superior vertical) sigue «sin revisar»: se desconoce el recorrido real de las
-  asas; el texto neutro propuesto («empuja las asas siguiendo el recorrido de la máquina») está pendiente de aplicar.
+  asas; lleva texto neutro que vale para cualquier recorrido («empuja las asas siguiendo el recorrido de la máquina», con su «Ojo»), aplicado el 7-oct-2026.
 - Una prueba exige `ref` en los 38 ids de `gym.json` y las etiquetas correctas.
 
 ## Decisiones de Nando (no se deshacen sin hablarlo)
