@@ -85,6 +85,7 @@ health-tracker/
 ├── docs/PLAN.md            ← Plan de mejoras priorizado
 ├── docs/FUENTES.md         ← Fuente de verdad: reglas de ejercicio (E), comida (A) y fichas de Meds (M) con su guía oficial
 ├── CLAUDE.md               ← Contexto para la IA: reglas y decisiones que no se tocan
+├── MEMORY.md               ← Lo que no se deduce del código: producción, trampas, fotos, fichas y decisiones (se carga desde CLAUDE.md)
 └── .github/workflows/
     └── pages.yml           ← Pruebas y, si pasan, publica src/ en GitHub Pages
 ```
