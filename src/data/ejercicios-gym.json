@@ -1,5 +1,5 @@
 {
- "nota": "Fichas revisadas por Nando el 7-oct-2026 (excepto d4e1, pendiente) con el especialista de salud (IA, sin acceso al manual NSCA). Sin imágenes por ahora.",
+ "nota": "Fichas revisadas por Nando el 7-oct-2026 (excepto d4e1, pendiente) con el especialista de salud (IA, sin acceso al manual NSCA). Fotos con caras, logos y marcas difuminados (ver CREDITS.md).",
  "ejercicios": {
   "d1e1": {
    "trabaja": [
@@ -14,7 +14,13 @@
     "Vuelve despacio hasta notar el pecho estirado, sin soltar de golpe."
    ],
    "ojo": "No despegues la espalda del respaldo ni subas los hombros. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d1e1-inicio.webp",
+    "final": "d1e1-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db",
+    "aproximada": true
+   }
   },
   "d1e2": {
    "trabaja": [
@@ -27,7 +33,12 @@
     "Sube en arco juntando las mancuernas."
    ],
    "ojo": "Si notas molestia en el hombro, no bajes tanto: para en la línea del pecho.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d1e2-inicio.webp",
+    "final": "d1e2-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db"
+   }
   },
   "d1e3": {
    "trabaja": [
@@ -41,7 +52,12 @@
     "Baja despacio."
    ],
    "ojo": "Mantén los codos algo por delante del cuerpo. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d1e3-inicio.webp",
+    "final": "d1e3-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db"
+   }
   },
   "d1e4": {
    "trabaja": [
@@ -53,7 +69,12 @@
     "Baja despacio, sin balancear el cuerpo."
    ],
    "ojo": "Si necesitas balancearte, baja la carga.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d1e4-inicio.webp",
+    "final": "d1e4-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db"
+   }
   },
   "d1e5": {
    "trabaja": [
@@ -65,7 +86,12 @@
     "Baja despacio."
    ],
    "ojo": "Ajusta el respaldo y el rodillo según las indicaciones de la máquina.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d1e5-inicio.webp",
+    "final": "d1e5-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db"
+   }
   },
   "d1e6": {
    "trabaja": [
@@ -80,7 +106,13 @@
     "Mantén las rodillas en línea con los pies."
    ],
    "ojo": "Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d1e6-inicio.webp",
+    "final": "d1e6-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db",
+    "aproximada": true
+   }
   },
   "d1e7": {
    "trabaja": [
@@ -92,7 +124,12 @@
     "Vuelve despacio, sin impulso."
    ],
    "ojo": "No tires del cuello con las manos. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d1e7-inicio.webp",
+    "final": "d1e7-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db"
+   }
   },
   "d2e1": {
    "trabaja": [
@@ -105,7 +142,12 @@
     "Sube controlando, sin que los hombros se eleven."
    ],
    "ojo": "Lleva la barra por delante de la cabeza, no por detrás de la nuca. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d2e1-inicio.webp",
+    "final": "d2e1-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db"
+   }
   },
   "d2e2": {
    "trabaja": [
@@ -119,7 +161,13 @@
     "Vuelve estirando despacio."
    ],
    "ojo": "Mantén el pecho abierto y no encojas los hombros. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d2e2-inicio.webp",
+    "final": "d2e2-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db",
+    "aproximada": true
+   }
   },
   "d2e3": {
    "trabaja": [
@@ -131,7 +179,12 @@
     "Baja despacio."
    ],
    "ojo": "Si necesitas balancearte, baja la carga.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d2e3-inicio.webp",
+    "final": "d2e3-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db"
+   }
   },
   "d2e4": {
    "trabaja": [
@@ -143,7 +196,12 @@
     "Sube controlando."
    ],
    "ojo": "Mantén el tronco quieto; si se mueve, la carga es alta.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d2e4-inicio.webp",
+    "final": "d2e4-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db"
+   }
   },
   "d2e5": {
    "trabaja": [
@@ -156,7 +214,12 @@
     "Sube empujando con todo el pie, sin bloquear las rodillas arriba."
    ],
    "ojo": "Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d2e5-inicio.webp",
+    "final": "d2e5-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db"
+   }
   },
   "d2e6": {
    "trabaja": [
@@ -168,7 +231,12 @@
     "Baja despacio sin levantar la cadera."
    ],
    "ojo": "Mantén la zona lumbar plana y las rodillas alineadas con el eje.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d2e6-inicio.webp",
+    "final": "d2e6-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db"
+   }
   },
   "d2e7": {
    "trabaja": [
@@ -179,7 +247,12 @@
     "Sube lo más alto que puedas, con una pausa breve arriba.",
     "Baja despacio hasta notar el estiramiento."
    ],
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d2e7-inicio.webp",
+    "final": "d2e7-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db"
+   }
   },
   "d2e8": {
    "trabaja": [
@@ -193,7 +266,13 @@
     "Sube hasta alinear el cuerpo, sin arquear de más."
    ],
    "ojo": "Mueve desde la cadera y no sacudas. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d2e8-inicio.webp",
+    "final": "d2e8-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db",
+    "aproximada": true
+   }
   },
   "d3e1": {
    "trabaja": [
@@ -206,7 +285,12 @@
     "Vuelve despacio."
    ],
    "ojo": "No lleves los codos más atrás de la línea del cuerpo. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d3e1-inicio.webp",
+    "final": "d3e1-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db"
+   }
   },
   "d3e2": {
    "trabaja": [
@@ -219,7 +303,13 @@
     "Estira despacio sin inclinarte hacia delante."
    ],
    "ojo": "Mantén el pecho abierto y no encojas los hombros. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d3e2-inicio.webp",
+    "final": "d3e2-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db",
+    "aproximada": true
+   }
   },
   "d3e3": {
    "trabaja": [
@@ -231,7 +321,12 @@
     "Empuja hacia arriba sin arquear la espalda.",
     "Baja despacio hasta la altura de las orejas."
    ],
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d3e3-inicio.webp",
+    "final": "d3e3-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db"
+   }
   },
   "d3e4": {
    "trabaja": [
@@ -244,7 +339,13 @@
     "Baja despacio, sin soltar la tensión de golpe."
    ],
    "ojo": "Si necesitas balancear el cuerpo para subir, baja la carga. Mantén las muñecas rectas y los hombros relajados.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d3e4-inicio.webp",
+    "final": "d3e4-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db",
+    "aproximada": true
+   }
   },
   "d3e5": {
    "trabaja": [
@@ -255,7 +356,12 @@
     "Baja detrás de la cabeza solo doblando los codos, manteniéndolos cerca de la cabeza.",
     "Estira controlando, sin arquear la espalda."
    ],
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d3e5-inicio.webp",
+    "final": "d3e5-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db"
+   }
   },
   "d3e6": {
    "trabaja": [
@@ -267,7 +373,12 @@
     "Vuelve despacio."
    ],
    "ojo": "Mantén la zona lumbar plana y las rodillas alineadas con el eje. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d3e6-inicio.webp",
+    "final": "d3e6-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db"
+   }
   },
   "d3e7": {
    "trabaja": [
@@ -281,7 +392,13 @@
     "Empuja sin bloquear las rodillas del todo, con las rodillas en línea con los pies."
    ],
    "ojo": "Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d3e7-inicio.webp",
+    "final": "d3e7-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db",
+    "aproximada": true
+   }
   },
   "d4e1": {
    "trabaja": [
@@ -294,7 +411,13 @@
     "Asiento a la altura que deje las asas a la altura de los hombros.",
     "Empuja hacia arriba sin encoger los hombros.",
     "Baja despacio."
-   ]
+   ],
+   "fotos": {
+    "inicio": "d4e1-inicio.webp",
+    "final": "d4e1-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db",
+    "aproximada": true
+   }
   },
   "d4e2": {
    "trabaja": [
@@ -307,7 +430,13 @@
     "Vuelve estirando despacio."
    ],
    "ojo": "Mantén el pecho abierto y no encojas los hombros. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d4e2-inicio.webp",
+    "final": "d4e2-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db",
+    "aproximada": true
+   }
   },
   "d4e3": {
    "trabaja": [
@@ -319,7 +448,12 @@
     "Baja despacio, sin balancear el cuerpo."
    ],
    "ojo": "Si necesitas balancearte, baja la carga.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d4e3-inicio.webp",
+    "final": "d4e3-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db"
+   }
   },
   "d4e4": {
    "trabaja": [
@@ -330,7 +464,12 @@
     "Sube sin balancear.",
     "Baja controlando."
    ],
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d4e4-inicio.webp",
+    "final": "d4e4-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db"
+   }
   },
   "d4e5": {
    "trabaja": [
@@ -343,7 +482,13 @@
     "Sube despacio."
    ],
    "ojo": "Mantén los hombros lejos de las orejas. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d4e5-inicio.webp",
+    "final": "d4e5-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db",
+    "aproximada": true
+   }
   },
   "d4e7": {
    "trabaja": [
@@ -355,7 +500,13 @@
     "Vuelve despacio, sin impulso."
    ],
    "ojo": "No tires del cuello con las manos. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
-   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+   "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)",
+   "fotos": {
+    "inicio": "d4e7-inicio.webp",
+    "final": "d4e7-final.webp",
+    "fuente": "https://github.com/yuhonas/free-exercise-db",
+    "aproximada": true
+   }
   }
  }
 }

@@ -1,6 +1,5 @@
 /* eslint-disable security/detect-non-literal-fs-filename -- las pruebas leen archivos del propio repositorio (revisado 6-oct-2026) */
 // Las fichas «Cómo se hace» (src/data/ejercicios-gym.json) y su unión con el plan (src/data/gym.json, campo «ref»).
-// Por ahora SIN imágenes: solo descripción (Trabaja y pasos). Cuando haya imágenes, se prueban aquí.
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -66,9 +65,30 @@ test('«Ojo» y revisión: todas llevan Ojo salvo las sin cambios; todas están 
   assert.match(fichas.d1e5.ojo, /indicaciones de la máquina/);
 });
 
-test('por ahora ninguna ficha lleva imágenes y el repositorio no trae ninguna', () => {
-  assert.ok(Object.values(fichas).every(f => f.fotos === undefined));
-  assert.equal(fs.existsSync(path.join(RAIZ, 'src', 'img')), false);
+test('las 28 fichas llevan sus dos fotos (WebP ≤40 KB, sin metadatos), cada foto se usa y está acreditada', () => {
+  const carpeta = path.join(RAIZ, 'src', 'img', 'gym');
+  const enDisco = fs.readdirSync(carpeta).sort();
+  const usadas = Object.values(fichas).flatMap(f => [f.fotos.inicio, f.fotos.final]).sort();
+  assert.deepEqual(usadas, enDisco);
+  assert.equal(enDisco.length, 56);
+  for (const [ref, f] of Object.entries(fichas)) {
+    assert.deepEqual([f.fotos.inicio, f.fotos.final], [`${ref}-inicio.webp`, `${ref}-final.webp`]);
+    assert.equal(f.fotos.fuente, 'https://github.com/yuhonas/free-exercise-db', ref);
+  }
+  for (const nombre of enDisco) {
+    const b = fs.readFileSync(path.join(carpeta, nombre));
+    assert.ok(b.length <= 40 * 1024, `${nombre} pesa demasiado`);
+    assert.equal(b.toString('latin1', 0, 4), 'RIFF', nombre);
+    assert.equal(b.toString('latin1', 8, 12), 'WEBP', nombre);
+    // trozos RIFF: ni EXIF ni XMP ni perfil de color
+    const trozos = [];
+    for (let i = 12; i + 8 <= b.length; i += 8 + b.readUInt32LE(i + 4) + (b.readUInt32LE(i + 4) % 2)) trozos.push(b.toString('latin1', i, i + 4));
+    assert.ok(!trozos.some(t => ['EXIF', 'XMP ', 'ICCP'].includes(t)), `${nombre}: metadatos ${trozos}`);
+  }
+  assert.ok(!fs.existsSync(path.join(RAIZ, 'src', 'img', 'everkinetic')));
+  const creditos = fs.readFileSync(path.join(RAIZ, 'CREDITS.md'), 'utf8');
+  assert.match(creditos, /free-exercise-db/);
+  assert.match(creditos, /no elimina el\s+derecho de autor/);
 });
 
 test('el repositorio declara la licencia del código (MIT)', () => {
