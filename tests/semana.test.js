@@ -146,3 +146,26 @@ test('lápiz ✎ por sesión (guardadas, no las antiguas): abre un panel con «D
   quitar(0, '2000-01-01'); quitar(0, '2000-01-01');   // fecha que no es la suya: no se toca nada
   assert.equal(S.get('sessions').length, 1);
 });
+
+test('tocar una sesión hecha en «Mi semana» abre sus ejercicios y su cardio; volver a tocarla los esconde; todo escapado', () => {
+  const app = crearApp(), S = app.get('Storage'), iso = app.get('isoDate');
+  const els = { semanaActual: {}, semanaHistorial: {} }, original = app.get('document').getElementById;
+  app.get('document').getElementById = id => els[id] || original(id);
+  const hoy = iso(new Date());
+  S.set('sessions', [{ date: hoy, block: null, day: '1', exercises: ['Press de banca placas', '<img src=x onerror=alert(1)>'], cardio: [{ minutes: 10, km: 1.06, note: 'Cinta' }] }]);
+  const render = () => { app.get('renderSemana')(); return els.semanaActual.innerHTML; };
+  let html = render();
+  assert.match(html, new RegExp(`data-ver="${hoy}"`), 'el día hecho se puede tocar');
+  assert.match(html, /aria-expanded="false"/);
+  assert.doesNotMatch(html, /Press de banca placas/, 'cerrado: no se ven los ejercicios');
+  app.get('pulsarVerDia')(hoy);
+  html = els.semanaActual.innerHTML;
+  assert.match(html, /Press de banca placas · &lt;img src=x onerror=alert\(1\)&gt;/, 'abierto: los ejercicios, escapados');
+  assert.match(html, /Cardio · 10 min · 1\.06 km · Cinta/);
+  assert.doesNotMatch(html, /<img src=x/, 'nada de HTML suelto');
+  app.get('pulsarVerDia')(hoy);   // el mismo toque lo cierra
+  assert.doesNotMatch(els.semanaActual.innerHTML, /Press de banca placas/);
+  // un día sin sesión no tiene botón para tocar
+  assert.equal((html.match(/data-ver=/g) || []).length, 1);
+});
+

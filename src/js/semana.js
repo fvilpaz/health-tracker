@@ -97,9 +97,13 @@ function renderSemana() {
     `<div class="semana-aviso ${est.color}">${est.texto}</div>` +
     '<div class="semana-dias">' + [0, 1, 2, 3, 4, 5, 6].map(n => {
       const f = isoDate(dia(lunes, n)), delDia = sesiones.filter(s => s.date === f), esHoy = f === isoDate(hoy);
-      return `<div class="semana-dia${esHoy ? ' hoy' : ''}${delDia.length ? ' hecho' : ''}">` +
+      const abierto = verDia === f || delDia.some(s => editandoSesion >= 0 && posicion(s) === editandoSesion);   // con detalle o panel a la vista: ocupa toda la fila
+      return `<div class="semana-dia${esHoy ? ' hoy' : ''}${delDia.length ? ' hecho' : ''}${abierto ? ' abierto' : ''}">` +
         `<span class="semana-letra">${'LMXJVSD'[n]}<small>${dia(lunes, n).getDate()}</small></span>` +
-        `<span>${delDia.length ? delDia.map(s => estado('ok') + ' ' + etiqueta(s) + ' ' + lapiz(s) + panel(s)).join('<br>') : esHoy ? 'hoy' : ''}</span></div>`;
+        // Tocar la sesión hecha abre sus ejercicios y su cardio (el lápiz ✎ aparte: cambiar el día o quitarla)
+        `<span class="semana-sesiones">${delDia.length ? delDia.map(s => '<div class="semana-ses">' +
+          `<button type="button" class="semana-ver" data-ver="${f}" aria-expanded="${verDia === f}">${estado('ok')} ${etiqueta(s)} <span class="semana-flecha" aria-hidden="true">▾</span></button>` +
+          lapiz(s) + panel(s) + (verDia === f ? detalleSesion(s) : '') + '</div>').join('') : esHoy ? 'hoy' : ''}</span></div>`;
     }).join('') + '</div>' +
     (est.hechos < ideal ? `<button class="btn btn-green btn-full" id="semanaEntrenar">${ICONO.jugar}Apuntar sesión · toca el día ${nextGymDay()}</button>` : '') +
     '<div class="meta-aviso">El cardio se apunta dentro de cada sesión. Caminar suelto no cuenta aquí (va en los consejos).</div>';
@@ -132,6 +136,17 @@ function renderSemana() {
   historial.innerHTML = agruparSemanas(semanas.map(detalle)).map((a, i) => grupo(a.anio, plural(a.meses.reduce((n, m) => n + m.semanas.length, 0), 'semana', 'semanas'),
     a.meses.map((m, j) => grupo(mesNombre(m.mes), `${plural(m.semanas.length, 'semana', 'semanas')} · ${plural(m.semanas.filter(s => s.ok).length, 'cumplida', 'cumplidas')}`,
       m.semanas.map(htmlSemana).join(''), i === 0 && j === 0)).join(''), i === 0)).join('');
+}
+
+// Lo que hiciste en una sesión: ejercicios y cardio (todo escapado: viene del almacén o de una copia importada)
+let verDia = '';   // día (aaaa-mm-dd) de «Mi semana» con sus ejercicios a la vista
+const detalleSesion = s => '<div class="semana-detalle">' +
+  (s.exercises && s.exercises.length ? `<div class="lab-fila-que">${s.exercises.map(esc).join(' · ')}</div>` : '<div class="meta-aviso">Sin ejercicios apuntados.</div>') +
+  (textoCardio(s.cardio) ? `<div class="lab-fila-que">Cardio · ${textoCardio(s.cardio)}</div>` : '') + '</div>';
+
+function pulsarVerDia(fecha) {
+  verDia = verDia === fecha ? '' : fecha;   // el mismo toque lo abre y lo cierra
+  renderSemana();
 }
 
 // Editar una sesión guardada con el lápiz ✎: cambiar el día o quitarla. Quitar pide confirmar (en el propio botón, 6 s) y la segunda pulsación la quita.
@@ -182,9 +197,10 @@ function pulsarQuitarSesion(i, fecha) {
 
 for (const id of ['semanaActual', 'semanaHistorial']) {
   document.getElementById(id)?.addEventListener('click', e => {
-    const b = e.target.closest('[data-editar], [data-quitar], [data-guardar-dia]');
+    const b = e.target.closest('[data-ver], [data-editar], [data-quitar], [data-guardar-dia]');
     if (!b) return;
-    if (b.dataset.editar !== undefined) pulsarEditarSesion(Number(b.dataset.editar));
+    if (b.dataset.ver !== undefined) pulsarVerDia(b.dataset.ver);
+    else if (b.dataset.editar !== undefined) pulsarEditarSesion(Number(b.dataset.editar));
     else if (b.dataset.quitar !== undefined) pulsarQuitarSesion(Number(b.dataset.quitar), b.dataset.fecha);
     else pulsarGuardarDia(Number(b.dataset.guardarDia), b.dataset.fecha, b.closest('.semana-editor').querySelector('.semana-fecha').value);
   });

@@ -40,6 +40,7 @@
 - ✅ **Semanas anteriores por año → mes** y **«Quitar» sesión** (doble toque; pedido el 4-nov-2026 porque una sesión apuntada sin querer no se podía borrar).
 - ✅ **Lápiz para cambiar el tiempo del reloj** (pedido el 4-nov-2026): `planConPausa`, de 10 a 600 s, para todos los ejercicios (Nando: el reloj universal le vale, NO quiere pausa por ejercicio).
 - ✅ **Lápiz ✎ por sesión** (pedido el 4-nov-2026): abre un panel con «Día» (cambiar la fecha, hoy o anterior; la lista queda ordenada) y «Quitar sesión» (doble toque). Así «Quitar» ya no está pegado al texto.
+- ✅ **Tocar una sesión hecha en «Mi semana» abre sus ejercicios y su cardio** (pedido el 4-nov-2026; el día abierto ocupa toda la fila en escritorio).
 - 🔲 **Editar los ejercicios y el cardio de una sesión ya guardada**: cargarla en el formulario de Entreno y que al guardar sustituya a la original (hoy solo se cambia el día o se quita y se vuelve a apuntar).
 - 🔲 **Paso 3:** tabla de series por ejercicio (Repite, Pausa) y el reloj usa la pausa de cada ejercicio. **Pedido el 4-nov-2026:** poder ajustar la pausa en tiempo real (con el reloj en marcha).
 - 🔲 **Paso 4:** apuntar los kg al entrenar (campo opcional en la sesión; lo viejo se sigue leyendo; validar en `copia.js`).
