@@ -180,10 +180,7 @@
         <div class="gym-lista" id="gymEjercicios"></div>
       </div>
       <div class="card">
-        <div class="card-cab">
-          <div class="card-title" role="heading" aria-level="2">Descanso entre series</div>
-          <button class="btn-icono" type="button" id="gymPausaEditar" aria-expanded="false" aria-controls="gymPausaEditor" aria-label="Cambiar el tiempo de descanso" title="Cambiar el tiempo">✎</button>
-        </div>
+        <div class="card-title" role="heading" aria-level="2">Descanso entre series</div>
         <button class="gym-reloj" id="gymDescanso" aria-live="off">
           <svg width="170" height="170" viewBox="0 0 170 170" aria-hidden="true">
             <circle class="gym-reloj-fondo" cx="85" cy="85" r="75"></circle>
@@ -193,6 +190,7 @@
           <span class="gym-reloj-txt" id="gymRelojTxt"></span>
         </button>
         <p class="modos-estado" id="gymRelojAviso" role="status"></p>
+        <button class="btn-icono" type="button" id="gymPausaEditar" aria-expanded="false" aria-controls="gymPausaEditor" aria-label="Cambiar el tiempo de descanso" title="Cambiar el tiempo">✎</button>
         <div class="pausa-editor" id="gymPausaEditor" hidden>
           <input type="number" class="cons-num" id="gymPausaNum" min="10" max="600" step="5" inputmode="numeric" aria-label="Segundos de descanso">
           <span>segundos</span>
