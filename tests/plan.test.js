@@ -166,3 +166,27 @@ test('un plan sin días no rompe: sesionGym de un día que ya no existe devuelve
   const r = plano(app.get('sesionGym')({ days: [{ id: '1', exercises: [{ name: 'A' }] }] }, { day: '4', done: ['A'], cardio: [] }, '2026-11-04'));
   assert.match(r.error, /ya no está/);
 });
+
+test('planConPausa: el tiempo del reloj universal, de 10 a 600 s enteros; lo demás se rechaza y no toca el plan', () => {
+  const app = crearApp(), pausa = F(app, 'planConPausa'), limpio = F(app, 'limpiarPlan');
+  const original = JSON.stringify(plan);
+  for (const s of [10, 45, 60, 90, 600]) {
+    const r = pausa(plan, s);
+    assert.equal(r.plan.rest, s);
+    assert.deepEqual(limpio(r.plan), r.plan, 'el plan con la pausa nueva sigue siendo válido (se guarda y se importa)');
+  }
+  for (const malo of [9, 601, 0, -5, 45.5, NaN, Infinity, '60', null, undefined]) assert.match(pausa(plan, malo).error, /10 a 600/, String(malo));
+  assert.equal(JSON.stringify(plan), original, 'no cambia el plan que recibe');
+  assert.equal(pausa(plan, 90).plan.weeks.length, 8, 'lo demás del plan igual');
+});
+
+test('la pausa editada se guarda en el plan y el reloj la usa; Number("") y texto raro no valen', async () => {
+  const app = crearApp();
+  const nuevo = F(app, 'planConPausa')(plan, 75).plan;
+  app.get('Storage').set('gymPlan', nuevo);
+  app.get('fetch = async () => { throw new Error("no debería pedir plan.json"); }');
+  await app.get('cargarPlanGym')();
+  assert.equal(plano(app.get('planGym')).rest, 75);
+  for (const texto of ['', ' ', 'abc', '6e1x']) assert.ok(F(app, 'planConPausa')(plan, Number(texto)).error, JSON.stringify(texto));
+});
+
