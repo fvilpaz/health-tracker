@@ -925,7 +925,8 @@ table.labs td.fuera { color: var(--red); }
 .cons-lista { list-style: none; margin: 0 0 10px; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .cons-fila { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); }
 .cons-nombre { font-size: 0.85rem; }
-.cons-quitar, .cons-quitar-dia { min-height: 36px; padding: 4px 12px; font: inherit; font-size: 0.75rem; color: var(--text-muted); background: transparent; border: 1px solid var(--border); border-radius: 99px; cursor: pointer; }
+.cons-quitar, .cons-quitar-dia, .semana-quitar { min-height: 36px; padding: 4px 12px; font: inherit; font-size: 0.75rem; color: var(--text-muted); background: transparent; border: 1px solid var(--border); border-radius: 99px; cursor: pointer; }
 .cons-anadir { display: flex; gap: 8px; margin-bottom: 8px; }
 .cons-mas { min-height: 44px; padding: 8px 14px; font-size: 0.85rem; white-space: nowrap; }
 .cons-nuevo { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.semana-quitar { margin-left: 8px; min-height: 32px; vertical-align: middle; }
