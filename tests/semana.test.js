@@ -69,3 +69,15 @@ test('weekStreak y completedWeeks: semanas cumplidas (3 bloques), seguidas hacia
   S.set('sessions', sesiones(...cumplida('2026-09-07'), ...cumplida('2026-09-21')));   // hueco la del 14
   assert.equal(app.get('weekStreak')(dia('2026-09-30')), 1);
 });
+
+test('agruparSemanas: año → mes según el LUNES de cada semana (26 oct–1 nov va en octubre), de la más reciente a la más antigua', () => {
+  const app = crearApp(), agrupar = app.get('agruparSemanas');
+  const semana = iso => ({ l: new Date(iso + 'T12:00:00'), id: iso });
+  const lista = ['2027-01-04', '2026-12-28', '2026-11-02', '2026-10-26', '2026-10-19'].map(semana);
+  const r = JSON.parse(JSON.stringify(agrupar(lista).map(a => [a.anio, a.meses.map(m => [m.mes, m.semanas.map(s => s.id)])])));
+  assert.deepEqual(r, [
+    [2027, [[0, ['2027-01-04']]]],
+    [2026, [[11, ['2026-12-28']], [10, ['2026-11-02']], [9, ['2026-10-26', '2026-10-19']]]],
+  ]);
+  assert.deepEqual(JSON.parse(JSON.stringify(agrupar([]))), []);
+});
