@@ -1,6 +1,8 @@
 # Créditos
 
-## Fotos de los ejercicios del gimnasio (`src/img/gym/`)
+## Fotos de los ejercicios del gimnasio (`src/img/gym/`) — QUITADAS el 4-nov-2026
+
+Ya no están en la app ni en el repo actual; siguen en el historial de git. Esto es de dónde salieron.
 
 56 fotos (inicio y final de 28 ejercicios) procedentes del conjunto de datos
 [free-exercise-db](https://github.com/yuhonas/free-exercise-db) (declarado Unlicense).
