@@ -47,6 +47,17 @@ document.getElementById('nuevoPlanBtn')?.addEventListener('click', () => {
   showToast('Plan nuevo empezado ✓');
 });
 
+// Casilla ✓ de «Tu plan» con su sesión a la vista («semana:posición»); el mismo toque la cierra
+let planSesionAbierta = '';
+function pulsarSesionDelPlan(clave) {
+  planSesionAbierta = planSesionAbierta === clave ? '' : clave;
+  renderPlanTable();
+}
+document.getElementById('planTable')?.addEventListener('click', e => {
+  const b = e.target.closest('[data-plan-sesion]');
+  if (b) pulsarSesionDelPlan(b.dataset.planSesion);
+});
+
 function renderPlanTable() {
   const container = document.getElementById('planTable');
   if (!container) return;
@@ -93,7 +104,7 @@ function renderPlanTable() {
     const realWeight = ultimaDeSemana(weights, 'weight', weekDate);
     const realWaist = ultimaDeSemana(waists, 'waist', weekDate);
     const realBelly = ultimaDeSemana(bellies, 'belly', weekDate);
-    const hechos = sessionsInWeek(weekDate).length;   // las casillas salen solas de las sesiones hechas esa semana
+    const hechasSemana = sessionsInWeek(weekDate), hechos = hechasSemana.length;   // las casillas salen solas de las sesiones hechas esa semana
     const checks = Array.from({ length: idealSemana() }, (_, i) => i < hechos);   // una por sesión del plan (5); las del mínimo (3) primero
     const isCurrent = w === currentWeekNum;
     const isPast = w < currentWeekNum;
@@ -117,8 +128,15 @@ function renderPlanTable() {
     html += `</div>`;
     // Entrenos: «ENTRENOS» una vez y debajo las casillas en fila; las que pasan del mínimo, con borde discontinuo
     html += `<div class="plan-entrenos"><span class="plan-mini">${duo('pesa', 'mini-ico')}ENTRENOS</span><div class="plan-checks-fila">`;
-    checks.forEach((hecha, i) => { html += `<span class="plan-check${hecha ? ' checked' : ''}${i >= objetivoSemana() ? ' extra' : ''}">${hecha ? '✓' : i + 1}</span>`; });
-    html += `</div></div>`;
+    // Las casillas de sesiones hechas se pueden tocar: abren esa sesión con la vista de Entreno (ejercicios en filas verdes con ✓)
+    let abierta = null;
+    checks.forEach((hecha, i) => {
+      const extra = i >= objetivoSemana() ? ' extra' : '', clave = `${w}:${i}`;
+      if (!hecha) { html += `<span class="plan-check${extra}">${i + 1}</span>`; return; }
+      if (planSesionAbierta === clave) abierta = hechasSemana[i];
+      html += `<button type="button" class="plan-check checked${extra}" data-plan-sesion="${clave}" aria-expanded="${planSesionAbierta === clave}" aria-label="Ver la sesión ${i + 1} de la semana ${w}">✓</button>`;
+    });
+    html += `</div>${abierta ? `<div class="plan-detalle">${vistaSesionHecha(abierta)}</div>` : ''}</div>`;
 
     html += `</div>`;
   }
