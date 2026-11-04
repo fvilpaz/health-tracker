@@ -81,3 +81,40 @@ test('agruparSemanas: año → mes según el LUNES de cada semana (26 oct–1 no
   ]);
   assert.deepEqual(JSON.parse(JSON.stringify(agrupar([]))), []);
 });
+
+test('sesionesSin: quita solo la sesión i si sigue siendo la del día que se enseñó; si algo no cuadra, no toca nada', () => {
+  const sin = (...a) => plano(crearApp().get('sesionesSin')(...a));
+  const lista = [{ date: '2026-11-02', day: '1' }, { date: '2026-11-04', day: '2' }, { date: '2026-11-04', day: '3' }];
+  const copia = JSON.stringify(lista);
+  assert.deepEqual(sin(lista, 1, '2026-11-04').lista.map(s => s.day), ['1', '3']);
+  assert.equal(JSON.stringify(lista), copia, 'no cambia la lista que recibe');
+  for (const [i, f] of [[0, '2026-11-04'], [3, '2026-11-04'], [-1, '2026-11-02'], [1.5, '2026-11-04'], [NaN, '2026-11-04'], ['1', '2026-11-04']]) {
+    assert.ok(sin(lista, i, f).error, `${i} ${f}`);
+  }
+});
+
+test('«Quitar»: sale en las sesiones guardadas (semana actual y anteriores), no en los entrenos antiguos que solo tienen fecha; pide confirmar y a la segunda quita', () => {
+  const app = crearApp(), S = app.get('Storage'), iso = app.get('isoDate');
+  const els = { semanaActual: {}, semanaHistorial: {} }, original = app.get('document').getElementById;
+  app.get('document').getElementById = id => els[id] || original(id);
+  const hoy = new Date(), hace = n => { const d = new Date(hoy); d.setDate(d.getDate() - n); return d; };
+  S.set('sessions', [{ date: iso(hace(30)), block: null, day: '1', exercises: ['A'] }, { date: iso(hoy), block: null, day: '2', exercises: ['B'] }]);
+  S.set('trainings', [app.get('fechaEs')(hace(60))]);   // entreno antiguo: solo la fecha, no se puede quitar
+  const botones = t => (String(t).match(/data-quitar=/g) || []).length;
+  app.get('renderSemana')();
+  assert.equal(botones(els.semanaActual.innerHTML), 1, 'la de hoy');
+  assert.equal(botones(els.semanaHistorial.innerHTML), 1, 'la de hace 30 días; la antigua sin botón');
+  assert.doesNotMatch(els.semanaActual.innerHTML, /Seguro/);
+  const quitar = app.get('pulsarQuitarSesion');
+  quitar(1, iso(hoy));   // primera pulsación: solo pide confirmar
+  assert.equal(S.get('sessions').length, 2);
+  assert.match(els.semanaActual.innerHTML, /¿Seguro\? Pulsa otra vez/);
+  quitar(1, iso(hoy));   // segunda: la quita
+  assert.deepEqual(plano(S.get('sessions')).map(s => s.day), ['1']);
+  assert.equal(botones(els.semanaActual.innerHTML), 0);
+  quitar(0, '2000-01-01'); quitar(0, '2000-01-01');   // la fecha no es la de esa sesión: no se toca nada
+  assert.equal(S.get('sessions').length, 1);
+  quitar(0, iso(hace(30))); quitar(5, iso(hace(30)));   // pulsar otra distinta entre medias reinicia la confirmación
+  assert.equal(S.get('sessions').length, 1);
+});
+
