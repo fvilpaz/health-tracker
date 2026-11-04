@@ -71,26 +71,11 @@ test('«Ojo» y revisión: todas llevan Ojo salvo las sin cambios; todas están 
   assert.match(fichas.d1e5.ojo, /indicaciones de la máquina/);
 });
 
-test('las 28 fichas llevan sus dos fotos (WebP ≤40 KB, sin metadatos), cada foto se usa y está acreditada', () => {
+test('las fichas no llevan fotos (quitadas el 4-nov-2026 por decisión de Nando): ni campo «fotos» ni imágenes en img/gym', () => {
+  assert.deepEqual(Object.entries(fichas).filter(([, f]) => 'fotos' in f).map(([ref]) => ref), []);
   const carpeta = path.join(RAIZ, 'src', 'img', 'gym');
-  const enDisco = fs.readdirSync(carpeta).sort();
-  const usadas = Object.values(fichas).flatMap(f => [f.fotos.inicio, f.fotos.final]).sort();
-  assert.deepEqual(usadas, enDisco);
-  assert.equal(enDisco.length, 56);
-  for (const [ref, f] of Object.entries(fichas)) {
-    assert.deepEqual([f.fotos.inicio, f.fotos.final], [`${ref}-inicio.webp`, `${ref}-final.webp`]);
-    assert.equal(f.fotos.fuente, 'https://github.com/yuhonas/free-exercise-db', ref);
-  }
-  for (const nombre of enDisco) {
-    const b = fs.readFileSync(path.join(carpeta, nombre));
-    assert.ok(b.length <= 40 * 1024, `${nombre} pesa demasiado`);
-    assert.equal(b.toString('latin1', 0, 4), 'RIFF', nombre);
-    assert.equal(b.toString('latin1', 8, 12), 'WEBP', nombre);
-    // trozos RIFF: ni EXIF ni XMP ni perfil de color
-    const trozos = [];
-    for (let i = 12; i + 8 <= b.length; i += 8 + b.readUInt32LE(i + 4) + (b.readUInt32LE(i + 4) % 2)) trozos.push(b.toString('latin1', i, i + 4));
-    assert.ok(!trozos.some(t => ['EXIF', 'XMP ', 'ICCP'].includes(t)), `${nombre}: metadatos ${trozos}`);
-  }
+  const imagenes = fs.existsSync(carpeta) ? fs.readdirSync(carpeta).filter(n => /\.(webp|png|jpe?g|svg)$/i.test(n)) : [];
+  assert.deepEqual(imagenes, []);
   assert.ok(!fs.existsSync(path.join(RAIZ, 'src', 'img', 'everkinetic')));
   const creditos = fs.readFileSync(path.join(RAIZ, 'CREDITS.md'), 'utf8');
   assert.match(creditos, /free-exercise-db/);
