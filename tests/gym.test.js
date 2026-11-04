@@ -206,14 +206,14 @@ function elementoFalso(tag) {
   return el;
 }
 
-test('fila del ejercicio: el <label> marca; el botón de explicación es su hermano y no marca; sin ref no hay botón', () => {
+test('fila del ejercicio: el <label> marca; el botón de explicación es su hermano y no marca; y la fila es la misma con ficha o sin ella', () => {
   const app = crearApp();
   app.get('document').createElement = elementoFalso;
   const fila = app.get('filaEjercicio'), llamadas = [];
   const hacer = e => fila({ e, i: 0, hecha: false, meta: '3 series × 15 reps', alCambiar: m => llamadas.push(m), cargarExplicacion: async () => ({ trabaja: ['espalda'] }) });
 
   const sin = hacer({ id: 'd1e1', name: 'Press' });
-  assert.equal(sin.children.length, 1);                                              // solo el <label>: idéntico a antes
+  assert.equal(sin.children.length, 3);                                              // sin ficha, la MISMA fila: label + botón + región (antes solo el label)
   const label = sin.children[0], casilla = label.children[2];
   assert.equal(label.tag, 'label');
   assert.equal(casilla.tag, 'input');
@@ -294,7 +294,7 @@ test('explicación: Trabaja, pasos, Ojo, dibujos (nombre seguro, tamaño fijo, c
   // Un origen que no sea una página de Commons no se enlaza
   const malaFuente = hijos({ trabaja: ['a'], fotos: { inicio: 'd1e1-inicio.svg', final: 'd1e1-final.svg', fuente: 'https://malo.example/x' } });
   assert.deepEqual(malaFuente[malaFuente.length - 3].children.filter(h => h.tag === 'a').map(a => a.textContent), ['CC BY-SA 3.0']);
-  assert.equal(hijos({}).length, 1);                                                   // vacío: «Todavía no hay explicación»
+  assert.deepEqual(clases(hijos({})), ['gym-tip-aviso', 'gym-tip-video']);             // sin ficha: el aviso y el enlace de YouTube, como en las demás
 });
 
 test('etiqueta de la ficha: dice «Revisado por Nando…» si la ficha lo trae y «sin revisar» si no (y no acepta un texto largo ni que no sea texto)', () => {
@@ -340,6 +340,20 @@ test('explicación: ref existente pero sin contenido → «Todavía no hay…» 
   await boton.oyentes.get('click')();
   assert.equal(region.children[0].textContent, 'Todavía no hay explicación de este ejercicio.');
   assert.equal(region.children[0].attr('role'), undefined);
+  assert.equal(region.children[1].className, 'gym-tip-video');
+});
+
+test('un ejercicio sin ref (escrito a mano o nuevo) abre igual que los demás: aviso y búsqueda de YouTube, sin pedir ninguna ficha', async () => {
+  const app = crearApp();
+  app.get('document').createElement = elementoFalso;
+  const pedidas = [];
+  const f = app.get('filaEjercicio')({ e: { id: 's1d2e2', name: 'Sentadilla en multipower' }, i: 0, hecha: false, meta: 'm', alCambiar: () => {}, cargarExplicacion: async () => { pedidas.push(1); return null; } });
+  const [, boton, region] = f.children;
+  assert.equal(boton.tag, 'button');
+  await boton.oyentes.get('click')();
+  assert.equal(region.children[0].textContent, 'Todavía no hay explicación de este ejercicio.');
+  assert.equal(region.children[1].attr('aria-label'), 'Buscar en YouTube: Sentadilla en multipower (se abre fuera de la app)');
+  assert.equal(pedidas.length, 1);
 });
 
 test('cardio como lista: en el orden hecho, hasta 4, las filas vacías no cuentan y el error dice cuál es', () => {
