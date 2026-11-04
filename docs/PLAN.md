@@ -39,7 +39,8 @@
 - (original) pantalla «Nuevo plan» (nombre, semanas, días) y elegir ejercicios con «+» (lista o escribir uno nuevo); «+ Añadir día»/«Quitar día» por semana (hasta 7: subir el tope de `copia.js`); guardar el plan propio en el almacén y en Exportar/Importar.
 - ✅ **Semanas anteriores por año → mes** y **«Quitar» sesión** (doble toque; pedido el 4-nov-2026 porque una sesión apuntada sin querer no se podía borrar).
 - ✅ **Lápiz para cambiar el tiempo del reloj** (pedido el 4-nov-2026): `planConPausa`, de 10 a 600 s, para todos los ejercicios (Nando: el reloj universal le vale, NO quiere pausa por ejercicio).
-- 🔲 **Editar una sesión guardada** (pedido el 4-nov-2026): cargarla en el formulario de Entreno (fecha, día, ejercicios marcados y cardio) y que al guardar sustituya a la original. Hoy solo se puede «Quitar» y volver a apuntar.
+- ✅ **Lápiz ✎ por sesión** (pedido el 4-nov-2026): abre un panel con «Día» (cambiar la fecha, hoy o anterior; la lista queda ordenada) y «Quitar sesión» (doble toque). Así «Quitar» ya no está pegado al texto.
+- 🔲 **Editar los ejercicios y el cardio de una sesión ya guardada**: cargarla en el formulario de Entreno y que al guardar sustituya a la original (hoy solo se cambia el día o se quita y se vuelve a apuntar).
 - 🔲 **Paso 3:** tabla de series por ejercicio (Repite, Pausa) y el reloj usa la pausa de cada ejercicio. **Pedido el 4-nov-2026:** poder ajustar la pausa en tiempo real (con el reloj en marcha).
 - 🔲 **Paso 4:** apuntar los kg al entrenar (campo opcional en la sesión; lo viejo se sigue leyendo; validar en `copia.js`).
 - 🔲 Pendiente de decidir: campo `video` (URL de vídeo por ejercicio) y fichas de texto para los 11 ejercicios nuevos de la semana 1 (hoy sin ficha: no tienen botón «Cómo se hace»).

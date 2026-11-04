@@ -93,28 +93,56 @@ test('sesionesSin: quita solo la sesión i si sigue siendo la del día que se en
   }
 });
 
-test('«Quitar»: sale en las sesiones guardadas (semana actual y anteriores), no en los entrenos antiguos que solo tienen fecha; pide confirmar y a la segunda quita', () => {
+test('sesionesConDia: cambia el día de la sesión i (hoy o anterior), deja la lista ordenada por fecha y, si algo no cuadra, no toca nada', () => {
+  const cambia = (...a) => plano(crearApp().get('sesionesConDia')(...a));
+  const lista = [{ date: '2026-10-30', day: '3' }, { date: '2026-11-04', day: '1' }];
+  const copia = JSON.stringify(lista);
+  const r = cambia(lista, 1, '2026-11-04', '2026-11-02', '2026-11-04');
+  assert.deepEqual(r.lista.map(s => [s.date, s.day]), [['2026-10-30', '3'], ['2026-11-02', '1']]);
+  const antes = cambia(lista, 1, '2026-11-04', '2026-10-01', '2026-11-04');
+  assert.deepEqual(antes.lista.map(s => s.day), ['1', '3'], 'una fecha más antigua que las demás la deja primera (la lista sigue ordenada)');
+  assert.equal(JSON.stringify(lista), copia, 'no cambia la lista que recibe');
+  assert.match(cambia(lista, 1, '2026-11-04', '2026-11-05', '2026-11-04').error, /hoy o uno anterior/, 'ni un día futuro');
+  for (const mala of ['', 'mañana', '2026-02-31', '04/11/2026', null]) assert.ok(cambia(lista, 1, '2026-11-04', mala, '2026-11-04').error, String(mala));
+  for (const [i, f] of [[0, '2026-11-04'], [2, '2026-11-04'], [-1, '2026-10-30'], [0.5, '2026-10-30']]) assert.match(cambia(lista, i, f, '2026-11-01', '2026-11-04').error, /ha cambiado/, `${i} ${f}`);
+});
+
+test('lápiz ✎ por sesión (guardadas, no las antiguas): abre un panel con «Día» y «Quitar sesión»; cambiar el día y quitar piden lo suyo', () => {
   const app = crearApp(), S = app.get('Storage'), iso = app.get('isoDate');
   const els = { semanaActual: {}, semanaHistorial: {} }, original = app.get('document').getElementById;
   app.get('document').getElementById = id => els[id] || original(id);
   const hoy = new Date(), hace = n => { const d = new Date(hoy); d.setDate(d.getDate() - n); return d; };
   S.set('sessions', [{ date: iso(hace(30)), block: null, day: '1', exercises: ['A'] }, { date: iso(hoy), block: null, day: '2', exercises: ['B'] }]);
-  S.set('trainings', [app.get('fechaEs')(hace(60))]);   // entreno antiguo: solo la fecha, no se puede quitar
-  const botones = t => (String(t).match(/data-quitar=/g) || []).length;
+  S.set('trainings', [app.get('fechaEs')(hace(60))]);   // entreno antiguo: solo la fecha, sin lápiz
+  const cuenta = (t, marca) => (String(t).match(new RegExp(marca, 'g')) || []).length;
   app.get('renderSemana')();
-  assert.equal(botones(els.semanaActual.innerHTML), 1, 'la de hoy');
-  assert.equal(botones(els.semanaHistorial.innerHTML), 1, 'la de hace 30 días; la antigua sin botón');
-  assert.doesNotMatch(els.semanaActual.innerHTML, /Seguro/);
-  const quitar = app.get('pulsarQuitarSesion');
-  quitar(1, iso(hoy));   // primera pulsación: solo pide confirmar
+  assert.equal(cuenta(els.semanaActual.innerHTML, 'data-editar='), 1, 'lápiz en la de hoy');
+  assert.equal(cuenta(els.semanaHistorial.innerHTML, 'data-editar='), 1, 'lápiz en la de hace 30 días; la antigua, sin lápiz');
+  assert.equal(cuenta(els.semanaActual.innerHTML, 'data-quitar='), 0, 'Quitar ya no está a la vista: hay que abrir el lápiz');
+  const editar = app.get('pulsarEditarSesion'), quitar = app.get('pulsarQuitarSesion'), guardarDia = app.get('pulsarGuardarDia');
+  editar(1);   // abre el panel de la de hoy
+  assert.equal(cuenta(els.semanaActual.innerHTML, 'data-quitar='), 1);
+  assert.equal(cuenta(els.semanaActual.innerHTML, 'data-guardar-dia='), 1);
+  assert.match(els.semanaActual.innerHTML, /type="date"/);
+  assert.equal(cuenta(els.semanaActual.innerHTML, 'Quitar sesión'), 1);
+  editar(1);   // el mismo lápiz lo cierra
+  assert.equal(cuenta(els.semanaActual.innerHTML, 'data-quitar='), 0);
+  // cambiar el día de la de hoy a hace 3 días: se guarda y sigue habiendo 2 sesiones
+  editar(1);
+  guardarDia(1, iso(hoy), iso(hace(3)));
+  assert.deepEqual(plano(S.get('sessions')).map(s => [s.date, s.day]), [[iso(hace(30)), '1'], [iso(hace(3)), '2']]);
+  assert.equal(cuenta(els.semanaActual.innerHTML, 'data-quitar='), 0, 'el panel se cierra al guardar');
+  guardarDia(1, iso(hace(3)), iso(new Date(hoy.getTime() + 3 * 86400000)));   // un día futuro no vale
+  assert.equal(plano(S.get('sessions'))[1].date, iso(hace(3)));
+  guardarDia(1, '2000-01-01', iso(hace(1)));   // no es la fecha de esa sesión: no se toca nada
+  assert.equal(plano(S.get('sessions'))[1].date, iso(hace(3)));
+  // quitar desde el panel: dos pulsaciones
+  editar(1);
+  quitar(1, iso(hace(3)));
   assert.equal(S.get('sessions').length, 2);
-  assert.match(els.semanaActual.innerHTML, /¿Seguro\? Pulsa otra vez/);
-  quitar(1, iso(hoy));   // segunda: la quita
+  assert.match(els.semanaHistorial.innerHTML + els.semanaActual.innerHTML, /¿Seguro\? Pulsa otra vez/);
+  quitar(1, iso(hace(3)));
   assert.deepEqual(plano(S.get('sessions')).map(s => s.day), ['1']);
-  assert.equal(botones(els.semanaActual.innerHTML), 0);
-  quitar(0, '2000-01-01'); quitar(0, '2000-01-01');   // la fecha no es la de esa sesión: no se toca nada
-  assert.equal(S.get('sessions').length, 1);
-  quitar(0, iso(hace(30))); quitar(5, iso(hace(30)));   // pulsar otra distinta entre medias reinicia la confirmación
+  quitar(0, '2000-01-01'); quitar(0, '2000-01-01');   // fecha que no es la suya: no se toca nada
   assert.equal(S.get('sessions').length, 1);
 });
-
