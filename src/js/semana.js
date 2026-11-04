@@ -93,10 +93,15 @@ function renderSemana() {
   // Como mucho los dos últimos años (104 semanas): con datos muy antiguos, pintar cientos de semanas congelaba la app
   const primera = getWeekStart(new Date(pasadas[0].date + 'T12:00')), tope = dia(lunes, -7 * 104);
   for (let l = primera > tope ? primera : tope; l < lunes; l = dia(l, 7)) semanas.unshift(l);
-  // eslint-disable-next-line no-unsanitized/property -- lo del almacén o del PDF va por esc()/labNum() o son números; probado con una copia manipulada
-  historial.innerHTML = semanas.map(l => {
+  // Agrupadas en año → mes (el del lunes de cada semana), todo desplegable: solo el año y el mes más recientes vienen abiertos
+  const detalle = l => {
     const desde = isoDate(l), hasta = isoDate(dia(l, 6)), suyas = pasadas.filter(s => s.date >= desde && s.date <= hasta);
-    const ok = suyas.length >= objetivoSemana();
+    return { l, suyas, ok: suyas.length >= objetivoSemana() };
+  };
+  const plural = (n, uno, varios) => `${n} ${n === 1 ? uno : varios}`;
+  const mesNombre = m => { const t = new Date(2000, m, 1).toLocaleDateString('es-ES', { month: 'long' }); return t[0].toUpperCase() + t.slice(1); };
+  const grupo = (titulo, resumen, cuerpo, abierto) => `<details class="lab-sec"${abierto ? ' open' : ''}><summary><div class="lab-tit">${titulo}<small>${resumen}</small></div><span class="lab-flecha"></span></summary><div class="lab-cuerpo">${cuerpo}</div></details>`;
+  const htmlSemana = ({ l, suyas, ok }) => {
     return `<details class="lab-sec"><summary><div class="lab-tit">${corta(l)} – ${corta(dia(l, 6))}` +
       `<small>${suyas.length} / ${objetivoSemana()} ${ok ? `${estado('ok')} cumplida` : '· no cumplida'}</small></div><span class="lab-flecha"></span></summary>` +
       '<div class="lab-cuerpo">' + (suyas.length ? suyas.map(s =>
@@ -104,7 +109,23 @@ function renderSemana() {
         (s.exercises ? `<div class="lab-fila-que">${s.exercises.map(esc).join(' · ')}</div>` : '') +
         (textoCardio(s.cardio) ? `<div class="lab-fila-que">Cardio · ${textoCardio(s.cardio)}</div>` : '') + '</div>').join('')
         : '<div class="meta-aviso">Sin entrenos esta semana.</div>') + '</div></details>';
-  }).join('');
+  };
+  // eslint-disable-next-line no-unsanitized/property -- lo del almacén o del PDF va por esc()/labNum() o son números; probado con una copia manipulada
+  historial.innerHTML = agruparSemanas(semanas.map(detalle)).map((a, i) => grupo(a.anio, plural(a.meses.reduce((n, m) => n + m.semanas.length, 0), 'semana', 'semanas'),
+    a.meses.map((m, j) => grupo(mesNombre(m.mes), `${plural(m.semanas.length, 'semana', 'semanas')} · ${plural(m.semanas.filter(s => s.ok).length, 'cumplida', 'cumplidas')}`,
+      m.semanas.map(htmlSemana).join(''), i === 0 && j === 0)).join(''), i === 0)).join('');
+}
+
+// Agrupa las semanas (de la más reciente a la más antigua, cada una con su lunes en «l») en año → mes, por el lunes de cada una
+function agruparSemanas(lista) {
+  const anios = [];
+  for (const s of lista) {
+    const a = s.l.getFullYear(), m = s.l.getMonth();
+    const anio = anios.find(x => x.anio === a) || anios[anios.push({ anio: a, meses: [] }) - 1];
+    const mes = anio.meses.find(x => x.mes === m) || anio.meses[anio.meses.push({ mes: m, semanas: [] }) - 1];
+    mes.semanas.push(s);
+  }
+  return anios;
 }
 
 // El cardio de una sesión del gimnasio en una línea («Al empezar: 10.6 min · 0.69 km · cinta — Al acabar: 54 min · 5.06 km»); sin cardio, ''
