@@ -147,7 +147,7 @@ test('lápiz ✎ por sesión (guardadas, no las antiguas): abre un panel con «D
   assert.equal(S.get('sessions').length, 1);
 });
 
-test('tocar una sesión hecha en «Mi semana» abre sus ejercicios y su cardio; volver a tocarla los esconde; todo escapado', () => {
+test('tocar una sesión hecha en «Mi semana» la abre con la vista de Entreno (filas verdes con ✓) y su cardio; el mismo toque la cierra; todo escapado', () => {
   const app = crearApp(), S = app.get('Storage'), iso = app.get('isoDate');
   const els = { semanaActual: {}, semanaHistorial: {} }, original = app.get('document').getElementById;
   app.get('document').getElementById = id => els[id] || original(id);
@@ -160,12 +160,36 @@ test('tocar una sesión hecha en «Mi semana» abre sus ejercicios y su cardio; 
   assert.doesNotMatch(html, /Press de banca placas/, 'cerrado: no se ven los ejercicios');
   app.get('pulsarVerDia')(hoy);
   html = els.semanaActual.innerHTML;
-  assert.match(html, /Press de banca placas · &lt;img src=x onerror=alert\(1\)&gt;/, 'abierto: los ejercicios, escapados');
-  assert.match(html, /Cardio · 10 min · 1\.06 km · Cinta/);
+  assert.equal((html.match(/class="gym-ej hecho"/g) || []).length, 2, 'una fila verde por ejercicio, como en Entreno');
+  assert.equal((html.match(/class="gym-check" checked disabled/g) || []).length, 2, 'con su ✓ (solo lectura)');
+  assert.match(html, /<span class="gym-ej-nombre">Press de banca placas<\/span>/);
+  assert.match(html, /&lt;img src=x onerror=alert\(1\)&gt;/, 'escapado');
   assert.doesNotMatch(html, /<img src=x/, 'nada de HTML suelto');
+  assert.match(html, /Cardio · 10 min · 1\.06 km · Cinta/);
   app.get('pulsarVerDia')(hoy);   // el mismo toque lo cierra
   assert.doesNotMatch(els.semanaActual.innerHTML, /Press de banca placas/);
-  // un día sin sesión no tiene botón para tocar
-  assert.equal((html.match(/data-ver=/g) || []).length, 1);
+});
+
+test('Dashboard · «Tu plan»: las casillas ✓ de las sesiones hechas se pueden tocar y abren esa sesión con la vista de Entreno; las vacías, no', () => {
+  const app = crearApp(), S = app.get('Storage'), iso = app.get('isoDate');
+  const els = { planTable: {} }, original = app.get('document').getElementById;
+  app.get('document').getElementById = id => els[id] || original(id);
+  const hoy = new Date();
+  S.set('startDate', hoy.toISOString());
+  S.set('settings', { startDate: hoy.toISOString(), totalWeeks: 8 });
+  S.set('sessions', [{ date: iso(hoy), block: null, day: '1', exercises: ['Press de banca placas', 'Hack de piernas'], cardio: [{ minutes: 10 }] }]);
+  const cuenta = (t, r) => (String(t).match(r) || []).length;
+  app.get('renderPlanTable')();
+  assert.equal(cuenta(els.planTable.innerHTML, /data-plan-sesion=/g), 1, 'solo la casilla hecha se puede tocar');
+  assert.match(els.planTable.innerHTML, /data-plan-sesion="1:0"/);
+  assert.doesNotMatch(els.planTable.innerHTML, /Press de banca placas/);
+  app.get('pulsarSesionDelPlan')('1:0');
+  let html = els.planTable.innerHTML;
+  assert.equal(cuenta(html, /class="gym-ej hecho"/g), 2);
+  assert.match(html, /Press de banca placas/);
+  assert.match(html, /Cardio · 10 min/);
+  assert.match(html, /aria-expanded="true"/);
+  app.get('pulsarSesionDelPlan')('1:0');   // el mismo toque la cierra
+  assert.doesNotMatch(els.planTable.innerHTML, /Press de banca placas/);
 });
 

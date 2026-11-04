@@ -70,7 +70,7 @@ function renderSemana() {
   const hoy = new Date(), lunes = getWeekStart(hoy), est = weekStatus(hoy), sesiones = getSessions();
   const dia = (base, n) => { const d = new Date(base); d.setDate(base.getDate() + n); return d; };
   const corta = d => d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
-  const etiqueta = s => `${s.day ? `Día ${esc(s.day)}` : s.block ? `Bloque ${esc(s.block)}` : 'Entreno'}${s.minutes ? ` · ${esc(s.minutes)} min` : ''}${s.note ? ` · ${esc(s.note)}` : ''}`;
+  const etiqueta = etiquetaSesion;
   const ideal = idealSemana();
   // Lápiz ✎ solo en las sesiones guardadas (los entrenos antiguos, que solo tienen la fecha, no se tocan). Abre un panel con «Día» (cambiar
   // la fecha) y «Quitar sesión». Se localiza por su posición en 'sessions' y, al pulsar, se comprueba que sigue siendo la del mismo día
@@ -103,7 +103,7 @@ function renderSemana() {
         // Tocar la sesión hecha abre sus ejercicios y su cardio (el lápiz ✎ aparte: cambiar el día o quitarla)
         `<span class="semana-sesiones">${delDia.length ? delDia.map(s => '<div class="semana-ses">' +
           `<button type="button" class="semana-ver" data-ver="${f}" aria-expanded="${verDia === f}">${estado('ok')} ${etiqueta(s)} <span class="semana-flecha" aria-hidden="true">▾</span></button>` +
-          lapiz(s) + panel(s) + (verDia === f ? detalleSesion(s) : '') + '</div>').join('') : esHoy ? 'hoy' : ''}</span></div>`;
+          lapiz(s) + panel(s) + (verDia === f ? vistaSesionHecha(s) : '') + '</div>').join('') : esHoy ? 'hoy' : ''}</span></div>`;
     }).join('') + '</div>' +
     (est.hechos < ideal ? `<button class="btn btn-green btn-full" id="semanaEntrenar">${ICONO.jugar}Apuntar sesión · toca el día ${nextGymDay()}</button>` : '') +
     '<div class="meta-aviso">El cardio se apunta dentro de cada sesión. Caminar suelto no cuenta aquí (va en los consejos).</div>';
@@ -138,11 +138,18 @@ function renderSemana() {
       m.semanas.map(htmlSemana).join(''), i === 0 && j === 0)).join(''), i === 0)).join('');
 }
 
-// Lo que hiciste en una sesión: ejercicios y cardio (todo escapado: viene del almacén o de una copia importada)
-let verDia = '';   // día (aaaa-mm-dd) de «Mi semana» con sus ejercicios a la vista
-const detalleSesion = s => '<div class="semana-detalle">' +
-  (s.exercises && s.exercises.length ? `<div class="lab-fila-que">${s.exercises.map(esc).join(' · ')}</div>` : '<div class="meta-aviso">Sin ejercicios apuntados.</div>') +
+// «Día 1», «Bloque 2»… y, si lo trae, los minutos y la nota (todo escapado)
+const etiquetaSesion = s => `${s.day ? `Día ${esc(s.day)}` : s.block ? `Bloque ${esc(s.block)}` : 'Entreno'}${s.minutes ? ` · ${esc(s.minutes)} min` : ''}${s.note ? ` · ${esc(s.note)}` : ''}`;
+
+// Lo que hiciste en una sesión, con la vista de Entreno con todo marcado: una fila verde con su ✓ por ejercicio (solo lectura) y el cardio.
+// Todo escapado: viene del almacén o de una copia importada. Lo usan «Mi semana» y las casillas ✓ de «Tu plan» (Dashboard).
+const vistaSesionHecha = s => '<div class="sesion-hecha">' +
+  `<div class="sesion-hecha-cab">${etiquetaSesion(s)} · ${new Date(s.date + 'T12:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'short' })}</div>` +
+  (s.exercises && s.exercises.length ? s.exercises.map((n, i) =>
+    `<div class="gym-ej hecho"><span class="gym-ej-num">${i + 1}</span><span class="gym-ej-cuerpo"><span class="gym-ej-nombre">${esc(n)}</span></span><input type="checkbox" class="gym-check" checked disabled aria-label="Hecho"></div>`).join('')
+    : '<div class="meta-aviso">Sin ejercicios apuntados.</div>') +
   (textoCardio(s.cardio) ? `<div class="lab-fila-que">Cardio · ${textoCardio(s.cardio)}</div>` : '') + '</div>';
+let verDia = '';   // día (aaaa-mm-dd) de «Mi semana» con su sesión a la vista
 
 function pulsarVerDia(fecha) {
   verDia = verDia === fecha ? '' : fecha;   // el mismo toque lo abre y lo cierra
