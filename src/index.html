@@ -172,6 +172,8 @@
       <div class="card" id="gymCard">
         <div class="card-title" role="heading" aria-level="2">Sesión del gimnasio</div>
         <p class="meta-aviso" id="gymDescargo">Plan de partida, no una prescripción. Ajústalo a tu caso; si tienes dudas o dolor, consúltalo con tu médico o entrenador. Suelta el aire al empujar y coge aire al volver.</p>
+        <button class="btn btn-suave" type="button" id="gymEditarBtn" aria-expanded="false" aria-controls="gymConstructor">Editar plan</button>
+        <div class="cons" id="gymConstructor" hidden></div>
         <div class="gym-dias" id="gymDias"></div>
         <label class="campo-fecha">¿Qué día lo hiciste? <input type="date" id="gymFecha"></label>
         <div class="gym-info" id="gymInfo"></div>
@@ -624,6 +626,7 @@
   <script src="js/rutina.js"></script>
   <script src="js/nutricion.js"></script>
   <script src="js/gym.js"></script>
+  <script src="js/constructor-plan.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

@@ -32,6 +32,17 @@
 
 ---
 
+### En curso — Constructor de planes del gimnasio (pedido por Nando el 4-nov-2026, por pasos; cada paso se ve en localhost antes de subir)
+> Terminó el plan de 4 semanas y el gimnasio le dio otro de 8. Idea: **Nuevo plan → semanas → cada semana con sus días (puede tener 5 o menos, para recuperar una sesión perdida) → ejercicios elegidos de una lista con «+» → dentro de cada ejercicio una tabla por serie: Repite, Peso (kg) y Pausa** (como la app del gimnasio). Sin fotos: descripción y búsqueda/URL de vídeo.
+- ✅ **Paso 1:** `data/plan.json` (8 semanas, la 1 con sus 4 días) y `gym.js` enseña la semana en curso (`diasDelPlan`). Falta subirlo.
+- ✅ **Paso 2 (en local, sin subir):** `constructor-plan.js` — «Editar plan» en Entreno, plan nuevo, días y ejercicios con select y «+», guardado en `gymPlan` e Importar/Exportar, todas las filas con desplegable. Pendiente: «+ Semana» / «Quitar última semana» para cambiar las semanas de un plan ya creado (8 → 4 o 5).
+- (original) pantalla «Nuevo plan» (nombre, semanas, días) y elegir ejercicios con «+» (lista o escribir uno nuevo); «+ Añadir día»/«Quitar día» por semana (hasta 7: subir el tope de `copia.js`); guardar el plan propio en el almacén y en Exportar/Importar.
+- 🔲 **Paso 3:** tabla de series por ejercicio (Repite, Pausa) y el reloj usa la pausa de cada ejercicio. **Pedido el 4-nov-2026:** poder ajustar la pausa en tiempo real (con el reloj en marcha).
+- 🔲 **Paso 4:** apuntar los kg al entrenar (campo opcional en la sesión; lo viejo se sigue leyendo; validar en `copia.js`).
+- 🔲 Pendiente de decidir: campo `video` (URL de vídeo por ejercicio) y fichas de texto para los 11 ejercicios nuevos de la semana 1 (hoy sin ficha: no tienen botón «Cómo se hace»).
+
+---
+
 ## 🔲 P2 — Medio impacto / Medio esfuerzo
 
 - [ ] **Fichas por medicamento** — hoy solo Ebymect tiene ficha propia; metformina sola, insulina y pastillas de la tensión se ven a través de la enfermedad. Con fuente oficial

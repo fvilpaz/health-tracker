@@ -40,7 +40,7 @@ function limpiarCopia(entrada) {
   // hoy: no va en la copia y, si viene, se ignora sin contarlo.
   const obsoleta = clave => clave === 'streak' || clave === 'habits' || clave === 'gymDraft' || clave.startsWith('calendar_');
   for (const clave of Object.keys(entrada)) {
-    if (!['settings', 'startDate', 'weights', 'waists', 'bellies', 'sessions', 'labs', 'plan', 'logros', 'theme', 'trainings', 'profile'].includes(clave) && !obsoleta(clave)) descartados++;
+    if (!['settings', 'startDate', 'weights', 'waists', 'bellies', 'sessions', 'labs', 'plan', 'logros', 'theme', 'trainings', 'profile', 'gymPlan'].includes(clave) && !obsoleta(clave)) descartados++;
   }
 
   const s = entrada.settings;
@@ -54,6 +54,7 @@ function limpiarCopia(entrada) {
       campo('height', v => enRango('height', v));
     } else descartados++;
   }
+  if (entrada.gymPlan !== undefined) { const p = limpiarPlan(entrada.gymPlan); if (p) datos.gymPlan = p; else descartados++; }   // el plan del gimnasio armado en «Editar plan»
   if (entrada.startDate !== undefined) { if (esInstante(entrada.startDate)) datos.startDate = entrada.startDate; else descartados++; }
   if (entrada.profile !== undefined) {
     const r = limpiarPerfil(entrada.profile);
@@ -72,7 +73,7 @@ function limpiarCopia(entrada) {
     if (e.minutes !== undefined && !(esNum(e.minutes) && e.minutes > 0 && e.minutes <= 180)) return null;
     if (e.exercises !== undefined && !(Array.isArray(e.exercises) && e.exercises.length <= 20 && e.exercises.every(x => esTexto(x)))) return null;
     // Sesión del gimnasio: día del plan (1-5) y cardio opcional al empezar / al acabar (minutos, km y nota, todo opcional)
-    if (e.day !== undefined && !['1', '2', '3', '4', '5'].includes(e.day)) return null;
+    if (e.day !== undefined && !['1', '2', '3', '4', '5', '6', '7'].includes(e.day)) return null;
     if (e.note !== undefined && !(esTexto(e.note, 120) && e.note.trim())) return null;   // sesión libre: solo fecha y nota
     const cardioBueno = c => c && typeof c === 'object' && (c.minutes === undefined || (esNum(c.minutes) && c.minutes > 0 && c.minutes <= 600)) &&
       (c.km === undefined || (esNum(c.km) && c.km >= 0 && c.km <= 200)) && (c.note === undefined || esTexto(c.note, 120));

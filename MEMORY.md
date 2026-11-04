@@ -12,6 +12,8 @@
   **fallar con el código viejo** (control). Los informes `docs/audit-*` no se suben.
 
 ## Trampas
+- **Probando en localhost, el service worker guarda una copia vieja** (el nombre de la caché no cambia sin el despliegue): para ver un cambio, desregistrarlo y vaciar cachés (DevTools → Application) o recargar con Ctrl+Shift+R tras hacerlo.
+- `constructor-plan.js` (Editar plan): el plan armado va en `ht_gymPlan` y, si está roto, se ignora y se vuelve a `data/plan.json`. Los campos de «Crear plan nuevo» se guardan al teclear: al pedir confirmación se repinta y antes volvían a «8» y vacío (arreglado el 4-nov-2026). Una prueba (`globales`) impide repetir nombres de funciones entre archivos (`catalogoEjercicios` ya existe en `rutina.js`).
 - Las sesiones y el borrador guardan el **NOMBRE** del ejercicio (`sessions[].exercises`, `gymDraft.done`), no el id (`d1e1`).
   Los nombres vienen del gimnasio: **no renombrar** sin migrar el historial.
 - **Cardio, dos formatos que se leen SIEMPRE:** el viejo `{start, end}` y la lista nueva `[{minutes?, km?, note?}]` (hasta 4).
@@ -24,12 +26,12 @@
   un script puede pulsarlo aunque no se vea, el tope de 4 se vigila también dentro del handler.
 - `docs/INFORME-2026-09-28.md` está sin seguimiento a propósito: no se añade.
 
-## Fotos de los ejercicios (decisión de Nando, riesgo aceptado)
-- 56 WebP en `src/img/gym/` (Inicio/Final de 28 ejercicios) con **cara, logos y marcas difuminados**, sin EXIF. Origen:
+## Fotos de los ejercicios (QUITADAS el 4-nov-2026 por decisión de Nando)
+- Las 56 WebP de `src/img/gym/` y el campo `fotos` de las fichas se quitaron; siguen en el historial de git (público) y las fichas llevan solo texto (+ búsqueda de YouTube). Antes eran (difuminadas, sin EXIF). Origen:
   free-exercise-db, de procedencia comercial no documentada: difuminar NO elimina el copyright (anotado en `docs/PLAN.md`).
 - Las originales **sin tapar** viven fuera del repo y **no entran nunca en git** (no se pueden quitar del historial). Hay una rama
   local de respaldo con ellas: **no se sube jamás** (ni `push --all`, `--mirror` ni `--tags`).
-- Si se añade una foto: tapar caras, camisetas, guantes y rótulos de máquinas, revisar con zoom, y que ninguna coincida con
+- (Histórico, si algún día vuelven fotos) tapar caras, camisetas, guantes y rótulos de máquinas, revisar con zoom, y que ninguna coincida con
   las originales. Los dibujos Everkinetic se descartaron (Nando quiere personas, no muñecos).
 
 ## Fichas «Cómo se hace» (`src/data/ejercicios-gym.json`)

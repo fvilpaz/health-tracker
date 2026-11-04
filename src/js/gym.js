@@ -1,14 +1,28 @@
 /* eslint-disable security/detect-object-injection -- las claves son 'start' / 'end' y los campos de casillas, nombres del propio código (revisado 6-oct-2026) */
 /* Sesión del gimnasio: la app solo APUNTA lo que hiciste (los vídeos y el plan están en la app del gimnasio).
-   El plan (data/gym.json) son 5 días que rotan. Se guarda en 'sessions' como
+   El plan (data/plan.json: semanas → días; antes data/gym.json, 5 días) rota por días. Se guarda en 'sessions' como
    { date, block: null, day: '1'-'5', exercises: [nombres hechos], cardio?: [{ minutes?, km?, note? }, …] (hasta 4, en el orden hecho; lo antiguo era { start?, end? }) }.
    Mientras marcas, lo hecho se guarda en 'gymDraft' (solo el de hoy) para no perderlo si cierras la app. */
 let planGym = null;
+
+// Semana del plan en curso (data/plan.json, «weeks»): la de hoy según la fecha de inicio, sin salirse de las que tiene y, si esa
+// aún está vacía (se rellenan una a una), la última que tenga días. Devuelve { semana, days } para que el resto lea planGym.days.
+function diasDelPlan(plan, hoy = new Date()) {
+  const semanas = plan.weeks || [];
+  let n = Math.min(Math.max(semanaDelPlan(new Date(plan.inicio + 'T00:00:00'), hoy), 1), semanas.length);
+  while (n > 1 && !semanas[n - 1].days.length) n--;
+  return { semana: n, days: semanas[n - 1]?.days || [] };
+}
+
 async function cargarPlanGym() {
   if (!planGym) {
-    const res = await fetch('data/gym.json');
-    if (!res.ok) throw new Error('gym.json ' + res.status);
-    planGym = await res.json();
+    let plan = limpiarPlan(Storage.get('gymPlan'));   // el que armaste en «Editar plan»; sin él, data/plan.json
+    if (!plan) {
+      const res = await fetch('data/plan.json');
+      if (!res.ok) throw new Error('plan.json ' + res.status);
+      plan = await res.json();
+    }
+    planGym = plan.weeks ? { ...plan, ...diasDelPlan(plan) } : plan;   // sin «weeks» (formato de gym.json): tal cual
   }
   return planGym;
 }
@@ -56,6 +70,7 @@ function cardioDeCasillas(entrada) {
 function sesionGym(plan, borrador, fecha = isoDate(new Date())) {
   if (!esFechaIso(fecha) || fecha > isoDate(new Date())) return { error: 'Pon el día en que lo hiciste (hoy o uno anterior)' };
   const dia = plan.days.find(d => d.id === borrador.day);
+  if (!dia) return { error: 'Ese día ya no está en el plan' };
   const hechos = dia.exercises.map(e => e.name).filter(n => borrador.done.includes(n));
   if (!hechos.length) return { error: 'Marca al menos un ejercicio' };
   // El cardio es una lista (hasta 4) en el orden en que lo hiciste; las filas vacías no cuentan. El borrador de antes ({start, end}) se lee igual.
@@ -167,11 +182,12 @@ function construirExplicacion(exp, nombre, region) {
     }
     partes.push(pie);
   }
-  if (!partes.length) partes.push(nuevo('p', 'gym-tip-aviso', 'Todavía no hay explicación de este ejercicio.'));
+  // El enlace de YouTube sale siempre (con o sin descripción): todas las filas se abren igual
+  const video = nuevo('a', 'gym-tip-video', '▶ Buscar en YouTube (se abre fuera de la app)');
+  video.href = urlYoutube(nombre); video.target = '_blank'; video.rel = 'noopener noreferrer';
+  video.setAttribute('aria-label', `Buscar en YouTube: ${nombre} (se abre fuera de la app)`);
+  if (!partes.length) partes.push(nuevo('p', 'gym-tip-aviso', 'Todavía no hay explicación de este ejercicio.'), video);
   else {
-    const video = nuevo('a', 'gym-tip-video', '▶ Buscar en YouTube (se abre fuera de la app)');
-    video.href = urlYoutube(nombre); video.target = '_blank'; video.rel = 'noopener noreferrer';
-    video.setAttribute('aria-label', `Buscar en YouTube: ${nombre} (se abre fuera de la app)`);
     // La etiqueta dice si Nando revisó el texto (campo «revision», con fecha y quién) o si sigue sin revisar
     const origen = typeof exp.revision === 'string' && exp.revision.length <= 200 ? exp.revision : 'Texto redactado con ayuda de IA, sin revisar';
     partes.push(video, nuevo('p', 'gym-tip-etiqueta', `${origen}. Guía orientativa: no sustituye la indicación de un profesional. Si algo te duele, para y consúltalo.`));
@@ -179,8 +195,8 @@ function construirExplicacion(exp, nombre, region) {
   region.replaceChildren(...partes);
 }
 
-// La fila de un ejercicio: <div> con el <label> que marca (número, nombre, meta y casilla) y, solo si el ejercicio tiene
-// explicación (e.ref), un botón APARTE, hermano del label (tocarlo no marca), que despliega la explicación hacia abajo.
+// La fila de un ejercicio: <div> con el <label> que marca (número, nombre, meta y casilla) y, en TODAS las filas (tengan ficha o no),
+// un botón APARTE, hermano del label (tocarlo no marca), que despliega la explicación hacia abajo.
 // «cargarExplicacion» devuelve la explicación (o null) y solo se llama la primera vez que se abre.
 function filaEjercicio({ e, i, hecha, meta, alCambiar, cargarExplicacion }) {
   const nuevo = (tag, clase, texto) => { const el = document.createElement(tag); if (clase) el.className = clase; if (texto !== undefined) el.textContent = texto; return el; };
@@ -192,7 +208,7 @@ function filaEjercicio({ e, i, hecha, meta, alCambiar, cargarExplicacion }) {
   cuerpo.append(nuevo('span', 'gym-ej-nombre', e.name), nuevo('span', 'gym-ej-meta', meta));
   label.append(nuevo('span', 'gym-ej-num', String(i + 1)), cuerpo, casilla);
   fila.append(label);
-  if (e.ref && cargarExplicacion) {
+  if (cargarExplicacion) {
     const boton = nuevo('button', 'gym-info-btn'), region = nuevo('div', 'gym-tip');
     const flecha = nuevo('span', 'gym-flecha', '▾');
     flecha.setAttribute('aria-hidden', 'true');
@@ -233,8 +249,15 @@ async function renderGym() {
   const primera = !planGym;
   try { plan = await cargarPlanGym(); } catch { lista.textContent = 'No se ha podido cargar el plan. Revisa la conexión y vuelve a abrir la app.'; return; }
   if (primera) updateDashboard();   // ya se conoce el ideal (días del plan): «Mi semana» y las casillas del plan lo enseñan
+  if (!plan.days.length) {   // plan recién creado y sin días: nada que marcar hasta añadir alguno en «Editar plan»
+    document.getElementById('gymDias').replaceChildren();
+    document.getElementById('gymInfo').textContent = 'Este plan aún no tiene días. Pulsa «Editar plan» y añade uno.';
+    lista.replaceChildren();
+    return;
+  }
   const toca = nextGymDay(getSessions(), plan.days.length);
   const b = borradorGym() || { date: isoDate(new Date()), day: toca, done: [], cardio: [] };
+  if (!plan.days.some(d => d.id === b.day)) { b.day = toca; b.done = []; }   // el plan cambió y ese día ya no existe
   if (!b.cardio.length) b.cardio = [{}];   // siempre hay una fila a la vista; vacía no cuenta
   const guardar = () => Storage.set('gymDraft', b);
   const nuevo = (tag, clase, texto) => { const el = document.createElement(tag); if (clase) el.className = clase; if (texto !== undefined) el.textContent = texto; return el; };
@@ -244,7 +267,7 @@ async function renderGym() {
     btn.addEventListener('click', () => { if (d.id !== b.day) { b.day = d.id; b.done = []; guardar(); renderGym(); } });
     return btn;
   }));
-  document.getElementById('gymInfo').textContent = b.day === toca ? `Hoy toca el día ${toca}` : `Hoy tocaba el día ${toca}`;
+  document.getElementById('gymInfo').textContent = (plan.semana ? `Semana ${plan.semana} · ` : '') + (b.day === toca ? `Hoy toca el día ${toca}` : `Hoy tocaba el día ${toca}`);
   const fecha = document.getElementById('gymFecha');   // el día en que lo hiciste: hoy, o uno anterior para apuntar lo de ayer
   fecha.max = isoDate(new Date());
   fecha.value = b.when || fecha.max;
@@ -254,7 +277,7 @@ async function renderGym() {
   lista.replaceChildren(...plan.days.find(d => d.id === b.day).exercises.map((e, i) => filaEjercicio({
     e, i, hecha: b.done.includes(e.name), meta: `${e.sets || plan.sets} series × ${plan.reps} reps`,
     alCambiar: marcado => { b.done = marcado ? [...b.done, e.name] : b.done.filter(n => n !== e.name); guardar(); },
-    cargarExplicacion: () => cargarExplicaciones().then(c => c[e.ref] ?? null),
+    cargarExplicacion: () => cargarExplicaciones().then(c => (e.ref ? c[e.ref] : null) ?? null),   // sin ficha: null → «Todavía no hay explicación» y el enlace de YouTube
   })));
 
   // Cardio opcional: una lista de filas (minutos, km y nota) en el orden hecho, hasta 4; «+ Añadir otro cardio» y «Quitar» (con confirmación si la fila tiene algo)
