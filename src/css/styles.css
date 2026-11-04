@@ -933,3 +933,7 @@ table.labs td.fuera { color: var(--red); }
 .pausa-editor { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 0.85rem; color: var(--text-muted); }
 .pausa-editor[hidden] { display: none; }
 .btn-icono { display: block; margin: 12px auto 0; min-width: 44px; min-height: 44px; font-size: 1.2rem; line-height: 1; color: var(--text-muted); background: var(--surface2); border: 1px solid var(--border); border-radius: 50%; cursor: pointer; }
+.semana-lapiz { margin-left: 8px; min-width: 32px; min-height: 32px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface2); color: var(--text-muted); font-size: 0.9rem; cursor: pointer; vertical-align: middle; }
+.semana-editor { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 8px 0 4px; font-size: 0.8rem; color: var(--text-muted); }
+.semana-editor label { display: flex; align-items: center; gap: 6px; }
+.semana-fecha { font: inherit; font-size: 1rem; padding: 6px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); }

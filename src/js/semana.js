@@ -72,14 +72,23 @@ function renderSemana() {
   const corta = d => d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
   const etiqueta = s => `${s.day ? `Día ${esc(s.day)}` : s.block ? `Bloque ${esc(s.block)}` : 'Entreno'}${s.minutes ? ` · ${esc(s.minutes)} min` : ''}${s.note ? ` · ${esc(s.note)}` : ''}`;
   const ideal = idealSemana();
-  // «Quitar» solo en las sesiones guardadas (los entrenos antiguos, que solo tienen la fecha, no se tocan). Se localiza por su posición en
-  // 'sessions' y, al pulsar, se comprueba que sigue siendo la del mismo día (data-fecha) antes de quitar nada.
+  // Lápiz ✎ solo en las sesiones guardadas (los entrenos antiguos, que solo tienen la fecha, no se tocan). Abre un panel con «Día» (cambiar
+  // la fecha) y «Quitar sesión». Se localiza por su posición en 'sessions' y, al pulsar, se comprueba que sigue siendo la del mismo día
+  // (data-fecha) antes de cambiar o quitar nada.
   const guardadas = Storage.get('sessions', []);
-  const quitar = s => {
-    const i = guardadas.findIndex(g => JSON.stringify(g) === JSON.stringify(s));
-    if (i < 0) return '';
+  const posicion = s => guardadas.findIndex(g => JSON.stringify(g) === JSON.stringify(s));
+  const lapiz = s => {
+    const i = posicion(s);
+    return i < 0 ? '' : `<button type="button" class="semana-lapiz" data-editar="${i}" aria-expanded="${editandoSesion === i}" aria-label="Editar la sesión del ${esc(s.date)}">✎</button>`;
+  };
+  const panel = s => {
+    const i = posicion(s);
+    if (i < 0 || editandoSesion !== i) return '';
     const pideConfirmar = quitandoSesion.i === i && Date.now() - quitandoSesion.t < TIEMPO_CONFIRMAR;
-    return `<button type="button" class="semana-quitar" data-quitar="${i}" data-fecha="${esc(s.date)}" aria-label="Quitar la sesión del ${esc(s.date)}">${pideConfirmar ? '¿Seguro? Pulsa otra vez' : 'Quitar'}</button>`;
+    return '<div class="semana-editor">' +
+      `<label>Día <input type="date" class="semana-fecha" max="${isoDate(hoy)}" value="${esc(s.date)}"></label>` +
+      `<button type="button" class="btn btn-green cons-mas" data-guardar-dia="${i}" data-fecha="${esc(s.date)}">Guardar día</button>` +
+      `<button type="button" class="semana-quitar" data-quitar="${i}" data-fecha="${esc(s.date)}">${pideConfirmar ? '¿Seguro? Pulsa otra vez' : 'Quitar sesión'}</button></div>`;
   };
 
   // eslint-disable-next-line no-unsanitized/property -- lo del almacén o del PDF va por esc()/labNum() o son números; probado con una copia manipulada
@@ -90,7 +99,7 @@ function renderSemana() {
       const f = isoDate(dia(lunes, n)), delDia = sesiones.filter(s => s.date === f), esHoy = f === isoDate(hoy);
       return `<div class="semana-dia${esHoy ? ' hoy' : ''}${delDia.length ? ' hecho' : ''}">` +
         `<span class="semana-letra">${'LMXJVSD'[n]}<small>${dia(lunes, n).getDate()}</small></span>` +
-        `<span>${delDia.length ? delDia.map(s => estado('ok') + ' ' + etiqueta(s) + ' ' + quitar(s)).join('<br>') : esHoy ? 'hoy' : ''}</span></div>`;
+        `<span>${delDia.length ? delDia.map(s => estado('ok') + ' ' + etiqueta(s) + ' ' + lapiz(s) + panel(s)).join('<br>') : esHoy ? 'hoy' : ''}</span></div>`;
     }).join('') + '</div>' +
     (est.hechos < ideal ? `<button class="btn btn-green btn-full" id="semanaEntrenar">${ICONO.jugar}Apuntar sesión · toca el día ${nextGymDay()}</button>` : '') +
     '<div class="meta-aviso">El cardio se apunta dentro de cada sesión. Caminar suelto no cuenta aquí (va en los consejos).</div>';
@@ -114,7 +123,7 @@ function renderSemana() {
     return `<details class="lab-sec"><summary><div class="lab-tit">${corta(l)} – ${corta(dia(l, 6))}` +
       `<small>${suyas.length} / ${objetivoSemana()} ${ok ? `${estado('ok')} cumplida` : '· no cumplida'}</small></div><span class="lab-flecha"></span></summary>` +
       '<div class="lab-cuerpo">' + (suyas.length ? suyas.map(s =>
-        `<div class="lab-fila"><div class="lab-fila-top"><span>${new Date(s.date + 'T12:00').toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric' })}</span><strong>${etiqueta(s)}</strong>${quitar(s)}</div>` +
+        `<div class="lab-fila"><div class="lab-fila-top"><span>${new Date(s.date + 'T12:00').toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric' })}</span><strong>${etiqueta(s)}</strong>${lapiz(s)}</div>${panel(s)}` +
         (s.exercises ? `<div class="lab-fila-que">${s.exercises.map(esc).join(' · ')}</div>` : '') +
         (textoCardio(s.cardio) ? `<div class="lab-fila-que">Cardio · ${textoCardio(s.cardio)}</div>` : '') + '</div>').join('')
         : '<div class="meta-aviso">Sin entrenos esta semana.</div>') + '</div></details>';
@@ -125,14 +134,38 @@ function renderSemana() {
       m.semanas.map(htmlSemana).join(''), i === 0 && j === 0)).join(''), i === 0)).join('');
 }
 
-// Quitar una sesión guardada: la primera pulsación pide confirmar (en el propio botón, 6 s) y la segunda la quita.
+// Editar una sesión guardada con el lápiz ✎: cambiar el día o quitarla. Quitar pide confirmar (en el propio botón, 6 s) y la segunda pulsación la quita.
 const TIEMPO_CONFIRMAR = 6000;
 let quitandoSesion = { i: -1, t: 0 };
+let editandoSesion = -1;   // posición (en 'sessions') de la sesión con el panel abierto
 
 // La lista sin la sesión i, solo si sigue siendo la del día que se enseñó; si algo no cuadra, no se toca nada.
 function sesionesSin(lista, i, fecha) {
   if (!Number.isInteger(i) || i < 0 || i >= lista.length || lista[i].date !== fecha) return { error: 'La lista ha cambiado: no se ha quitado nada' };
   return { lista: lista.filter((_, k) => k !== i) };
+}
+
+// La lista con la sesión i en otro día (hoy o anterior), de nuevo ordenada por fecha; si algo no cuadra, no se toca nada.
+function sesionesConDia(lista, i, fecha, nueva, hoy = isoDate(new Date())) {
+  if (!Number.isInteger(i) || i < 0 || i >= lista.length || lista[i].date !== fecha) return { error: 'La lista ha cambiado: no se ha cambiado nada' };
+  if (!esFechaIso(nueva) || nueva > hoy) return { error: 'Pon el día en que lo hiciste (hoy o uno anterior)' };
+  return { lista: lista.map((s, k) => k === i ? { ...s, date: nueva } : s).sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0) };
+}
+
+function pulsarEditarSesion(i) {
+  editandoSesion = editandoSesion === i ? -1 : i;   // el mismo lápiz abre y cierra el panel
+  quitandoSesion = { i: -1, t: 0 };
+  renderSemana();
+}
+
+function pulsarGuardarDia(i, fecha, nueva) {
+  const r = sesionesConDia(Storage.get('sessions', []), i, fecha, nueva);
+  if (r.error) { showToast(r.error); return renderSemana(); }
+  Storage.set('sessions', r.lista);
+  editandoSesion = -1;
+  showToast('Día cambiado ✓');
+  updateDashboard();   // la semana, la racha y las casillas del plan
+  renderSemana();
 }
 
 function pulsarQuitarSesion(i, fecha) {
@@ -141,6 +174,7 @@ function pulsarQuitarSesion(i, fecha) {
   const r = sesionesSin(Storage.get('sessions', []), i, fecha);
   if (r.error) { showToast(r.error); return renderSemana(); }
   Storage.set('sessions', r.lista);
+  editandoSesion = -1;
   showToast('Sesión quitada');
   updateDashboard();   // la semana, la racha y las casillas del plan
   renderSemana();
@@ -148,8 +182,11 @@ function pulsarQuitarSesion(i, fecha) {
 
 for (const id of ['semanaActual', 'semanaHistorial']) {
   document.getElementById(id)?.addEventListener('click', e => {
-    const b = e.target.closest('[data-quitar]');
-    if (b) pulsarQuitarSesion(Number(b.dataset.quitar), b.dataset.fecha);
+    const b = e.target.closest('[data-editar], [data-quitar], [data-guardar-dia]');
+    if (!b) return;
+    if (b.dataset.editar !== undefined) pulsarEditarSesion(Number(b.dataset.editar));
+    else if (b.dataset.quitar !== undefined) pulsarQuitarSesion(Number(b.dataset.quitar), b.dataset.fecha);
+    else pulsarGuardarDia(Number(b.dataset.guardarDia), b.dataset.fecha, b.closest('.semana-editor').querySelector('.semana-fecha').value);
   });
 }
 
