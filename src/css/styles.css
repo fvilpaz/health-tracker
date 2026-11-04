@@ -950,3 +950,5 @@ button.plan-check { padding: 0; font-family: inherit; }
 button.plan-check.checked { cursor: pointer; }
 .plan-detalle { width: 100%; margin-top: 8px; }
 .semana-dia.abierto { grid-column: 1 / -1; }
+.sesion-hecha .cardio-fila { background: var(--blue-light); border-color: var(--blue); }
+.sesion-hecha .cardio-fila .gym-ej-num { background: var(--blue); color: white; }

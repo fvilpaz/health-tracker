@@ -148,7 +148,10 @@ const vistaSesionHecha = s => '<div class="sesion-hecha">' +
   (s.exercises && s.exercises.length ? s.exercises.map((n, i) =>
     `<div class="gym-ej hecho"><span class="gym-ej-num">${i + 1}</span><span class="gym-ej-cuerpo"><span class="gym-ej-nombre">${esc(n)}</span></span><input type="checkbox" class="gym-check" checked disabled aria-label="Hecho"></div>`).join('')
     : '<div class="meta-aviso">Sin ejercicios apuntados.</div>') +
-  (textoCardio(s.cardio) ? `<div class="lab-fila-que">Cardio · ${textoCardio(s.cardio)}</div>` : '') + '</div>';
+  // El cardio, en filas como las de los ejercicios (en azul, sin ✓): «Cardio 1», «Cardio 2»… en el orden hecho, con sus datos debajo
+  cardioComoLista(s.cardio).filter(x => x && typeof x === 'object').map(resumenCardio).filter(Boolean).map((datos, i) =>
+    `<div class="gym-ej cardio-fila"><span class="gym-ej-num">${i + 1}</span><span class="gym-ej-cuerpo"><span class="gym-ej-nombre">Cardio ${i + 1}</span><span class="gym-ej-meta">${datos}</span></span></div>`).join('') +
+  '</div>';
 let verDia = '';   // día (aaaa-mm-dd) de «Mi semana» con su sesión a la vista
 
 function pulsarVerDia(fecha) {

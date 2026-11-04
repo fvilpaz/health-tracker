@@ -152,7 +152,7 @@ test('tocar una sesión hecha en «Mi semana» la abre con la vista de Entreno (
   const els = { semanaActual: {}, semanaHistorial: {} }, original = app.get('document').getElementById;
   app.get('document').getElementById = id => els[id] || original(id);
   const hoy = iso(new Date());
-  S.set('sessions', [{ date: hoy, block: null, day: '1', exercises: ['Press de banca placas', '<img src=x onerror=alert(1)>'], cardio: [{ minutes: 10, km: 1.06, note: 'Cinta' }] }]);
+  S.set('sessions', [{ date: hoy, block: null, day: '1', exercises: ['Press de banca placas', '<img src=x onerror=alert(1)>'], cardio: [{ minutes: 10, km: 1.06, note: 'Cinta' }, { minutes: 20, km: 3.04, note: '<b>x</b>' }] }]);
   const render = () => { app.get('renderSemana')(); return els.semanaActual.innerHTML; };
   let html = render();
   assert.match(html, new RegExp(`data-ver="${hoy}"`), 'el día hecho se puede tocar');
@@ -165,7 +165,11 @@ test('tocar una sesión hecha en «Mi semana» la abre con la vista de Entreno (
   assert.match(html, /<span class="gym-ej-nombre">Press de banca placas<\/span>/);
   assert.match(html, /&lt;img src=x onerror=alert\(1\)&gt;/, 'escapado');
   assert.doesNotMatch(html, /<img src=x/, 'nada de HTML suelto');
-  assert.match(html, /Cardio · 10 min · 1\.06 km · Cinta/);
+  // el cardio, en filas como las de los ejercicios (no en una línea de texto): una por cardio, en el orden hecho, con su título y sus datos
+  assert.equal((html.match(/class="gym-ej cardio-fila"/g) || []).length, 2);
+  assert.match(html, /<span class="gym-ej-nombre">Cardio 1<\/span><span class="gym-ej-meta">10 min · 1\.06 km · Cinta<\/span>/);
+  assert.match(html, /<span class="gym-ej-nombre">Cardio 2<\/span><span class="gym-ej-meta">20 min · 3\.04 km · &lt;b&gt;x&lt;\/b&gt;<\/span>/, 'escapado');
+  assert.doesNotMatch(html, /Cardio · /, 'ya no es una línea de texto');
   app.get('pulsarVerDia')(hoy);   // el mismo toque lo cierra
   assert.doesNotMatch(els.semanaActual.innerHTML, /Press de banca placas/);
 });
@@ -187,9 +191,20 @@ test('Dashboard · «Tu plan»: las casillas ✓ de las sesiones hechas se puede
   let html = els.planTable.innerHTML;
   assert.equal(cuenta(html, /class="gym-ej hecho"/g), 2);
   assert.match(html, /Press de banca placas/);
-  assert.match(html, /Cardio · 10 min/);
+  assert.equal(cuenta(html, /class="gym-ej cardio-fila"/g), 1);
+  assert.match(html, /<span class="gym-ej-nombre">Cardio 1<\/span><span class="gym-ej-meta">10 min<\/span>/);
   assert.match(html, /aria-expanded="true"/);
   app.get('pulsarSesionDelPlan')('1:0');   // el mismo toque la cierra
   assert.doesNotMatch(els.planTable.innerHTML, /Press de banca placas/);
+});
+
+test('el cardio de una sesión abierta: las filas vacías o raras no cuentan ni rompen, y el formato viejo {start, end} se lee igual', () => {
+  const vista = crearApp().get('vistaSesionHecha');
+  const filas = s => (String(vista(s)).match(/class="gym-ej cardio-fila"/g) || []).length;
+  const base = { date: '2026-11-02', day: '1', exercises: ['A'] };
+  assert.equal(filas({ ...base, cardio: [{}, null, 5, { minutes: 12 }] }), 1, 'solo la que tiene datos');
+  assert.equal(filas({ ...base, cardio: { start: { minutes: 10 }, end: { minutes: 20, km: 3 } } }), 2, 'formato viejo');
+  assert.equal(filas({ ...base }), 0, 'sin cardio, sin filas');
+  assert.equal(filas({ ...base, cardio: [] }), 0);
 });
 
