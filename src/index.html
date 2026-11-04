@@ -190,6 +190,12 @@
           <span class="gym-reloj-txt" id="gymRelojTxt"></span>
         </button>
         <p class="modos-estado" id="gymRelojAviso" role="status"></p>
+        <button class="btn btn-suave" type="button" id="gymPausaEditar" aria-expanded="false" aria-controls="gymPausaEditor">✎ Cambiar el tiempo</button>
+        <div class="pausa-editor" id="gymPausaEditor" hidden>
+          <input type="number" class="cons-num" id="gymPausaNum" min="10" max="600" step="5" inputmode="numeric" aria-label="Segundos de descanso">
+          <span>segundos</span>
+          <button type="button" class="btn btn-green cons-mas" id="gymPausaGuardar">Guardar</button>
+        </div>
       </div>
       <div class="card">
         <div class="card-title" role="heading" aria-level="2">Cardio <span class="gym-opcional">opcional</span></div>

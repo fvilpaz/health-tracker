@@ -199,3 +199,30 @@ document.getElementById('gymEditarBtn')?.addEventListener('click', () => {
   consAviso = ''; consConfirmaNuevo = false;
   pintarConstructor();
 });
+
+/* ===== PAUSA DEL RELOJ ===== */
+// El tiempo del reloj universal de «Descanso entre series» (plan.rest, de 10 a 600 s): se cambia con el lápiz y vale para todos los ejercicios
+function planConPausa(plan, segundos) {
+  if (!Number.isInteger(segundos) || segundos < 10 || segundos > 600) return { error: 'La pausa, de 10 a 600 segundos' };
+  const copia = copiaPlan(plan);
+  copia.rest = segundos;
+  return { plan: copia };
+}
+
+document.getElementById('gymPausaEditar')?.addEventListener('click', () => {
+  const editor = document.getElementById('gymPausaEditor'), boton = document.getElementById('gymPausaEditar'), num = document.getElementById('gymPausaNum');
+  editor.hidden = !editor.hidden;
+  boton.setAttribute('aria-expanded', String(!editor.hidden));
+  if (!editor.hidden) { num.value = planGym?.rest ?? 60; num.focus(); }
+});
+
+document.getElementById('gymPausaGuardar')?.addEventListener('click', async () => {
+  let plan;
+  try { plan = await planEditable(); } catch { return avisarReloj('gymRelojAviso', 'No se ha podido cargar el plan'); }
+  const r = planConPausa(plan, Number(document.getElementById('gymPausaNum').value));
+  if (r.error) return avisarReloj('gymRelojAviso', r.error);
+  document.getElementById('gymPausaEditor').hidden = true;
+  document.getElementById('gymPausaEditar').setAttribute('aria-expanded', 'false');
+  guardarPlanGym(r.plan);
+  showToast(`Descanso: ${r.plan.rest} s`);
+});
