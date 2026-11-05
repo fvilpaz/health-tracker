@@ -15,11 +15,11 @@
         { "id": "s1d1e6", "name": "Abdominales (encogimiento de abdominales en banco)" }
       ] },
       { "id": "2", "exercises": [
-        { "id": "s1d2e1", "name": "Aductor (cerrando)" },
-        { "id": "s1d2e2", "name": "Sentadilla en multipower" },
-        { "id": "s1d2e3", "name": "Zancadas en multipower" },
-        { "id": "s1d2e4", "ref": "d2e6", "name": "Femoral tumbado" },
-        { "id": "s1d2e5", "name": "Peso muerto (máquina guiada discos)" }
+        { "id": "s1d4e1", "ref": "d1e5", "name": "Extensión de piernas máquina" },
+        { "id": "s1d4e2", "ref": "d1e6", "name": "Prensa inclinada máquina discos" },
+        { "id": "s1d4e3", "name": "Sentadilla en multipower" },
+        { "id": "s1d4e4", "ref": "d2e5", "name": "Hack de piernas" },
+        { "id": "s1d4e5", "ref": "d2e7", "name": "Gemelos de pie" }
       ] },
       { "id": "3", "exercises": [
         { "id": "s1d3e1", "ref": "d2e2", "name": "Remo sentado en máquina de placas" },
@@ -31,11 +31,11 @@
         { "id": "s1d3e7", "name": "Elevación lateral de hombros (máquina discos)", "sets": 4 }
       ] },
       { "id": "4", "exercises": [
-        { "id": "s1d4e1", "ref": "d1e5", "name": "Extensión de piernas máquina" },
-        { "id": "s1d4e2", "ref": "d1e6", "name": "Prensa inclinada máquina discos" },
-        { "id": "s1d4e3", "name": "Sentadilla en multipower" },
-        { "id": "s1d4e4", "ref": "d2e5", "name": "Hack de piernas" },
-        { "id": "s1d4e5", "ref": "d2e7", "name": "Gemelos de pie" }
+        { "id": "s1d2e1", "name": "Aductor (cerrando)" },
+        { "id": "s1d2e2", "name": "Sentadilla en multipower" },
+        { "id": "s1d2e3", "name": "Zancadas en multipower" },
+        { "id": "s1d2e4", "ref": "d2e6", "name": "Femoral tumbado" },
+        { "id": "s1d2e5", "name": "Peso muerto (máquina guiada discos)" }
       ] }
     ] },
     { "days": [] },
