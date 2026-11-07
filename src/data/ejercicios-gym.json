@@ -1,5 +1,5 @@
 {
- "nota": "Fichas revisadas por Nando el 7-oct-2026 (excepto d4e1, pendiente) con el especialista de salud (IA, sin acceso al manual NSCA). Fotos con caras, logos y marcas difuminados (ver CREDITS.md).",
+ "nota": "Fichas revisadas por Nando el 7-oct-2026 (excepto d4e1, pendiente) con el especialista de salud (IA, sin acceso al manual NSCA). Fotos con caras, logos y marcas difuminados (ver CREDITS.md). Las fichas n1 a n11 (7-nov-2026) las redactó la IA y Nando las aprobó el mismo día.",
  "ejercicios": {
   "d1e1": {
    "trabaja": [
@@ -357,6 +357,146 @@
    ],
    "ojo": "No tires del cuello con las manos. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
    "revision": "Revisado por Nando el 7-oct-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+  },
+  "n1": {
+   "trabaja": [
+    "pecho (parte superior)",
+    "hombros (parte delantera)",
+    "tríceps"
+   ],
+   "pasos": [
+    "Ajusta el banco inclinado y siéntate con la espalda y los glúteos apoyados y los pies firmes en el suelo.",
+    "Con una mancuerna en cada mano a la altura del pecho, empuja hacia arriba hasta estirar los brazos casi del todo.",
+    "Baja despacio hasta notar el pecho estirado, sin rebotar."
+   ],
+   "ojo": "Elige un peso que controles en la bajada. No arquees la zona lumbar ni despegues los glúteos del banco.",
+   "revision": "Aprobado por Nando el 7-nov-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+  },
+  "n2": {
+   "trabaja": [
+    "bíceps"
+   ],
+   "pasos": [
+    "Siéntate con las axilas apoyadas en el borde del cojín y los brazos sobre él.",
+    "Agarra las asas y flexiona los codos llevando las manos hacia los hombros.",
+    "Baja despacio hasta casi estirar los brazos, sin soltar de golpe."
+   ],
+   "ojo": "No despegues los brazos del cojín ni balancees el cuerpo. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Aprobado por Nando el 7-nov-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+  },
+  "n3": {
+   "trabaja": [
+    "abdomen"
+   ],
+   "pasos": [
+    "Túmbate boca arriba en el banco con las rodillas flexionadas y los pies apoyados.",
+    "Con las manos cruzadas sobre el pecho, eleva los hombros del banco acercando las costillas a la pelvis.",
+    "Baja despacio, sin impulso."
+   ],
+   "ojo": "No tires del cuello con las manos. Si notas dolor en el cuello o la zona lumbar, para.",
+   "revision": "Aprobado por Nando el 7-nov-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+  },
+  "n4": {
+   "trabaja": [
+    "cuádriceps",
+    "glúteos"
+   ],
+   "pasos": [
+    "Colócate bajo la barra con los pies a la anchura de los hombros y la espalda recta.",
+    "Desbloquea la barra y baja doblando rodillas y caderas hasta donde llegues con comodidad, con las rodillas en línea con los pies.",
+    "Sube empujando con todo el pie, sin bloquear las rodillas arriba."
+   ],
+   "ojo": "Localiza los topes de seguridad y colócalos a una altura que te proteja. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Aprobado por Nando el 7-nov-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+  },
+  "n5": {
+   "trabaja": [
+    "espalda",
+    "bíceps"
+   ],
+   "pasos": [
+    "Colócate con los pies a la anchura de los hombros y el tronco inclinado desde la cadera, con la espalda recta.",
+    "Agarra el asa y tira hacia el abdomen llevando los codos hacia atrás.",
+    "Baja despacio hasta estirar los brazos, sin redondear la espalda."
+   ],
+   "ojo": "Mantén la espalda recta y el cuello alineado con ella. Empieza con poco peso. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Aprobado por Nando el 7-nov-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+  },
+  "n6": {
+   "trabaja": [
+    "tríceps"
+   ],
+   "pasos": [
+    "De espaldas a la polea alta, con la cuerda agarrada detrás de la cabeza y los codos apuntando hacia delante.",
+    "Estira los brazos hacia delante y arriba hasta casi bloquear los codos.",
+    "Vuelve despacio sin mover los codos."
+   ],
+   "ojo": "Mantén los codos cerca de la cabeza y no arquees la zona lumbar. Si notas molestia en los hombros, baja el peso.",
+   "revision": "Aprobado por Nando el 7-nov-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+  },
+  "n7": {
+   "trabaja": [
+    "hombros",
+    "tríceps"
+   ],
+   "pasos": [
+    "Siéntate con la espalda apoyada y las asas a la altura de los hombros.",
+    "Empuja hacia arriba hasta estirar los brazos sin bloquear del todo los codos.",
+    "Baja despacio hasta la altura de las asas."
+   ],
+   "ojo": "No arquees la espalda ni subas los hombros hacia las orejas. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Aprobado por Nando el 7-nov-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+  },
+  "n8": {
+   "trabaja": [
+    "hombros (parte lateral)"
+   ],
+   "pasos": [
+    "Siéntate con la espalda apoyada y los brazos junto a los cojines laterales.",
+    "Eleva los brazos hacia los lados hasta la altura de los hombros.",
+    "Baja despacio, sin dejar caer el peso."
+   ],
+   "ojo": "No pases de la altura de los hombros ni te ayudes con el cuerpo. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Aprobado por Nando el 7-nov-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+  },
+  "n9": {
+   "trabaja": [
+    "aductores (parte interna del muslo)"
+   ],
+   "pasos": [
+    "Siéntate con la espalda apoyada y las piernas abiertas, con los cojines por dentro de los muslos.",
+    "Junta las piernas hasta acercar los cojines.",
+    "Vuelve despacio a la posición abierta."
+   ],
+   "ojo": "Ajusta la apertura inicial a un rango cómodo; no abras más de lo que toleres. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Aprobado por Nando el 7-nov-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+  },
+  "n10": {
+   "trabaja": [
+    "cuádriceps",
+    "glúteos"
+   ],
+   "pasos": [
+    "Colócate bajo la barra con un pie adelantado y el otro atrasado, con la espalda recta.",
+    "Baja doblando las dos rodillas hasta donde llegues con comodidad, con la rodilla de delante en línea con el pie.",
+    "Sube empujando con el pie de delante. Al acabar las repeticiones, cambia de pierna."
+   ],
+   "ojo": "Mantén el tronco recto y la rodilla de delante sobre el pie. Localiza los topes de seguridad. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Aprobado por Nando el 7-nov-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
+  },
+  "n11": {
+   "trabaja": [
+    "parte trasera del muslo (isquiotibiales)",
+    "glúteos",
+    "zona lumbar"
+   ],
+   "pasos": [
+    "Colócate frente a la barra con los pies a la anchura de las caderas.",
+    "Agarra la barra y, con la espalda recta, lleva las caderas hacia atrás y baja la barra pegada a las piernas.",
+    "Sube estirando caderas y rodillas a la vez, sin echar la espalda hacia atrás arriba."
+   ],
+   "ojo": "Mantén la espalda neutra en todo el recorrido; si se redondea, baja el peso. Empieza ligero. Los ajustes cambian entre modelos; sigue las indicaciones de la máquina.",
+   "revision": "Aprobado por Nando el 7-nov-2026 (redactado con ayuda de IA; criterio de entrenador, sin guía oficial)"
   }
  }
 }

@@ -11,20 +11,24 @@ const fichas = leer('ejercicios-gym.json').ejercicios;
 const porRef = new Map(Object.entries(fichas));   // para buscar por referencia sin indexar un objeto con texto variable
 const plan = leer('gym.json');
 const ejerciciosDelPlan = plan.days.flatMap(d => d.exercises);
+const ejerciciosPlanNuevo = leer('plan.json').weeks.flatMap(s => s.days.flatMap(d => d.exercises));   // plan de 8 semanas (7-nov-2026: sus ejercicios nuevos llevan ficha n1…n11)
 
 test('cada ejercicio del plan tiene su «ref» y cada ref tiene su ficha (y nada sobra)', () => {
   assert.ok(ejerciciosDelPlan.every(e => e.ref && fichas[e.ref]), 'ejercicio sin ref o sin ficha');
-  assert.deepEqual([...new Set(ejerciciosDelPlan.map(e => e.ref))].sort(), Object.keys(fichas).sort());
+  assert.ok(ejerciciosPlanNuevo.every(e => e.ref && fichas[e.ref]), 'ejercicio de plan.json sin ref o sin ficha');
+  // «nada sobra»: cada ficha la usa el plan de 5 días (gym.json) o el de 8 semanas (plan.json)
+  const usadas = [...new Set([...ejerciciosDelPlan, ...ejerciciosPlanNuevo].map(e => e.ref))].sort();
+  assert.deepEqual(usadas, Object.keys(fichas).sort());
   // el ejercicio repetido en otro día comparte ficha; el nombre exacto del plan no cambia
   const porNombre = new Map();
-  for (const e of ejerciciosDelPlan) {
+  for (const e of [...ejerciciosDelPlan, ...ejerciciosPlanNuevo]) {
     assert.equal(porNombre.get(e.name) ?? e.ref, e.ref, `${e.name} con dos fichas`);
     porNombre.set(e.name, e.ref);
   }
 });
 
-test('las 28 fichas tienen Trabaja y pasos con texto, sin notas pendientes', () => {
-  assert.equal(Object.keys(fichas).length, 28);
+test('las 39 fichas tienen Trabaja y pasos con texto, sin notas pendientes', () => {
+  assert.equal(Object.keys(fichas).length, 39);
   for (const [ref, f] of Object.entries(fichas)) {
     assert.ok(f.trabaja.length > 0 && f.trabaja.every(t => typeof t === 'string' && t.trim()), ref);
     assert.ok(f.pasos.length >= 3 && f.pasos.every(p => typeof p === 'string' && p.trim().length > 5 && !/\[V\]/.test(p)), ref);
@@ -48,14 +52,15 @@ test('correcciones aprobadas por Nando el 7-oct-2026: polea en d3e4, «recostado
   assert.equal(ejerciciosDelPlan.find(e => e.id === 'd1e2').name, 'Aperturas inclinadas con mancuernas');
 });
 
-test('«Ojo» y revisión: todas llevan Ojo salvo las sin cambios; todas están revisadas menos d4e1 (pendiente), que conserva «sin revisar»', () => {
+test('«Ojo» y revisión: todas llevan Ojo salvo las sin cambios; todas están revisadas o aprobadas menos d4e1 (pendiente), que conserva «sin revisar»', () => {
   const sinOjo = Object.entries(fichas).filter(([, f]) => !f.ojo).map(([r]) => r).sort();
   assert.deepEqual(sinOjo, ['d2e7', 'd3e3', 'd3e5', 'd4e4']);
   const sinRevision = Object.entries(fichas).filter(([, f]) => !f.revision).map(([r]) => r);
   assert.deepEqual(sinRevision, ['d4e1']);
   for (const [ref, f] of Object.entries(fichas)) {
     if (!f.revision) continue;
-    assert.match(f.revision, /^Revisado por Nando el 7-oct-2026 \(/, ref);
+    // las n1…n11 las redactó la IA el 7-nov-2026 y Nando las aprobó ese día (no las revisó una a una: por eso dice «Aprobado», no «Revisado»)
+    assert.match(f.revision, /^(Revisado por Nando el 7-oct-2026|Aprobado por Nando el 7-nov-2026) \(/, ref);
   }
   // d4e1: texto neutro (no se sabe el recorrido real de las asas); es texto nuevo que Nando no ha visto, sigue «sin revisar»
   const d4e1 = JSON.stringify(fichas.d4e1);

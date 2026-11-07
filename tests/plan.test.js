@@ -14,11 +14,12 @@ const planViejo = leer('gym.json');
 const fichas = leer('ejercicios-gym.json').ejercicios;
 const todos = plan.weeks.flatMap(s => s.days.flatMap(d => d.exercises));
 
-test('plan.json: 8 semanas empezando en lunes; la 1 con sus 4 días y el resto, huecos vacíos para rellenar', () => {
+test('plan.json: 8 semanas empezando en lunes; las 2 primeras con sus 4 días y el resto, huecos vacíos para rellenar', () => {
   assert.equal(plan.weeks.length, 8);
   assert.equal(new Date(plan.inicio + 'T00:00:00').getDay(), 1, 'el plan empieza en lunes');
   assert.deepEqual(plan.weeks[0].days.map(d => d.id), ['1', '2', '3', '4']);
-  assert.ok(plan.weeks.slice(1).every(s => Array.isArray(s.days) && s.days.length === 0));
+  assert.deepEqual(plan.weeks[1].days.map(d => d.id), ['1', '2', '3', '4']);
+  assert.ok(plan.weeks.slice(2).every(s => Array.isArray(s.days) && s.days.length === 0));
   assert.ok(Number.isInteger(plan.sets) && Number.isInteger(plan.reps) && Number.isInteger(plan.rest));
 });
 
@@ -31,7 +32,9 @@ test('plan.json: ejercicios con id único, sin repetir dentro del día, y los qu
     if (e.sets !== undefined) assert.ok(Number.isInteger(e.sets) && e.sets >= 1 && e.sets <= 10, e.id);
     if (e.ref) {
       assert.ok(fichas[e.ref], `${e.id}: ref sin ficha`);
-      assert.equal(viejos.find(v => v.ref === e.ref).name, e.name, `${e.id}: el historial guarda el nombre, no se cambia`);
+      const viejo = viejos.find(v => v.ref === e.ref);   // las fichas n1…n11 (7-nov-2026) son de ejercicios que el plan de 5 días no tenía
+      if (viejo) assert.equal(viejo.name, e.name, `${e.id}: el historial guarda el nombre, no se cambia`);
+      else assert.match(e.ref, /^n\d+$/, `${e.id}: una ref sin equivalente en el plan viejo debe ser de las nuevas (nN)`);
     }
   }
   for (const d of plan.weeks.flatMap(s => s.days)) {
@@ -45,9 +48,10 @@ test('semana en curso: por fecha; una semana aún vacía enseña la última rell
   const con2 = plano(plan); con2.weeks[1].days = [{ id: '1', exercises: [{ id: 'x', name: 'X' }] }];
   assert.equal(dias(plan, '2026-11-04').semana, 1);
   assert.equal(dias(plan, '2026-11-04').days.length, 4);
-  assert.equal(dias(plan, '2026-11-10').semana, 1, 'la semana 2 está vacía: se sigue viendo la 1');
+  assert.equal(dias(plan, '2026-11-10').semana, 2, 'la semana 2 ya está rellena (7-nov-2026)');
+  assert.equal(dias(plan, '2026-11-17').semana, 2, 'la semana 3 está vacía: se sigue viendo la 2');
   assert.equal(dias(plan, '2026-10-20').semana, 1, 'antes del inicio');
-  assert.equal(dias(plan, '2027-03-01').semana, 1, 'pasadas las 8 semanas');
+  assert.equal(dias(plan, '2027-03-01').semana, 2, 'pasadas las 8 semanas: la última rellena');
   assert.equal(dias(con2, '2026-11-10').semana, 2);
   assert.equal(dias(con2, '2026-11-10').days[0].exercises[0].name, 'X');
   assert.equal(dias(con2, '2026-11-04').semana, 1);
