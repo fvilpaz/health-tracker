@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-object-injection, security/detect-non-literal-regexp -- las pruebas usan sus propios ids y fechas inventados (nada que escriba una persona) (7-nov-2026) */
 // Tests de caracterización de «Mi semana»: fijan lo que la app hace HOY, antes de refactorizar.
 // Datos inventados (el repo es público).
 const test = require('node:test');

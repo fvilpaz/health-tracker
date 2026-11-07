@@ -1,4 +1,3 @@
-/* eslint-disable security/detect-object-injection -- los índices son números ya acotados (semana, posición) y las claves, campos del propio código (4-nov-2026) */
 /* Constructor del plan del gimnasio: el plan (semanas → días → ejercicios) se edita desde la pantalla de Entreno y se guarda en
    'gymPlan' (mismo formato que data/plan.json). Sin plan guardado se sigue usando data/plan.json. Las operaciones no tocan el plan
    que reciben: devuelven { plan } nuevo o { error }. Las sesiones guardadas no cambian (guardan fecha y nombres, no el plan). */
