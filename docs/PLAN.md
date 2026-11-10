@@ -126,10 +126,10 @@ Pedida por Nando: tras cada diseño, buscar hallazgos, fallos, deuda técnica y 
 - **Tus vídeos de cada ejercicio dentro de la app** (6-oct-2026, idea de Nando: la app del gimnasio deja descargarlos) — botón «añadir vídeo» por ejercicio que guarda el archivo en el aparato (IndexedDB), nunca en el repo (es público y los vídeos son del gimnasio). Son cortos (10–20 s, ~1–5 MB cada uno, ~100–200 MB en total para ~40 ejercicios): caben. Límites: el navegador puede borrarlos si falta espacio y no entran en Exportar/copias. Alternativa más ligera: guardar solo el enlace por ejercicio (ya está como «Vídeos elegidos y revisados por ejercicio» en P2)
 - **Cardio con cronómetro y GPS dentro de la app** (6-oct-2026, idea de Nando; de momento a mano) — «Iniciar» y que cuente minutos y km con la geolocalización del navegador (~100 líneas + pruebas). Límites: solo con la página abierta y la pantalla encendida (en iPhone peor), gasta batería, y sin GPS en la cinta. Guardar solo minutos y km, nunca el recorrido. Conectar con Google Fit: descartado (su API se retira; Health Connect no se lee desde una web)
 - **Varios perfiles en el mismo aparato** (29-sep-2026, decidido no hacerlo por ahora: YAGNI) — cada uno usa su móvil. Para un PC compartido ya sirven los **perfiles del navegador** (Brave/Chrome: cada uno su cajón, sin programar nada). Si algún día hace falta: prefijo por perfil en las claves + pasar los datos actuales al primero; inicial en un círculo de color, sin fotos.
-
----
 - **Más medicación que cambia la dieta** (auditoría 11-nov-2026; cada una solo con fuente oficial en FUENTES.md): anticoagulantes (acenocumarol/Sintrom, warfarina: vitamina K estable), sal «sin sodio» con potasio si se toman pastillas de la tensión, semaglutida y otros GLP-1 (comidas pequeñas, proteína, agua), omeprazol y otros protectores de estómago (B12, magnesio), dapagliflozina o empagliflozina solas (sin metformina).
 - **Más enfermedades con dieta propia** (misma regla de fuente oficial): gota o ácido úrico alto (purinas, alcohol, refrescos), enfermedad renal crónica (proteína, potasio, fósforo, sal), anemia por falta de hierro (hierro con vitamina C; café y té lejos de las comidas), osteoporosis (calcio y vitamina D).
+
+---
 
 ## ✅ Completado
 
