@@ -10,7 +10,7 @@ const ESENCIAL = [
   './', 'index.html', 'manifest.webmanifest', 'css/styles.css', 'data/workouts.json', 'data/gym.json', 'data/plan.json',
   'js/iconos.js', 'js/storage.js', 'js/copia.js', 'js/timer.js', 'js/charts.js', 'js/workout.js', 'js/semana.js',
   'js/analisis.js', 'js/dashboard.js', 'js/plan.js', 'js/medidas.js', 'js/logros.js', 'js/perfil.js', 'js/rutina.js', 'js/nutricion.js', 'js/gym.js', 'js/constructor-plan.js', 'js/app.js', 'data/health.json', 'data/exercises.json', 'data/ejercicios-gym.json', 'data/nutrition.json',
-  'js/tema.js', 'vendor/chart.umd.js', 'vendor/inter/inter-latin-wght-normal.woff2', 'icons/icon-192.png', 'icons/icon-512.png',
+  'js/tema.js', 'vendor/chart.umd.js', 'vendor/inter/inter-latin-wght-normal.woff2', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
 ];
 
 self.addEventListener('install', e => {
