@@ -61,14 +61,11 @@ test('weekStatus: el aviso de color en cada situación', () => {
   }
 });
 
-test('weekStreak y completedWeeks: semanas cumplidas (3 bloques), seguidas hacia atrás', () => {
+test('completedWeeks: semanas cumplidas (3 bloques)', () => {
   const app = crearApp(), S = app.get('Storage');
   const cumplida = lunes => { const d = new Date(lunes + 'T12:00'); return [0, 2, 4].map(n => { const x = new Date(d); x.setDate(d.getDate() + n); return app.get('isoDate')(x); }); };
   S.set('sessions', sesiones(...cumplida('2026-09-14'), ...cumplida('2026-09-21'), '2026-09-28'));
   assert.equal(app.get('completedWeeks')(), 2);
-  assert.equal(app.get('weekStreak')(dia('2026-09-30')), 2);   // la actual (1 de 3) no rompe la racha
-  S.set('sessions', sesiones(...cumplida('2026-09-07'), ...cumplida('2026-09-21')));   // hueco la del 14
-  assert.equal(app.get('weekStreak')(dia('2026-09-30')), 1);
 });
 
 test('agruparSemanas: año → mes según el LUNES de cada semana (26 oct–1 nov va en octubre), de la más reciente a la más antigua', () => {

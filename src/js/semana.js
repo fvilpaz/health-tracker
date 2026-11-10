@@ -252,17 +252,6 @@ function completedWeeks() {
   return Object.values(porSemana).filter(n => n >= objetivoSemana()).length;
 }
 
-// Semanas seguidas cumplidas. La actual suma si ya está cumplida; si no, no rompe la racha (aún puedes cumplirla).
-function weekStreak(ref = new Date()) {
-  const lunes = getWeekStart(ref), sesiones = getSessions();   // se leen una vez (antes, una por semana: 4 s con 2.000)
-  let racha = sessionsInWeek(lunes, sesiones).length >= objetivoSemana() ? 1 : 0;
-  for (let l = new Date(lunes); ; ) {
-    l.setDate(l.getDate() - 7);
-    if (sessionsInWeek(l, sesiones).length < objetivoSemana()) return racha;
-    racha++;
-  }
-}
-
 // Lunes de la semana de «ref». getDay() da 0 en domingo: (getDay() + 6) % 7 son los días desde el lunes
 // (antes el domingo saltaba al lunes SIGUIENTE y la semana salía a 0).
 function getWeekStart(ref = new Date()) {
