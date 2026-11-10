@@ -128,6 +128,8 @@ Pedida por Nando: tras cada diseño, buscar hallazgos, fallos, deuda técnica y 
 - **Varios perfiles en el mismo aparato** (29-sep-2026, decidido no hacerlo por ahora: YAGNI) — cada uno usa su móvil. Para un PC compartido ya sirven los **perfiles del navegador** (Brave/Chrome: cada uno su cajón, sin programar nada). Si algún día hace falta: prefijo por perfil en las claves + pasar los datos actuales al primero; inicial en un círculo de color, sin fotos.
 
 ---
+- **Más medicación que cambia la dieta** (auditoría 11-nov-2026; cada una solo con fuente oficial en FUENTES.md): anticoagulantes (acenocumarol/Sintrom, warfarina: vitamina K estable), sal «sin sodio» con potasio si se toman pastillas de la tensión, semaglutida y otros GLP-1 (comidas pequeñas, proteína, agua), omeprazol y otros protectores de estómago (B12, magnesio), dapagliflozina o empagliflozina solas (sin metformina).
+- **Más enfermedades con dieta propia** (misma regla de fuente oficial): gota o ácido úrico alto (purinas, alcohol, refrescos), enfermedad renal crónica (proteína, potasio, fósforo, sal), anemia por falta de hierro (hierro con vitamina C; café y té lejos de las comidas), osteoporosis (calcio y vitamina D).
 
 ## ✅ Completado
 
