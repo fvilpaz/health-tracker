@@ -100,7 +100,8 @@ test('P0 del 28-sep: cetoacidosis en Ebymect, sin «vitamina E» en hígado, sin
   const meds = html.slice(html.indexOf('<section id="medicacion"'), html.indexOf('</section>', html.indexOf('<section id="medicacion"')));
   assert.match(meds, /cetoacidosis/i);
   assert.doesNotMatch(meds, /vitamina E/);
-  for (const fuera of ['Vitamina D3', 'Magnesio', 'Whey', 'Vitamina B12', '(dosis retirada)']) assert.ok(!meds.includes(fuera), fuera);
+  for (const fuera of ['Vitamina D3', 'Magnesio', 'Whey', 'Vitamina B12']) assert.ok(!meds.includes(fuera), fuera);
+  assert.doesNotMatch(meds, /(?:dapagliflozina|metformina)\s*\d+\s*mg/i);   // ninguna dosis concreta en las fichas
   assert.doesNotMatch(meds, /SEGURO<\/span>[\s\S]{0,200}Creatina/);
 });
 
